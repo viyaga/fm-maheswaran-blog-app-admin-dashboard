@@ -205,8 +205,8 @@ export default function AppSidebar() {
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                
-                  // logout
+
+                {/* logout BTN===============================*/}
                 <DropdownMenuItem className="cursor-pointer" onClick={logoutUser}>
                   <LogOut />
                   Log out
