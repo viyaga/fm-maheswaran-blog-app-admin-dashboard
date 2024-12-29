@@ -45,6 +45,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import * as React from 'react';
 import { Icons } from '../icons';
+import { logoutUser } from '@/lib/actions';
 
 export const company = {
   name: 'Acme Inc',
@@ -204,10 +205,13 @@ export default function AppSidebar() {
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
+                
+                  // logout
+                <DropdownMenuItem className="cursor-pointer" onClick={logoutUser}>
                   <LogOut />
                   Log out
                 </DropdownMenuItem>
+
               </DropdownMenuContent>
             </DropdownMenu>
           </SidebarMenuItem>

@@ -23,7 +23,6 @@ export default async function EmployeeListingPage() {
     ...(gender && { genders: gender })
   };
 
-  // mock api call
   const totalUsers = employees.length;
 
   return (
