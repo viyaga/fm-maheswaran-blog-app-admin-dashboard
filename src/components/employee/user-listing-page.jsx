@@ -6,7 +6,7 @@ import { searchParamsCache } from '@/lib/searchparams';
 import { cn } from '@/lib/utils';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
-import EmployeeTable from './employee-tables';
+import EmployeeTable from './user-table';
 import { employees } from '@/constants/data';
 
 export default async function EmployeeListingPage() {
@@ -30,12 +30,12 @@ export default async function EmployeeListingPage() {
       <div className="space-y-4">
         <div className="flex items-start justify-between">
           <Heading
-            title={`Employee (${totalUsers})`}
-            description="Manage employees (Server side table functionalities.)"
+            title={`Users (${totalUsers})`}
+            description="Manage users"
           />
 
           <Link
-            href={'/dashboard/employee/new'}
+            href={'/dashboard/users/new'}
             className={cn(buttonVariants({ variant: 'default' }))}
           >
             <Plus className="mr-2 h-4 w-4" /> Add New

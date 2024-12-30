@@ -84,15 +84,15 @@ export const users = [
 export const navItems = [
   {
     title: 'Dashboard',
-    url: '/dashboard/overview',
+    url: '/dashboard',
     icon: 'dashboard',
     isActive: false,
     shortcut: ['d', 'd'],
     items: [] // Empty array as there are no child items for Dashboard
   },
   {
-    title: 'Employee',
-    url: '/dashboard/employee',
+    title: 'Users',
+    url: '/dashboard/users',
     icon: 'user',
     shortcut: ['e', 'e'],
     isActive: false,
