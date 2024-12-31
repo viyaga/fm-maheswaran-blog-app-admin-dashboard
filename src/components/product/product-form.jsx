@@ -20,7 +20,6 @@ import {
   SelectValue
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { Product } from '@/constants/mock-api';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -58,9 +57,6 @@ const formSchema = z.object({
 export default function ProductForm({
   initialData,
   pageTitle
-}: {
-  initialData: Product | null;
-  pageTitle: string;
 }) {
   const defaultValues = {
     name: initialData?.name || '',
@@ -69,12 +65,12 @@ export default function ProductForm({
     description: initialData?.description || ''
   };
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm({
     resolver: zodResolver(formSchema),
     values: defaultValues
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values) {
     console.log(values);
   }
 

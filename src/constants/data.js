@@ -99,8 +99,8 @@ export const navItems = [
     items: [] // No child items
   },
   {
-    title: 'Product',
-    url: '/dashboard/product',
+    title: 'Blogs',
+    url: '/dashboard/blogs',
     icon: 'product',
     shortcut: ['p', 'p'],
     isActive: false,
@@ -151,3 +151,57 @@ export const employees = [
   { "createdAt": "117", "name": "Leah Reynolds", "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/69.jpg", "country": "blockchains", "email": "Astatine", "company": "hm", "gender": "Volvo", "id": "10" },
   { "createdAt": "21572", "name": "Cindy Bergstrom", "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/304.jpg", "country": "male", "email": "Connecticut", "company": "Fresh", "gender": "Plastic", "id": "11" }
 ]
+
+export const products = [
+  {
+    photo_url: "/images/product1.jpg",
+    name: "Wireless Earbuds",
+    description: "High-quality noise-cancelling wireless earbuds with 20-hour battery life.",
+    created_at: "2024-12-01T08:30:00Z",
+    price: 49.99,
+    id: 101,
+    category: "Electronics",
+    updated_at: "2024-12-15T10:00:00Z"
+  },
+  {
+    photo_url: "/images/product2.jpg",
+    name: "Smart Watch",
+    description: "Stylish smartwatch with fitness tracking and heart rate monitoring.",
+    created_at: "2024-11-25T12:00:00Z",
+    price: 89.99,
+    id: 102,
+    category: "Wearables",
+    updated_at: "2024-12-10T14:00:00Z"
+  },
+  {
+    photo_url: "/images/product3.jpg",
+    name: "Gaming Mouse",
+    description: "Ergonomic gaming mouse with customizable RGB lighting and 8 programmable buttons.",
+    created_at: "2024-12-05T09:15:00Z",
+    price: 29.99,
+    id: 103,
+    category: "Accessories",
+    updated_at: "2024-12-20T16:45:00Z"
+  },
+  {
+    photo_url: "/images/product4.jpg",
+    name: "Organic Green Tea",
+    description: "Premium organic green tea leaves for a refreshing and healthy drink.",
+    created_at: "2024-12-08T11:45:00Z",
+    price: 15.99,
+    id: 104,
+    category: "Beverages",
+    updated_at: "2024-12-18T08:30:00Z"
+  },
+  {
+    photo_url: "/images/product5.jpg",
+    name: "Yoga Mat",
+    description: "Non-slip, eco-friendly yoga mat for a comfortable workout experience.",
+    created_at: "2024-11-30T07:00:00Z",
+    price: 25.49,
+    id: 105,
+    category: "Fitness",
+    updated_at: "2024-12-22T10:15:00Z"
+  }
+];
+

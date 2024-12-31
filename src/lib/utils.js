@@ -22,7 +22,7 @@ export function hasDraggableData(entry) {
 
 export function formatBytes(
   bytes,
-  opts
+  opts = {}
 ) {
   const { decimals = 0, sizeType = 'normal' } = opts;
 

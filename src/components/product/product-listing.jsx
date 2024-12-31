@@ -1,12 +1,9 @@
-import { Product } from '@/constants/data';
-import { fakeProducts } from '@/constants/mock-api';
 import { searchParamsCache } from '@/lib/searchparams';
-import { DataTable as ProductTable } from '@/components/ui/table/data-table';
+import { DataTable as ProductTable } from '@/components/shared/table/data-table';
 import { columns } from './product-tables/columns';
+import { products } from '@/constants/data';
 
-type ProductListingPage = {};
-
-export default async function ProductListingPage({}: ProductListingPage) {
+export default async function ProductListingPage() {
   // Showcasing the use of search params cache in nested RSCs
   const page = searchParamsCache.get('page');
   const search = searchParamsCache.get('q');
@@ -20,9 +17,7 @@ export default async function ProductListingPage({}: ProductListingPage) {
     ...(categories && { categories: categories })
   };
 
-  const data = await fakeProducts.getProducts(filters);
-  const totalProducts = data.total_products;
-  const products: Product[] = data.products;
+  const totalProducts = products.length;
 
   return (
     <ProductTable
