@@ -44,7 +44,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import * as React from 'react';
 import { Icons } from '../icons';
-import { logoutUser } from '@/lib/actions';
+import { logoutUser } from '@/lib/actions/authenticate';
 import { capitalize } from '@/lib/utils';
 
 export const company = {

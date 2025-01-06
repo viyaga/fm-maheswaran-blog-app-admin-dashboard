@@ -6,39 +6,45 @@ import { searchParamsCache } from '@/lib/searchparams';
 import { cn } from '@/lib/utils';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
-import UsersTable from './user-table';
-import { getUsers } from '@/lib/actions';
+import AdminTable from './admin-table';
+import { getAdmins } from '@/lib/actions/admin';
+import ServerError from '../shared/serverError';
 
-export default async function UserListingPage() {
+export default async function AdminListingPage() {
   // Showcasing the use of search params cache in nested RSCs
   const page = searchParamsCache.get('page');
   const search = searchParamsCache.get('q');
-  const prime = searchParamsCache.get('prime');
   const pageLimit = searchParamsCache.get('limit');
   const sort = searchParamsCache.get('sort')
 
   // GET /api/posts?filters[title][$contains]=searchTerm&pagination[page]=1&pagination[pageSize]=10&sort[title]=asc
 
-  const fields = "username,email,first_name,last_name,prime_membership,country,createdAt"; // Fetch only username and email fields
+  const fields = "username,email,first_name,last_name,country,createdAt"; // Fetch only username and email fields
 
   const filters = [
-    { field: "role", operator: "$eq", value: 1 }, // Filtering by Role ID = 1 (Authenticated users)
+    { field: "role", operator: "$eq", value: 3 }, // Filtering by Role ID = 3 (Admin users)
     { field: "user_status", operator: "$eq", value: 1 },     // Filtering only active users
   ];
-  if (prime) filters.push({ field: "prime_membership", operator: "$eq", value: prime })
-  if (search) filters.push({ field: "email", operator: "$contains", value: search })  // search by email
+
+  // search by email
+  if (search) filters.push({ field: "email", operator: "$contains", value: search })
 
   const pagination = { page, pageSize: pageLimit };
+  console.log({pagination});
+  
+  const admins = await getAdmins({ fields, filters, pagination, sort, revalidate: 60 * 60 * 5, tags: ["admins"] });
+  console.log({adminError: admins?.error});
+  
+  if (admins?.error) return <ServerError message="An error occurred. Please try again later." />
 
-  const users = await getUsers({ fields, filters, pagination, sort, revalidate: 60 * 60 * 5, tags: ["users"] });
-  const totalUsers = users?.length;
+  const count = admins?.count;
 
   return (
     <PageContainer scrollable>
       <div className="space-y-4">
         <div className="flex items-start justify-between">
           <Heading
-            title={`Users (${totalUsers})`}
+            title={`Users (${count})`}
             description="Manage users"
           />
 
@@ -50,7 +56,7 @@ export default async function UserListingPage() {
           </Link>
         </div>
         <Separator />
-        <UsersTable data={users} totalData={totalUsers} />
+        <AdminTable data={admins?.data} totalData={count} />
       </div>
     </PageContainer>
   );

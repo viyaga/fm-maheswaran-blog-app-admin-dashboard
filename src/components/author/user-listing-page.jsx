@@ -13,19 +13,17 @@ export default async function UserListingPage() {
   // Showcasing the use of search params cache in nested RSCs
   const page = searchParamsCache.get('page');
   const search = searchParamsCache.get('q');
-  const prime = searchParamsCache.get('prime');
   const pageLimit = searchParamsCache.get('limit');
   const sort = searchParamsCache.get('sort')
 
   // GET /api/posts?filters[title][$contains]=searchTerm&pagination[page]=1&pagination[pageSize]=10&sort[title]=asc
 
-  const fields = "username,email,first_name,last_name,prime_membership,country,createdAt"; // Fetch only username and email fields
+  const fields = "username,email,first_name,last_name,country,createdAt"; // Fetch only username and email fields
 
   const filters = [
     { field: "role", operator: "$eq", value: 1 }, // Filtering by Role ID = 1 (Authenticated users)
     { field: "user_status", operator: "$eq", value: 1 },     // Filtering only active users
   ];
-  if (prime) filters.push({ field: "prime_membership", operator: "$eq", value: prime })
   if (search) filters.push({ field: "email", operator: "$contains", value: search })  // search by email
 
   const pagination = { page, pageSize: pageLimit };

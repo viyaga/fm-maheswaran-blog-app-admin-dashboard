@@ -91,10 +91,38 @@ export const navItems = [
     items: [] // Empty array as there are no child items for Dashboard
   },
   {
+    title: 'Admin',
+    url: '#', // Placeholder as there is no direct link for the parent
+    icon: 'admin',
+    isActive: true,
+
+    items: [
+      {
+        title: 'Manage admins',
+        url: '/dashboard/admins',
+        shortcut: ['m', 'a']
+      },
+      {
+        title: 'Site Settings',
+        shortcut: ['s', 's'],
+        url: '/',
+        icon: 'login'
+      }
+    ]
+  },
+  {
+    title: 'Authors',
+    url: '/dashboard/authors',
+    icon: 'author',
+    shortcut: ['a', 'a'],
+    isActive: false,
+    items: [] // No child items
+  },
+  {
     title: 'Users',
     url: '/dashboard/users',
     icon: 'user',
-    shortcut: ['e', 'e'],
+    shortcut: ['u', 'u'],
     isActive: false,
     items: [] // No child items
   },
@@ -102,7 +130,23 @@ export const navItems = [
     title: 'Blogs',
     url: '/dashboard/blogs',
     icon: 'product',
-    shortcut: ['p', 'p'],
+    shortcut: ['b', 'b'],
+    isActive: false,
+    items: [] // No child items
+  },
+  {
+    title: 'Categories',
+    url: '/dashboard/categories',
+    icon: 'category',
+    shortcut: ['c', 'c'],
+    isActive: false,
+    items: [] // No child items
+  },
+  {
+    title: 'Comments',
+    url: '/dashboard/comments',
+    icon: 'comment',
+    shortcut: ['b', 'c'],
     isActive: false,
     items: [] // No child items
   },
@@ -120,7 +164,7 @@ export const navItems = [
         shortcut: ['m', 'm']
       },
       {
-        title: 'Login',
+        title: 'Change password',
         shortcut: ['l', 'l'],
         url: '/',
         icon: 'login'

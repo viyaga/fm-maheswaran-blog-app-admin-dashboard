@@ -1,6 +1,8 @@
 import {
   AlertTriangle,
   ArrowRight,
+  BookMarked,
+  ChartColumnStacked,
   Check,
   ChevronLeft,
   ChevronRight,
@@ -18,11 +20,13 @@ import {
   LucideIcon,
   LucideProps,
   LucideShoppingBag,
+  MessageCircle,
   Moon,
   MoreVertical,
   Pizza,
   Plus,
   Settings,
+  Shield,
   SunMedium,
   Trash,
   Twitter,
@@ -35,6 +39,10 @@ import {
 
 export const Icons = {
   dashboard: LayoutDashboardIcon,
+  admin:Shield,
+  author:BookMarked,
+  category:ChartColumnStacked,
+  comment:MessageCircle,
   logo: Command,
   login: LogIn,
   close: X,
