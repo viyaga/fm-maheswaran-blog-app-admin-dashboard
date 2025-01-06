@@ -9,7 +9,8 @@ export const searchParams = {
   page: parseAsInteger.withDefault(1),
   limit: parseAsInteger.withDefault(10),
   q: parseAsString,
-  gender: parseAsString,
+  prime: parseAsString,
+  sort: parseAsString,
   categories: parseAsString
 };
 

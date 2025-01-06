@@ -4,12 +4,12 @@ import { searchParams } from '@/lib/searchparams';
 import { useQueryState } from 'nuqs';
 import { useCallback, useMemo } from 'react';
 
-export const GENDER_OPTIONS = [
+export const PRIME_OPTIONS = [
   { value: 'male', label: 'Male' },
   { value: 'female', label: 'Female' }
 ];
 
-export function useEmployeeTableFilters() {
+export function useUserTableFilters() {
   const [searchQuery, setSearchQuery] = useQueryState(
     'q',
     searchParams.q
@@ -17,9 +17,9 @@ export function useEmployeeTableFilters() {
       .withDefault('')
   );
 
-  const [genderFilter, setGenderFilter] = useQueryState(
-    'gender',
-    searchParams.gender.withOptions({ shallow: false }).withDefault('')
+  const [primeFilter, setPrimeFilter] = useQueryState(
+    'prime',
+    searchParams.prime.withOptions({ shallow: false }).withDefault('')
   );
 
   const [page, setPage] = useQueryState(
@@ -29,20 +29,20 @@ export function useEmployeeTableFilters() {
 
   const resetFilters = useCallback(() => {
     setSearchQuery(null);
-    setGenderFilter(null);
+    setPrimeFilter(null);
 
     setPage(1);
-  }, [setSearchQuery, setGenderFilter, setPage]);
+  }, [setSearchQuery, setPrimeFilter, setPage]);
 
   const isAnyFilterActive = useMemo(() => {
-    return !!searchQuery || !!genderFilter;
-  }, [searchQuery, genderFilter]);
+    return !!searchQuery || !!primeFilter;
+  }, [searchQuery, primeFilter]);
 
   return {
     searchQuery,
     setSearchQuery,
-    genderFilter,
-    setGenderFilter,
+    primeFilter,
+    setPrimeFilter,
     page,
     setPage,
     resetFilters,

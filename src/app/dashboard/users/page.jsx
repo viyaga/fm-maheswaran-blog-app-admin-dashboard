@@ -1,4 +1,4 @@
-import EmployeeListingPage from '@/components/employee/user-listing-page';
+import UserListingPage from '@/components/users/user-listing-page';
 import { searchParamsCache } from '@/lib/searchparams';
 import React from 'react';
 
@@ -10,5 +10,5 @@ export default async function Page({ searchParams }) {
   // Allow nested RSCs to access the search params (in a type-safe way)
   await searchParamsCache.parse(searchParams);
 
-  return <EmployeeListingPage />;
+  return <UserListingPage />;
 }

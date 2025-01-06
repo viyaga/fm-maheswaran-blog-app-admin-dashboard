@@ -11,16 +11,29 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { Employee } from '@/constants/data';
+import { deleteUser } from '@/lib/actions';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
+import { toast } from 'sonner';
 
 export const CellAction = ({ data }) => {
-  const [loading, setLoading] = useState(false);
+  const [isPending, startTransition] = useTransition()
   const [open, setOpen] = useState(false);
   const router = useRouter();
 
-  const onConfirm = async () => {};
+  const onConfirm = () => {
+
+    startTransition(async () => {
+      console.log({ id: data?.id });
+      const res = await deleteUser(data?.id)
+      console.log({ res, open });
+
+      setOpen(false)
+      if (res?.success) return toast.success(res?.message) //if success
+      return toast.error(res?.error) // if error
+    })
+  };
 
   return (
     <>
@@ -28,7 +41,7 @@ export const CellAction = ({ data }) => {
         isOpen={open}
         onClose={() => setOpen(false)}
         onConfirm={onConfirm}
-        loading={loading}
+        loading={isPending}
       />
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
@@ -41,7 +54,7 @@ export const CellAction = ({ data }) => {
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
           <DropdownMenuItem
-            onClick={() => router.push(`/dashboard/user/${data.id}`)}
+            onClick={() => router.push(`/dashboard/users/${data.id}`)}
           >
             <Edit className="mr-2 h-4 w-4" /> Update
           </DropdownMenuItem>

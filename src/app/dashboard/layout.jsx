@@ -1,3 +1,4 @@
+import { auth } from '@/auth';
 import KBar from '@/components/kbar';
 import AppSidebar from '@/components/layout/app-sidebar';
 import Header from '@/components/layout/header';
@@ -11,14 +12,16 @@ export const metadata = {
 
 export default async function DashboardLayout({ children }) {
   // Persisting the sidebar state in the cookie.
-  const cookieStore = await cookies();
+  const cookieStore = await cookies();    
   const sidebarState = cookieStore.get('sidebar:state');
   const defaultOpen = sidebarState?.value === 'true';
+
+  const session = await auth();
 
   return (
     <KBar>
       <SidebarProvider defaultOpen={defaultOpen}>
-        <AppSidebar />
+        <AppSidebar session={session}/>
         <SidebarInset>
           <Header />
           {/* page main content */}

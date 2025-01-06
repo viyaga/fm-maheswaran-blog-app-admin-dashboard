@@ -31,7 +31,7 @@ export const AlertModal = ({
           Cancel
         </Button>
         <Button disabled={loading} variant="destructive" onClick={onConfirm}>
-          Continue
+          Confirm
         </Button>
       </div>
     </Modal>

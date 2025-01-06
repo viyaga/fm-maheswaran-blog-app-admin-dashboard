@@ -33,19 +33,6 @@ export default function UserAuthForm() {
 
   const form = useForm({ resolver: zodResolver(formSchema), defaultValues: { email: "", password: "" } });
 
-  const onSubmit = async (data) => {
-    console.log({ data });
-
-    startTransition(() => {
-      signIn('credentials', {
-        email: data.email,
-        password: data.password,
-        callbackUrl: callbackUrl ?? '/dashboard'
-      });
-      toast.success('Signed In Successfully!');
-    });
-  };
-
   const onLogin = ({ email, password }) => {
 
     if (!email || !password) return toast.error("Please enter the required field")

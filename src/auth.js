@@ -2,15 +2,28 @@ import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { authConfig } from './auth.config';
 import { z } from 'zod';
-import bcrypt from 'bcryptjs';
+import axios from 'axios';
+import { errResponse } from './lib/utils';
 
-async function getUser(email) {
-    return { email, password: '123456' };
+async function getUser(identifier, password) {
+    const SERVER_ONE = process.env.SERVER_ONE
+    console.log({identifier, password});
+    
     try {
-        
+        const res = await axios.post(SERVER_ONE + '/auth/local', { identifier, password })
+        const jwt = res?.data?.jwt
+
+        const res2 = await axios.get(SERVER_ONE + '/users/me?fields=username,email,first_name,last_name&populate=role', { headers: { Authorization: 'Bearer ' + jwt } })
+        const user = res2?.data
+
+        console.log({ user });
+
+        if (user?.role?.name === "Admin") return user
+
+        return null
     } catch (error) {
-        console.error('Failed to fetch user:', error);
-        throw new Error('Failed to fetch user.');
+        console.log({ error: error.response.data.error });
+        return { error: errResponse(error) };
     }
 }
 
@@ -23,21 +36,14 @@ export const { auth, signIn, signOut } = NextAuth({
                     .object({ email: z.string().email(), password: z.string().min(6) })
                     .safeParse(credentials);
 
-                    console.log({parsedCredentials:parsedCredentials?.error, credentials});
-                    
                 if (parsedCredentials.success) {
                     const { email, password } = parsedCredentials.data;
+                    const user = await getUser(email, password);
 
-                    const user = await getUser(email);
                     if (!user) return null;
-                    console.log({user});
-                    
-
-                    const passwordsMatch = await bcrypt.compare(password, user.password);
-                    if (true) return user;
+                    return user;
                 }
 
-                console.log({ parseError: 'Invalid credentials' });
                 return null;
             },
         }),
@@ -46,6 +52,8 @@ export const { auth, signIn, signOut } = NextAuth({
         async jwt({ token, user }) {
             if (user) {
                 token.email = user.email;
+                token.name = user.first_name + " " + user.last_name;
+                token.role = user.role.name
                 // Add other user properties as needed
             }
             return token;
@@ -53,6 +61,8 @@ export const { auth, signIn, signOut } = NextAuth({
         async session({ session, token }) {
             if (token) {
                 session.user.email = token.email;
+                session.user.name = token.name
+                session.user.role = token.role
                 // Add other session properties as needed
             }
             return session;

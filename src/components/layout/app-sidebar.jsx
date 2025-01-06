@@ -40,12 +40,12 @@ import {
   GalleryVerticalEnd,
   LogOut
 } from 'lucide-react';
-import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import * as React from 'react';
 import { Icons } from '../icons';
 import { logoutUser } from '@/lib/actions';
+import { capitalize } from '@/lib/utils';
 
 export const company = {
   name: 'Acme Inc',
@@ -53,9 +53,10 @@ export const company = {
   plan: 'Enterprise'
 };
 
-export default function AppSidebar() {
-  const { data: session } = useSession();
+export default function AppSidebar({ session }) {
   const pathname = usePathname();
+  console.log({session});
+  
 
   return (
     <Sidebar collapsible="icon">
@@ -150,7 +151,7 @@ export default function AppSidebar() {
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="truncate font-semibold">
-                      {session?.user?.name || ''}
+                      {session?.user?.name && capitalize(session.user.name)}
                     </span>
                     <span className="truncate text-xs">
                       {session?.user?.email || ''}
@@ -179,7 +180,7 @@ export default function AppSidebar() {
                     </Avatar>
                     <div className="grid flex-1 text-left text-sm leading-tight">
                       <span className="truncate font-semibold">
-                        {session?.user?.name || ''}
+                        {session?.user?.name && capitalize(session.user.name)}
                       </span>
                       <span className="truncate text-xs">
                         {' '}

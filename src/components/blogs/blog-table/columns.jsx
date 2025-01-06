@@ -1,8 +1,9 @@
 'use client';
 
-
 import { Checkbox } from '@/components/ui/checkbox';
 import { CellAction } from './cell-action';
+import { format } from 'date-fns';
+import { capitalize } from '@/lib/utils';
 
 export const columns = [
   {
@@ -25,24 +26,37 @@ export const columns = [
     enableHiding: false
   },
   {
-    accessorKey: 'name',
-    header: 'NAME'
-  },
-  {
-    accessorKey: 'country',
-    header: 'COUNTRY'
+    accessorKey: 'username',
+    header: 'USERNAME',
+    cell: ({ row }) => "@" + row.original.username.toLowerCase()
   },
   {
     accessorKey: 'email',
     header: 'EMAIL'
   },
   {
-    accessorKey: 'company',
-    header: 'COMPANY'
+    accessorKey: 'first_name',
+    header: 'FIRST NAME',
+    cell: ({ row }) => capitalize(row.original.first_name) || "-"
   },
   {
-    accessorKey: 'gender',
-    header: 'GENDER'
+    accessorKey: 'last_name',
+    header: 'LAST NAME',
+    cell: ({ row }) => capitalize(row.original.last_name) || "-"
+  },
+  {
+    accessorKey: 'prime_membership',
+    header: 'MEMBERSHIP'
+  },
+  {
+    accessorKey: 'country',
+    header: 'COUNTRY',
+    cell: ({ row }) => capitalize(row.original.country) || "-"
+  },
+  {
+    accessorKey: 'createdAt',
+    header: 'JOINED ON',
+    cell: ({ row }) => format(new Date(row.original.createdAt), "dd/MM/yyyy")
   },
   {
     id: 'actions',

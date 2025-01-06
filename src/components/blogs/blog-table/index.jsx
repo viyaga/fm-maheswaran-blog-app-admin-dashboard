@@ -5,24 +5,19 @@ import { DataTableFilterBox } from '@/components/shared/table/data-table-filter-
 import { DataTableResetFilter } from '@/components/shared/table/data-table-reset-filter';
 import { DataTableSearch } from '@/components/shared/table/data-table-search';
 import { columns } from './columns';
-import {
-  GENDER_OPTIONS,
-  useEmployeeTableFilters
-} from './use-employee-table-filters';
+import { PRIME_OPTIONS, useBlogTableFilters } from './use-blog-table-filters';
 
-export default function EmployeeTable({
-  data,
-  totalData
-}) {
+export default function blogTable({ data, totalData}) {
+  
   const {
-    genderFilter,
-    setGenderFilter,
+    primeFilter,
+    setPrimeFilter,
     isAnyFilterActive,
     resetFilters,
     searchQuery,
     setPage,
     setSearchQuery
-  } = useEmployeeTableFilters();
+  } = useBlogTableFilters();
 
   return (
     <div className="space-y-4">
@@ -34,11 +29,11 @@ export default function EmployeeTable({
           setPage={setPage}
         />
         <DataTableFilterBox
-          filterKey="gender"
-          title="Gender"
-          options={GENDER_OPTIONS}
-          setFilterValue={setGenderFilter}
-          filterValue={genderFilter}
+          filterKey="prime"
+          title="Subscribtion"
+          options={PRIME_OPTIONS}
+          setFilterValue={setPrimeFilter}
+          filterValue={primeFilter}
         />
         <DataTableResetFilter
           isFilterActive={isAnyFilterActive}

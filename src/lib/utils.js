@@ -1,12 +1,11 @@
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge"
 
-export function cn(...inputs) {
+const cn = (...inputs) => {
   return twMerge(clsx(inputs));
 }
 
-
-export function hasDraggableData(entry) {
+const hasDraggableData = (entry) => {
   if (!entry) {
     return false;
   }
@@ -20,16 +19,44 @@ export function hasDraggableData(entry) {
   return false;
 }
 
-export function formatBytes(
-  bytes,
-  opts = {}
-) {
+const formatBytes = (bytes, opts = {}) => {
   const { decimals = 0, sizeType = 'normal' } = opts;
 
   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
   const accurateSizes = ['Bytes', 'KiB', 'MiB', 'GiB', 'TiB'];
   if (bytes === 0) return '0 Byte';
   const i = Math.floor(Math.log(bytes) / Math.log(1024));
-  return `${(bytes / Math.pow(1024, i)).toFixed(decimals)} ${sizeType === 'accurate' ? accurateSizes[i] ?? 'Bytest' : sizes[i] ?? 'Bytes'
-    }`;
+  return `${(bytes / Math.pow(1024, i)).toFixed(decimals)} ${sizeType === 'accurate' ? accurateSizes[i] ?? 'Bytest' : sizes[i] ?? 'Bytes'}`;
+}
+
+const errResponse = (error) => {
+  const message = error?.response?.data?.error?.message || error?.response?.data?.message
+    || error.message || error.toString()
+  return message
+}
+
+const capitalize = (str) => {
+  if (!str) return null
+  return str
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+};
+
+
+const getUpdatedFields = (updatedFields, defaultValues) => {  
+  // Filter the updated fields to include only those that have changed
+  const obj = Object.fromEntries(
+    Object.entries(updatedFields).filter(
+      ([key, value]) => defaultValues[key] !== value
+    )
+  );
+
+  console.log({obj});
+  
+  return obj
+};
+
+export {
+  cn, hasDraggableData, formatBytes, errResponse, capitalize, getUpdatedFields
 }
