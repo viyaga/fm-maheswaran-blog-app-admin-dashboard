@@ -2,8 +2,10 @@
 
 
 import axios from "axios";
+import { errResponse } from "../utils";
 
 const setAuthToken = () => {
+    const BEARER_API_TOKEN = "Bearer " + process.env.API_TOKEN
     axios.defaults.headers.common['Authorization'] = BEARER_API_TOKEN
 }
 
@@ -68,8 +70,6 @@ const generateUsername = async (firstName, lastName, attempt = 0) => {
         return generateUsername(firstName, lastName, attempt + 1);
     }
 
-    console.log({ newUsername });
-
     return newUsername;
 };
 
@@ -77,8 +77,6 @@ const getData = async (args) => {
     const { url, fields = "", filters = [], pagination = {}, populate = "", sort = "", revalidate = 2, tags = [] } = args
 
     let fullUrl = createStrapiApiUrl({ url, fields, filters, pagination, populate, sort })
-
-    console.log({ fullUrl });
 
     try {
         const res = await fetch(fullUrl, {

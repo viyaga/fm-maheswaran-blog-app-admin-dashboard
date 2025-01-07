@@ -25,9 +25,8 @@ export const CellAction = ({ data }) => {
   const onConfirm = () => {
 
     startTransition(async () => {
-      console.log({ id: data?.id });
+      
       const res = await deleteUser(data?.id)
-      console.log({ res, open });
 
       setOpen(false)
       if (res?.success) return toast.success(res?.message) //if success

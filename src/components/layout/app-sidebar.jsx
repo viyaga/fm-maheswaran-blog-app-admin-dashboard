@@ -55,8 +55,6 @@ export const company = {
 
 export default function AppSidebar({ session }) {
   const pathname = usePathname();
-  console.log({session});
-  
 
   return (
     <Sidebar collapsible="icon">

@@ -7,8 +7,7 @@ import { errResponse } from './lib/utils';
 
 async function getUser(identifier, password) {
     const SERVER_ONE = process.env.SERVER_ONE
-    console.log({identifier, password});
-    
+
     try {
         const res = await axios.post(SERVER_ONE + '/auth/local', { identifier, password })
         const jwt = res?.data?.jwt
@@ -16,13 +15,10 @@ async function getUser(identifier, password) {
         const res2 = await axios.get(SERVER_ONE + '/users/me?fields=username,email,first_name,last_name&populate=role', { headers: { Authorization: 'Bearer ' + jwt } })
         const user = res2?.data
 
-        console.log({ user });
-
         if (user?.role?.name === "Admin") return user
 
         return null
     } catch (error) {
-        console.log({ error: error.response.data.error });
         return { error: errResponse(error) };
     }
 }

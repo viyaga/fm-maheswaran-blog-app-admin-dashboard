@@ -45,17 +45,13 @@ export const columns = [
     cell: ({ row }) => capitalize(row.original.last_name) || "-"
   },
   {
-    accessorKey: 'prime_membership',
-    header: 'MEMBERSHIP'
-  },
-  {
     accessorKey: 'country',
     header: 'COUNTRY',
     cell: ({ row }) => capitalize(row.original.country) || "-"
   },
   {
     accessorKey: 'createdAt',
-    header: 'JOINED ON',
+    header: 'REGISTERED ON',
     cell: ({ row }) => format(new Date(row.original.createdAt), "dd/MM/yyyy")
   },
   {

@@ -41,9 +41,6 @@ const formSchema = z.object({
   country: z.string({
     required_error: 'Please select a country.'
   }),
-  role: z.string({
-    required_error: 'Please select a role.'
-  }),
   password: z.string(),
   confPassword: z.string(),
 });
@@ -53,16 +50,16 @@ export default function AdminForm({ adminData }) {
   const router = useRouter()
 
   let defaultValues = {
-    first_name: '', last_name: '', email: '', country: '',
-    role: '', password: '', confPassword: '' // if add new user
+    first_name: '', last_name: '', email: '',
+    country: '', password: '', confPassword: ''                              // if add new admin
   }
 
   if (adminData?.id) {
-    const { first_name, last_name, email, country, role } = adminData
+    const { first_name, last_name, email, country } = adminData
 
     defaultValues = {
-      first_name, last_name, email, country,  //if update user
-      role: role?.id?.toString(), password: '', confPassword: '',
+      first_name, last_name, email, country,                                  //if update admin
+      password: '', confPassword: '',
     }
 
   }
@@ -70,40 +67,42 @@ export default function AdminForm({ adminData }) {
   const form = useForm({ resolver: zodResolver(formSchema), defaultValues });
 
   const onSubmit = async (values) => {
-    const { first_name, last_name, email, country, role, password, confPassword } = values
+    const { first_name, last_name, email, country, password, confPassword } = values
 
-    if (!first_name || !last_name || !email || !country || !role) return toast.error("Please enter the required field")
+    if (!first_name || !last_name || !email || !country) return toast.error("Please enter the required field")
     if (password !== confPassword) return toast.error("Password and confirm password must be same")
+    if (password?.length > 0 && password?.length < 6) return toast.error("Password must be at least 6 characters.")
 
-    const data = { first_name, last_name, email, country, role, password, confPassword }
+    const data = { first_name, last_name, email, country, password, confPassword }
 
-    //update user
+    //update admin
     if (adminData?.id) {
 
-      const updatedUser = await updateAdmin({ id: adminData?.id, adminData: data, defaultValues })
+      const updatedAdmin = await updateAdmin({ id: adminData?.id, adminData: data, defaultValues })
 
-      if (updatedUser?.error) return toast.error(updatedUser?.error)
+      if (updatedAdmin?.error) return toast.error(updatedAdmin?.error)
 
-      toast.success(updatedUser.message)
-      form.reset()
-      return router.push("/dashboard/users")
+      toast.success(updatedAdmin.message)
+      return router.push("/dashboard/admins")
     }
 
-    //add new user
-    const newUser = await addAdmin(data)
+    //add new admin
+    const newAdmin = await addAdmin(data)
 
-    if (newUser?.error) return toast.error(newUser?.error)
+    if (newAdmin?.error) return toast.error(newAdmin?.error)
 
-    toast.success(newUser.message)
+    toast.success(newAdmin.message)
+
     form.reset()
-    router.push("/dashboard/users")
+
+    router.push("/dashboard/admins")
   }
 
   return (
     <Card className="mx-auto w-full">
       <CardHeader>
         <CardTitle className="text-left text-2xl font-bold">
-          {adminData ? "User Information" : "Add New User"}
+          {adminData ? "Admin Information" : "Add New Admin"}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -117,7 +116,7 @@ export default function AdminForm({ adminData }) {
                   <FormItem>
                     <FormLabel>First Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter User's First Name" {...field} />
+                      <Input placeholder="Enter Admin's First Name" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -130,7 +129,7 @@ export default function AdminForm({ adminData }) {
                   <FormItem>
                     <FormLabel>Last Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter User's Last Name" {...field} />
+                      <Input placeholder="Enter Admin's Last Name" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -145,7 +144,7 @@ export default function AdminForm({ adminData }) {
                     <FormControl>
                       <Input
                         type="email"
-                        placeholder="Enter User's Email"
+                        placeholder="Enter Admin's Email"
                         {...field}
                       />
                     </FormControl>
@@ -181,45 +180,6 @@ export default function AdminForm({ adminData }) {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="role"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Role</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a role" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="1">User</SelectItem>
-                        <SelectItem value="3">Admin</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {/* <FormField
-                control={form.control}
-                name="prime_membership"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Subscription (USD)</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        placeholder="Enter subscription amount"
-                        {...field}
-                        onChange={(e) => field.onChange(Number(e.target.value))}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              /> */}
               <FormField
                 control={form.control}
                 name="password"

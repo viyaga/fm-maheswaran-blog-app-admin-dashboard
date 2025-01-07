@@ -13,8 +13,6 @@ export default async function Page({ params }) {
     userData = await getAdminUsersData({ url: `/users/${authorId}`, fields: "username,email,first_name,last_name,prime_membership,country", populate:"role" })
     if (!userData || userData?.error) return <p className='text-center mt-5 font-normal'>User Not Found</p>
   }
-  console.log({ userData });
-
 
   return <UsersViewPage userData={userData} />;
 }

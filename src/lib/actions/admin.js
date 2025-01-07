@@ -1,21 +1,24 @@
 "use server"
 
-import { errResponse } from "../utils";
-import { createStrapiApiUrl } from "./common";
+import axios from "axios";
+import { errResponse, getUpdatedFields } from "../utils";
+import { createStrapiApiUrl, generateUsername, setAuthToken } from "./common";
+import { revalidateTag } from "next/cache";
 
 
-const BEARER_API_TOKEN = "Bearer " + process.env.API_TOKEN
 const SERVER_ONE = process.env.SERVER_ONE
 
 
 const getAdminsData = async (args) => {
+    
     const { url, fields = "", filters = [], pagination = {}, populate = "", sort = "", revalidate = 2, tags = [] } = args
+
+    const BEARER_API_TOKEN = "Bearer " + process.env.API_TOKEN
 
     let apiUrl = createStrapiApiUrl({ url, fields, filters, populate, sort })
 
     //add pagination to Api url
     const { page, pageSize } = pagination
-    console.log({ pagination });
 
     apiUrl += `&start=${pageSize * (page - 1)}&limit=${pageSize}`
 
@@ -33,7 +36,7 @@ const getAdminsData = async (args) => {
             return { error: res?.error?.message };
         }
 
-        const count = await getAdminUsersCount({ url, filters, revalidate, tags })
+        const count = await getAdminUsersCount({ url, filters, revalidate, tags: ["adminCount"] })
 
         if (count?.error) {
             return { error: count.error };
@@ -41,8 +44,6 @@ const getAdminsData = async (args) => {
 
         const data = await res.json();
 
-        console.log({count, data});
-        
         return { data, count };
 
     } catch (error) {
@@ -52,11 +53,14 @@ const getAdminsData = async (args) => {
 
 
 const getAdminUsersCount = async ({ url, filters, revalidate, tags }) => {
+
     const apiUrl = createStrapiApiUrl({ url, fields: "id", filters })
+
+    const BEARER_API_TOKEN = "Bearer " + process.env.API_TOKEN
 
     const res = await fetch(apiUrl, {
         method: "GET",
-        headers: { Authorization: BEARER_API_TOKEN, "Content-Type": "application/json" },
+        headers: { Authorization: BEARER_API_TOKEN },
         next: { revalidate, tags },
     });
 
@@ -73,7 +77,7 @@ const getAdminUsersCount = async ({ url, filters, revalidate, tags }) => {
     return data.length
 }
 
-const getAdmins = async (args) => {
+const getAllAdmins = async (args) => {
     const { fields = "", filters = [], pagination, sort, revalidate = 2, tags = [] } = args
     const url = "/users";
 
@@ -88,12 +92,27 @@ const getAdmins = async (args) => {
 
 };
 
+const getAdminById = async ({ adminId, fields = null }) => {
+    let apiUrl = `${SERVER_ONE}/users/${adminId}`;
+
+    if (fields) apiUrl += `?fields=${fields}`
+
+    try {
+        setAuthToken()
+        const admin = await axios.get(apiUrl);
+        return admin?.data
+    } catch (error) {
+        return { error: errResponse(error) };
+    }
+
+};
+
 const addAdmin = async (args) => {
 
-    const { first_name, last_name, email, country, role, password } = args;
+    const { first_name, last_name, email, country, password } = args; //role ID = 1 (ADMIN)
 
     if (!first_name || !last_name || !email ||
-        !country || !role || !password) {
+        !country || !password) {
         return { error: "Enter Required Field" }
     }
 
@@ -101,16 +120,17 @@ const addAdmin = async (args) => {
     try {
         setAuthToken()
         const username = await generateUsername(first_name, last_name)
-        const userData = { username, first_name, last_name, email, country, role, password }
-        console.log({ userData });
+        const adminData = { username, first_name, last_name, email, country, password, role: 1 } //Role Id 1 = Admin
 
-        const newUser = await axios.post(`${SERVER_ONE}/users`, userData);
-        console.log({ newUser: newUser.data });
-        revalidateTag("users")
+        const newAdmin = await axios.post(`${SERVER_ONE}/users`, adminData);
+
+        revalidateTag("admins")
+        revalidateTag("adminCount")
+
         return {
             success: true,
-            message: "User added successfully",
-            user: newUser.data,
+            message: "Admin added successfully",
+            admin: newAdmin.data,
         };
 
     } catch (error) {
@@ -119,36 +139,39 @@ const addAdmin = async (args) => {
 }
 
 
-const updateAdmin = async ({ id, userData, defaultValues }) => {
+const updateAdmin = async ({ id, adminData, defaultValues }) => {
     if (!id) {
-        return { error: "User ID is required" };
+        return { error: "Admin ID is required" };
     }
 
     // Filter out undefined fields
-    const updatedFields = getUpdatedFields(userData, defaultValues);
+    const updatedFields = getUpdatedFields(adminData, defaultValues);
 
     if (Object.keys(updatedFields).length === 0) {
         return { error: "No fields to update" };
+    }
+
+    if (updatedFields?.password?.length > 0 && updatedFields?.password?.length < 6) {
+        return { error: "Password must be at least 6 characters." }
     }
 
     try {
         // Set authentication token
         setAuthToken();
 
-        // Send PUT request to update user
-        const { data } = await axios.put(`${process.env.SERVER_ONE}/users/${id}`, updatedFields);
+        // Send PUT request to update admin
+        const { data } = await axios.put(`${SERVER_ONE}/users/${id}`, updatedFields);
 
         // Revalidate cache or update state
-        revalidateTag("users");
+        revalidateTag("admins");
 
         // Return response
         return {
             success: true,
-            message: "User updated successfully",
-            user: data,
+            message: "Admin updated successfully",
+            admin: data,
         };
     } catch (err) {
-        console.error("Error updating user:", err);
         return { error: errResponse(err) };
     }
 };
@@ -163,11 +186,12 @@ const deleteAdmin = async (adminId) => {
         // Set authentication token
         setAuthToken();
 
-        // Send DELETE request to delete the user
-        const { data } = await axios.delete(`${process.env.SERVER_ONE}/users/${userId}`);
+        // Send DELETE request to delete the admin
+        const { data } = await axios.delete(`${SERVER_ONE}/users/${adminId}`);
 
         // Revalidate cache or update state
         revalidateTag("admins");
+        revalidateTag("adminCount")
 
         // Return success response
         return {
@@ -181,5 +205,5 @@ const deleteAdmin = async (adminId) => {
 };
 
 export {
-    getAdmins, addAdmin, updateAdmin, deleteAdmin
+    getAllAdmins, getAdminById, addAdmin, updateAdmin, deleteAdmin
 }

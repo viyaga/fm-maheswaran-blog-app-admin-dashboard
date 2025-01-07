@@ -52,8 +52,6 @@ const getUpdatedFields = (updatedFields, defaultValues) => {
     )
   );
 
-  console.log({obj});
-  
   return obj
 };
 
