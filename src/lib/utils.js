@@ -30,8 +30,8 @@ const formatBytes = (bytes, opts = {}) => {
 }
 
 const errResponse = (error) => {
-  const message = error?.response?.data?.error?.message || error?.response?.data?.message
-    || error.message || error.toString()
+  const message = error?.response?.data?.error?.message || error?.response?.data?.message 
+  || error?.error?.message || error.message || error.toString()
   return message
 }
 

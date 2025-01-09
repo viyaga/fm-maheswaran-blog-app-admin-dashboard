@@ -18,7 +18,7 @@ const createStrapiApiUrl = (args) => {
 
     // Construct filters query
     let filtersUrl = "";
-    if (Array.isArray(filters) && filters.length > 0) {
+    if (Array.isArray(filters) && filters?.length > 0) {
         filters.forEach((filter) => {
             const { field, operator, value } = filter;
             if (field && operator && value !== undefined) {
@@ -76,23 +76,27 @@ const generateUsername = async (firstName, lastName, attempt = 0) => {
 const getData = async (args) => {
     const { url, fields = "", filters = [], pagination = {}, populate = "", sort = "", revalidate = 2, tags = [] } = args
 
+    const BEARER_API_TOKEN = "Bearer " + process.env.API_TOKEN
+
     let fullUrl = createStrapiApiUrl({ url, fields, filters, pagination, populate, sort })
+    console.log({ fullUrl });
 
     try {
         const res = await fetch(fullUrl, {
             method: "GET",
             headers: {
                 Authorization: BEARER_API_TOKEN,
-                "Content-Type": "application/json",
             },
             next: { revalidate, tags },
         });
 
-        if (!res.ok) {
-            return { error: res?.error?.message };
-        }
+        console.log({ res });
 
-        const { data, meta } = await res.json();
+
+        const { data, meta, error } = await res.json(); //strapi
+
+        if (error) return { error }
+
         return { data, count: meta?.pagination?.total || 0 };
 
     } catch (error) {

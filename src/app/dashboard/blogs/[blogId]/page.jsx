@@ -1,10 +1,10 @@
 import FormCardSkeleton from '@/components/form-card-skeleton';
 import PageContainer from '@/components/layout/page-container';
 import { Suspense } from 'react';
-import ProductViewPage from '@/components/product/product-view-page';
+import BlogViewPage from '@/components/blogs/blog-view-page';
 
 export const metadata = {
-  title: 'Dashboard : Product View'
+  title: 'Dashboard : Blog View'
 };
 
 export default async function Page({ params }) {
@@ -14,7 +14,7 @@ export default async function Page({ params }) {
     <PageContainer scrollable>
       <div className="flex-1 space-y-4">
         <Suspense fallback={<FormCardSkeleton />}>
-          <ProductViewPage productId={blogId} />
+          <BlogViewPage blogId={blogId} />
         </Suspense>
       </div>
     </PageContainer>

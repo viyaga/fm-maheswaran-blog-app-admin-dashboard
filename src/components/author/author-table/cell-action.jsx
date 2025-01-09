@@ -10,8 +10,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { Employee } from '@/constants/data';
-import { deleteUser } from '@/lib/actions';
+import { deleteAuthor } from '@/lib/actions/author';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
@@ -25,9 +24,9 @@ export const CellAction = ({ data }) => {
   const onConfirm = () => {
 
     startTransition(async () => {
-      const res = await deleteUser(data?.id)
-
+      const res = await deleteAuthor(data?.id)
       setOpen(false)
+      
       if (res?.success) return toast.success(res?.message) //if success
       return toast.error(res?.error) // if error
     })
@@ -52,7 +51,7 @@ export const CellAction = ({ data }) => {
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
           <DropdownMenuItem
-            onClick={() => router.push(`/dashboard/users/${data.id}`)}
+            onClick={() => router.push(`/dashboard/admins/${data.id}`)}
           >
             <Edit className="mr-2 h-4 w-4" /> Update
           </DropdownMenuItem>

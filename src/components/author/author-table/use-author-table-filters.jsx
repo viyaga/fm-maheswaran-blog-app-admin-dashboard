@@ -9,7 +9,7 @@ export const PRIME_OPTIONS = [
   { value: 'female', label: 'Female' }
 ];
 
-export function useUserTableFilters() {
+export function useAuthorTableFilters() {
   const [searchQuery, setSearchQuery] = useQueryState(
     'q',
     searchParams.q

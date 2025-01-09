@@ -8,11 +8,11 @@ import { cn } from '@/lib/utils';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import { Suspense } from 'react';
-import ProductListingPage from '@/components/product/product-listing';
-import ProductTableAction from '@/components/product/product-tables/product-table-action';
+import BlogListingPage from '@/components/blogs/blog-listing';
+import BlogTableAction from '@/components/blogs/blog-tables/blog-table-action';
 
 export const metadata = {
-  title: 'Dashboard: Products'
+  title: 'Dashboard: Blogs'
 };
 
 export default async function Page({ searchParams }) {
@@ -28,8 +28,8 @@ export default async function Page({ searchParams }) {
       <div className="space-y-4">
         <div className="flex items-start justify-between">
           <Heading
-            title="Products"
-            description="Manage products (Server side table functionalities.)"
+            title="Blogs"
+            description="Manage Blogs"
           />
           <Link
             href="/dashboard/blogs/new"
@@ -39,12 +39,12 @@ export default async function Page({ searchParams }) {
           </Link>
         </div>
         <Separator />
-        <ProductTableAction />
+        <BlogTableAction />
         <Suspense
           key={key}
           fallback={<DataTableSkeleton columnCount={5} rowCount={10} />}
         >
-          <ProductListingPage />
+          <BlogListingPage />
         </Suspense>
       </div>
     </PageContainer>

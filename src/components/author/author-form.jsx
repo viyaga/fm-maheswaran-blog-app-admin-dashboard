@@ -25,7 +25,7 @@ import {
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
-import { addUser, updateUser } from '@/lib/actions';
+import { addAuthor, updateAuthor } from '@/lib/actions';
 import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
@@ -44,28 +44,25 @@ const formSchema = z.object({
   role: z.string({
     required_error: 'Please select a role.'
   }),
-  prime_membership: z.number().min(0, {
-    message: 'Subscription amount is required.'
-  }),
   password: z.string(),
   confPassword: z.string(),
 });
 
-export default function UserForm({ userData }) {
+export default function AuthorForm({ authorData }) {
 
   const router = useRouter()
 
   let defaultValues = {
     first_name: '', last_name: '', email: '', country: '',
-    prime_membership: '', role: '', password: '', confPassword: '' // if add new user
+    password: '', confPassword: '' // if add new Author
   }
 
-  if (userData?.id) {
-    const { first_name, last_name, email, country, prime_membership, role } = userData
+  if (authorData?.id) {
+    const { first_name, last_name, email, country } = authorData
 
     defaultValues = {
-      first_name, last_name, email, country, prime_membership,  //if update user
-      role: role?.id?.toString(), password: '', confPassword: '',
+      first_name, last_name, email, country,      //if update author
+      password: '', confPassword: '',
     }
 
   }
@@ -73,40 +70,40 @@ export default function UserForm({ userData }) {
   const form = useForm({ resolver: zodResolver(formSchema), defaultValues });
 
   const onSubmit = async (values) => {
-    const { first_name, last_name, email, country, role, prime_membership, password, confPassword } = values
+    const { first_name, last_name, email, country, password, confPassword } = values
 
-    if (!first_name || !last_name || !email || !country || !role || !prime_membership) return toast.error("Please enter the required field")
+    if (!first_name || !last_name || !email || !country) return toast.error("Please enter the required field")
     if (password !== confPassword) return toast.error("Password and confirm password must be same")
 
-    const data = { first_name, last_name, email, country, role, prime_membership, password, confPassword }
+    const data = { first_name, last_name, email, country, password, confPassword }
 
-    //update user
-    if (userData?.id) {
+    //update author
+    if (authorData?.id) {
 
-      const updatedUser = await updateUser({ id: userData?.id, userData: data, defaultValues })
+      const updatedAuthor = await updateAuthor({ id: authorData?.id, authorData: data, defaultValues })
 
-      if (updatedUser?.error) return toast.error(updatedUser?.error)
+      if (updatedAuthor?.error) return toast.error(updatedAuthor?.error)
 
-      toast.success(updatedUser.message)
+      toast.success(updatedAuthor.message)
       form.reset()
-      return router.push("/dashboard/users")
+      return router.push("/dashboard/authors")
     }
 
-    //add new user
-    const newUser = await addUser(data)
+    //add new Author
+    const newAuthor = await addAuthor(data)
 
-    if (newUser?.error) return toast.error(newUser?.error)
+    if (newAuthor?.error) return toast.error(newAuthor?.error)
 
-    toast.success(newUser.message)
+    toast.success(newAuthor.message)
     form.reset()
-    router.push("/dashboard/users")
+    router.push("/dashboard/authors")
   }
 
   return (
     <Card className="mx-auto w-full">
       <CardHeader>
         <CardTitle className="text-left text-2xl font-bold">
-          {userData ? "User Information" : "Add New User"}
+          {authorData ? "Author Information" : "Add New Author"}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -120,7 +117,7 @@ export default function UserForm({ userData }) {
                   <FormItem>
                     <FormLabel>First Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter User's First Name" {...field} />
+                      <Input placeholder="Enter Author's First Name" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -133,7 +130,7 @@ export default function UserForm({ userData }) {
                   <FormItem>
                     <FormLabel>Last Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter User's Last Name" {...field} />
+                      <Input placeholder="Enter Author's Last Name" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -148,7 +145,7 @@ export default function UserForm({ userData }) {
                     <FormControl>
                       <Input
                         type="email"
-                        placeholder="Enter User's Email"
+                        placeholder="Enter Author's Email"
                         {...field}
                       />
                     </FormControl>
@@ -186,45 +183,6 @@ export default function UserForm({ userData }) {
               />
               <FormField
                 control={form.control}
-                name="role"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Role</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a role" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="1">User</SelectItem>
-                        <SelectItem value="3">Admin</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="prime_membership"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Subscription (USD)</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        placeholder="Enter subscription amount"
-                        {...field}
-                        onChange={(e) => field.onChange(Number(e.target.value))}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
                 name="password"
                 render={({ field }) => (
                   <FormItem>
@@ -250,7 +208,7 @@ export default function UserForm({ userData }) {
                 )}
               />
             </div>
-            <Button type="submit" className="flex justify-end">{userData ? "Update" : "Add"}</Button>
+            <Button type="submit" className="flex justify-end">{authorData ? "Update" : "Add"}</Button>
           </form>
         </Form>
       </CardContent>

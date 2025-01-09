@@ -1,9 +1,9 @@
 import { searchParamsCache } from '@/lib/searchparams';
-import { DataTable as ProductTable } from '@/components/shared/table/data-table';
-import { columns } from './product-tables/columns';
+import { DataTable as BlogTable } from '@/components/shared/table/data-table';
+import { columns } from './blog-tables/columns';
 import { products } from '@/constants/data';
 
-export default async function ProductListingPage() {
+export default async function BlogListingPage() {
   // Showcasing the use of search params cache in nested RSCs
   const page = searchParamsCache.get('page');
   const search = searchParamsCache.get('q');
@@ -17,13 +17,13 @@ export default async function ProductListingPage() {
     ...(categories && { categories: categories })
   };
 
-  const totalProducts = products.length;
+  const totalBlogs = products.length;
 
   return (
-    <ProductTable
+    <BlogTable
       columns={columns}
       data={products}
-      totalItems={totalProducts}
+      totalItems={totalBlogs}
     />
   );
 }

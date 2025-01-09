@@ -10,7 +10,7 @@ const SERVER_ONE = process.env.SERVER_ONE
 
 
 const getAdminsData = async (args) => {
-    
+
     const { url, fields = "", filters = [], pagination = {}, populate = "", sort = "", revalidate = 2, tags = [] } = args
 
     const BEARER_API_TOKEN = "Bearer " + process.env.API_TOKEN
@@ -33,8 +33,11 @@ const getAdminsData = async (args) => {
         });
 
         if (!res.ok) {
-            return { error: res?.error?.message };
+            const error = await res.json();
+            throw new Error(`Fetch failed: ${errResponse(error) || "Unknown error"}`);
         }
+
+        const data = await res.json();
 
         const count = await getAdminUsersCount({ url, filters, revalidate, tags: ["adminCount"] })
 
@@ -42,7 +45,6 @@ const getAdminsData = async (args) => {
             return { error: count.error };
         }
 
-        const data = await res.json();
 
         return { data, count };
 
@@ -65,16 +67,17 @@ const getAdminUsersCount = async ({ url, filters, revalidate, tags }) => {
     });
 
     if (!res.ok) {
-        return { error: errResponse(res?.error) };
+        const error = await res.json();
+        throw new Error(`Fetch failed: ${errResponse(error) || "Unknown error"}`);
     }
 
     const data = await res.json();
 
     if (!data || data.length === 0) {
-        return 0
+        return 0;
     }
 
-    return data.length
+    return data.length;
 }
 
 const getAllAdmins = async (args) => {

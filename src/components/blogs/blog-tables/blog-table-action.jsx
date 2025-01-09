@@ -5,10 +5,10 @@ import { DataTableResetFilter } from '@/components/shared/table/data-table-reset
 import { DataTableSearch } from '@/components/shared/table/data-table-search';
 import {
   CATEGORY_OPTIONS,
-  useProductTableFilters
-} from './use-product-table-filters';
+  useBlogTableFilters
+} from './use-blog-table-filters';
 
-export default function ProductTableAction() {
+export default function BlogTableAction() {
   const {
     categoriesFilter,
     setCategoriesFilter,
@@ -17,7 +17,7 @@ export default function ProductTableAction() {
     searchQuery,
     setPage,
     setSearchQuery
-  } = useProductTableFilters();
+  } = useBlogTableFilters();
   
   return (
     <div className="flex flex-wrap items-center gap-4">

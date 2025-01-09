@@ -1,4 +1,4 @@
-import UserForm from './blog-form';
+import UserForm from './author-form';
 import PageContainer from '@/components/layout/page-container';
 
 export default function UserViewPage({ userData }) {
