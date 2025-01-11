@@ -22,7 +22,7 @@ export default function BlogTableAction() {
   return (
     <div className="flex flex-wrap items-center gap-4">
       <DataTableSearch
-        searchKey="name"
+        searchKey="title"
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         setPage={setPage}

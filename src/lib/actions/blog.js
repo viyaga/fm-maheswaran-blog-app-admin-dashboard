@@ -11,14 +11,14 @@ const SERVER_ONE = process.env.SERVER_ONE
 const getAllBlogs = async (args) => {
     const { fields = "", filters = [], pagination, sort, revalidate = 2, tags = [] } = args
     const url = "/blogs";
-    
+
     try {
-        const data = await getData({ url, fields, filters, pagination, sort, revalidate, tags });
-        console.log({data});
-        
+        const { data, count } = await getData({ url, fields, filters, pagination, sort, revalidate, tags });
+        console.log({ data });
+
         if (data?.error) return { error: errResponse(data.error) }
 
-        return data;
+        return { data, count };
     } catch (error) {
         return { error: errResponse(error) };
     }
