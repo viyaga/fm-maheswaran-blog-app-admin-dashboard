@@ -8,8 +8,8 @@ import { cn } from '@/lib/utils';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import { Suspense } from 'react';
-import BlogListingPage from '@/components/blogs/blog-listing';
-import BlogTableAction from '@/components/blogs/blog-tables/blog-table-action';
+import BlogListingPage from '@/components/blog/blog-listing';
+import BlogTableAction from '@/components/blog/blog-tables/blog-table-action';
 
 export const metadata = {
   title: 'Dashboard: Blogs'
@@ -32,7 +32,7 @@ export default async function Page({ searchParams }) {
             description="Manage Blogs"
           />
           <Link
-            href="/dashboard/blogs/new"
+            href="/dashboard/blogs/add"
             className={cn(buttonVariants(), 'text-xs md:text-sm')}
           >
             <Plus className="mr-2 h-4 w-4" /> Add New
