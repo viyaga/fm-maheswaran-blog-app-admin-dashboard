@@ -32,8 +32,6 @@ export default async function AuthorListingPage() {
 
   const authors = await getAllAuthors({ fields, filters, pagination, sort, revalidate: 60 * 60 * 5, tags: ["authors"] });
 
-  console.log({authors});
-  
   if (authors?.error) return <ServerError message="Oops! Something went wrong. Please try again. Need help? Contact support." />
 
   const count = authors?.count;

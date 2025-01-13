@@ -4,14 +4,14 @@ import { DataTableFilterBox } from '@/components/shared/table/data-table-filter-
 import { DataTableResetFilter } from '@/components/shared/table/data-table-reset-filter';
 import { DataTableSearch } from '@/components/shared/table/data-table-search';
 import {
-  CATEGORY_OPTIONS,
+  STATUS_OPTIONS,
   useBlogTableFilters
 } from './use-blog-table-filters';
 
 export default function BlogTableAction() {
   const {
-    categoriesFilter,
-    setCategoriesFilter,
+    blogStatusFilter,
+    setBlogStatusFilter,
     isAnyFilterActive,
     resetFilters,
     searchQuery,
@@ -28,11 +28,11 @@ export default function BlogTableAction() {
         setPage={setPage}
       />
       <DataTableFilterBox
-        filterKey="categories"
-        title="Categories"
-        options={CATEGORY_OPTIONS}
-        setFilterValue={setCategoriesFilter}
-        filterValue={categoriesFilter}
+        filterKey="blog_status"
+        title="Status"
+        options={STATUS_OPTIONS}
+        setFilterValue={setBlogStatusFilter}
+        filterValue={blogStatusFilter}
       />
       <DataTableResetFilter
         isFilterActive={isAnyFilterActive}

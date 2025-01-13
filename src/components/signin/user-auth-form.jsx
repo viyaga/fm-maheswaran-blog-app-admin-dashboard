@@ -11,7 +11,7 @@ import {
   FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { loginUser } from '@/lib/actions';
+import { loginUser } from '@/lib/actions/authenticate';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useTransition } from 'react';

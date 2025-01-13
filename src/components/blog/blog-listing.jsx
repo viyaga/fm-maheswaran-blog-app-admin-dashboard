@@ -9,7 +9,7 @@ export default async function BlogListingPage() {
   const page = searchParamsCache.get('page');
   const search = searchParamsCache.get('q');
   const pageLimit = searchParamsCache.get('limit');
-  const categories = searchParamsCache.get('categories');
+  const blog_status = searchParamsCache.get('blog_status');
   const sort = searchParamsCache.get('sort');
 
   // const filters = {
@@ -27,15 +27,14 @@ export default async function BlogListingPage() {
   ];
 
   // search by email
-  if (search) filters.push({ field: "title", operator: "$contains", value: search })
-  // if (categories) filters.push({ field: "email", operator: "$contains", value: search })
+  if (search && search.length > 1) filters.push({ field: "title", operator: "$contains", value: search })
 
-  //search by categorie
-  if (categories) filters.push({ field: "categories", operator: "$eq", value: categories })
+  //search by status
+  if (blog_status) filters.push({ field: "blog_status", operator: "$in", value: blog_status.replace(/\./g, ",")})
 
   const pagination = { page, pageSize: pageLimit };
 
-  const blogs = await getAllBlogs({ fields, filters, pagination, sort, revalidate: 60 * 60 * 5, tags: ["admins"] });
+  const blogs = await getAllBlogs({ fields, filters, pagination, sort, revalidate: 60 * 60 * 5, tags: ["blogs"] });
 
   if (blogs?.error) return <ServerError message="An error occurred. Please try again later." />
 

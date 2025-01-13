@@ -3,6 +3,8 @@
 
 import Image from 'next/image';
 import { CellAction } from './cell-action';
+import { format } from 'date-fns';
+import { capitalize } from '@/lib/utils';
 
 export const columns = [
   {
@@ -23,12 +25,8 @@ export const columns = [
   },
   {
     accessorKey: 'title',
-    header: 'TITLE'
-    
-  },
-  {
-    accessorKey: 'subtitle',
-    header: 'SUBTITLE'
+    header: 'TITLE',
+    cell: ({ row }) => capitalize(row.original.title) || "-"
   },
   {
     accessorKey: 'views',
@@ -40,11 +38,13 @@ export const columns = [
   },
   {
     accessorKey: 'blog_status',
-    header: 'STATUS'
+    header: 'STATUS',
+    cell: ({ row }) => capitalize(row.original.blog_status) || "-"
   },
   {
     accessorKey: 'createdAt',
-    header: 'Created On'
+    header: 'Created On',
+    cell: ({ row }) => format(new Date(row.original.createdAt), "dd/MM/yyyy")
   },
   {
     id: 'actions',

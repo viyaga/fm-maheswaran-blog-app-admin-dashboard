@@ -4,8 +4,9 @@ import { searchParams } from '@/lib/searchparams';
 import { useQueryState } from 'nuqs';
 import { useCallback, useMemo } from 'react';
 
-export const CATEGORY_OPTIONS = [
-  { value: 'Openings', label: 'Openings' },
+export const STATUS_OPTIONS = [
+  { value: 'published', label: 'Published' },
+  { value: 'draft', label: 'Draft' },
 ];
 export function useBlogTableFilters() {
   const [searchQuery, setSearchQuery] = useQueryState(
@@ -15,9 +16,9 @@ export function useBlogTableFilters() {
       .withDefault('')
   );
 
-  const [categoriesFilter, setCategoriesFilter] = useQueryState(
-    'categories',
-    searchParams.categories.withOptions({ shallow: false }).withDefault('')
+  const [blogStatusFilter, setBlogStatusFilter] = useQueryState(
+    'blog_status',
+    searchParams.blog_status.withOptions({ shallow: false }).withDefault('')
   );
 
   const [page, setPage] = useQueryState(
@@ -27,14 +28,14 @@ export function useBlogTableFilters() {
 
   const resetFilters = useCallback(() => {
     setSearchQuery(null);
-    setCategoriesFilter(null);
+    setBlogStatusFilter(null);
 
     setPage(1);
-  }, [setSearchQuery, setCategoriesFilter, setPage]);
+  }, [setSearchQuery, setBlogStatusFilter, setPage]);
 
   const isAnyFilterActive = useMemo(() => {
-    return !!searchQuery || !!categoriesFilter;
-  }, [searchQuery, categoriesFilter]);
+    return !!searchQuery || !!blogStatusFilter;
+  }, [searchQuery, blogStatusFilter]);
 
   return {
     searchQuery,
@@ -43,7 +44,7 @@ export function useBlogTableFilters() {
     setPage,
     resetFilters,
     isAnyFilterActive,
-    categoriesFilter,
-    setCategoriesFilter
+    blogStatusFilter,
+    setBlogStatusFilter
   };
 }

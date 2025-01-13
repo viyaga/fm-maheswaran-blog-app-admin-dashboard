@@ -14,7 +14,6 @@ const getAllAuthors = async (args) => {
     
     try {
         const data = await getData({ url, fields, filters, pagination, sort, revalidate, tags });
-        console.log({data});
         
         if (data?.error) return { error: errResponse(data.error) }
 

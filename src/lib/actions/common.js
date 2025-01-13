@@ -47,6 +47,8 @@ const createStrapiApiUrl = (args) => {
     // Construct the full URL
     const fullUrl = `${SERVER_ONE}${url}?${queryString}`;
 
+    console.log({ fullUrl });
+
     return fullUrl;
 };
 
@@ -79,7 +81,6 @@ const getData = async (args) => {
     const BEARER_API_TOKEN = "Bearer " + process.env.API_TOKEN
 
     let fullUrl = createStrapiApiUrl({ url, fields, filters, pagination, populate, sort })
-    console.log({ fullUrl });
 
     try {
         const res = await fetch(fullUrl, {
@@ -90,10 +91,9 @@ const getData = async (args) => {
             next: { revalidate, tags },
         });
 
-        console.log({ res });
-
-
         const { data, meta, error } = await res.json(); //strapi
+
+        console.log({ data, meta, error });
 
         if (error) return { error }
 

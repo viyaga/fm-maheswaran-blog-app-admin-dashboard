@@ -16,6 +16,8 @@ const getAllBlogs = async (args) => {
 
         if (data?.error) return { error: errResponse(data.error) };
 
+        console.log({ data, count });
+        
         return { data, count };
     } catch (error) {
         return { error: errResponse(error) };
@@ -27,9 +29,6 @@ const getBlogById = async ({ blogId, fields = null, populate = [] }) => {
 
     let apiUrl = `${SERVER_ONE}/blogs/${blogId}`;
     if (fields) apiUrl += `?fields=${fields}`;
-
-    console.log({ apiUrl });
-
 
     try {
         setAuthToken();
@@ -52,7 +51,6 @@ const addBlog = async (blogData) => {
         setAuthToken();
         const { data } = await axios.post(`${SERVER_ONE}/blogs`, { data: blogData });
         revalidateTag("blogs");
-        revalidateTag("blogCount");
 
         return {
             success: true,
@@ -71,8 +69,6 @@ const updateBlog = async ({ documentId, blogData, defaultValues }) => {
     if (Object.keys(updatedFields).length === 0) {
         return { error: "No fields to update" };
     }
-
-    console.log({ updatedFields });
 
     try {
         setAuthToken();
