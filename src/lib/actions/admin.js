@@ -87,7 +87,8 @@ const getAllAdmins = async (args) => {
     try {
         const data = await getAdminsData({ url, fields, filters, pagination, sort, revalidate, tags });
         if (data?.error) return { error: errResponse(data.error) }
-
+        console.log("hello");
+        
         return data;
     } catch (error) {
         return { error: errResponse(error) };

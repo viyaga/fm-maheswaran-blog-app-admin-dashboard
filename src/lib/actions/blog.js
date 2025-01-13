@@ -17,7 +17,7 @@ const getAllBlogs = async (args) => {
         if (data?.error) return { error: errResponse(data.error) };
 
         console.log({ data, count });
-        
+
         return { data, count };
     } catch (error) {
         return { error: errResponse(error) };
@@ -33,6 +33,8 @@ const getBlogById = async ({ blogId, fields = null, populate = [] }) => {
     try {
         setAuthToken();
         const res = await axios.get(apiUrl);
+        if(res?.data?.data?.blog_status === "deleted")  throw new Error("Blog Not Found")
+
         return res?.data?.data;                      // strapi returuns { data:[], meta:{}}
     } catch (error) {
         return { error: errResponse(error) };
@@ -85,16 +87,15 @@ const updateBlog = async ({ documentId, blogData, defaultValues }) => {
     }
 };
 
-const deleteBlog = async (blogId) => {
-    if (!blogId) {
+const deleteBlog = async (documentId) => {
+    if (!documentId) {
         return { error: "Blog ID is required" };
     }
 
     try {
         setAuthToken();
-        const { data } = await axios.delete(`${SERVER_ONE}/blogs/${blogId}`);
+        const { data } = await axios.put(`${SERVER_ONE}/blogs/${documentId}`, { data: { blog_status: "deleted" } });
         revalidateTag("blogs");
-        revalidateTag("blogCount");
 
         return {
             success: true,

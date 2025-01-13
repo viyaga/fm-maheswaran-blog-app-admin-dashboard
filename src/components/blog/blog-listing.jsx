@@ -22,15 +22,17 @@ export default async function BlogListingPage() {
   const fields = "title,subtitle,featured_image,views,comments_count,createdAt,blog_status"; // Fetch only username and email fields
 
   const filters = [
-    // { field: "role", operator: "$eq", value: 1 }, // Filtering by Role ID = 1 (Admin users)
+    { field: "blog_status", operator: "$ne", value: "deleted" }, // Filtering by Role ID = 1 (Admin users)
     // { field: "admin_status", operator: "$eq", value: 1 },     // Filtering only active admins
   ];
 
   // search by email
-  if (search && search.length > 1) filters.push({ field: "title", operator: "$contains", value: search })
+  if (search) filters.push({ field: "title", operator: "$contains", value: search })
 
   //search by status
-  if (blog_status) filters.push({ field: "blog_status", operator: "$in", value: blog_status.replace(/\./g, ",")})
+  if (blog_status) {
+    filters.push({ field: "blog_status", operator: "$in", value: blog_status.replace(/\./g, ",") })
+  }
 
   const pagination = { page, pageSize: pageLimit };
 

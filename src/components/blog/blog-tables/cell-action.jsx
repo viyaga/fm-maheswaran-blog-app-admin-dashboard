@@ -1,5 +1,4 @@
-'use client';
-
+"use client";
 
 import { AlertModal } from '@/components/modal/alert-modal';
 import { Button } from '@/components/ui/button';
@@ -10,16 +9,26 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
+import { deleteBlog } from '@/lib/actions/blog';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
+import { toast } from 'sonner';
 
-export const CellAction= ({ data }) => {
-  const [loading, setLoading] = useState(false);
+export const CellAction = ({ data }) => {
+  const [isPending, startTransition] = useTransition();
   const [open, setOpen] = useState(false);
   const router = useRouter();
 
-  const onConfirm = async () => {};
+  const onConfirm = () => {
+    startTransition(async () => {
+      const res = await deleteBlog(data?.documentId);
+      setOpen(false);
+
+      if (res?.success) return toast.success(res?.message); // if success
+      return toast.error(res?.error); // if error
+    });
+  };
 
   return (
     <>
@@ -27,7 +36,7 @@ export const CellAction= ({ data }) => {
         isOpen={open}
         onClose={() => setOpen(false)}
         onConfirm={onConfirm}
-        loading={loading}
+        loading={isPending}
       />
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
@@ -40,7 +49,7 @@ export const CellAction= ({ data }) => {
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
           <DropdownMenuItem
-            onClick={() => router.push(`/dashboard/blogs/${data.documentId}`)}
+            onClick={() => router.push(`/dashboard/blogs/${data.id}`)}
           >
             <Edit className="mr-2 h-4 w-4" /> Update
           </DropdownMenuItem>
