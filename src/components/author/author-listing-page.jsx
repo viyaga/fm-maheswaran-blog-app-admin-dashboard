@@ -15,24 +15,22 @@ export default async function AuthorListingPage() {
   const page = searchParamsCache.get('page');
   const search = searchParamsCache.get('q');
   const pageLimit = searchParamsCache.get('limit');
-  const sort = searchParamsCache.get('sort')
+  const sort = searchParamsCache.get('sort');
 
-  // GET /api/posts?filters[title][$contains]=searchTerm&pagination[page]=1&pagination[pageSize]=10&sort[title]=asc
-
-  const fields = "username,email,first_name,last_name,country,createdAt,author_status"; // Fetch only username and email fields
+  const fields = "username,email,first_name,last_name,country,createdAt,author_status"; // Fetch relevant fields
 
   const filters = [
-    { field: "author_status", operator: "$eq", value: 1 },     // Filtering only active authors
+    { field: "author_status", operator: "$eq", value: 1 },  // Filtering only active authors
   ];
 
-  // search by email
-  if (search) filters.push({ field: "email", operator: "$contains", value: search })
+  // Search by email
+  if (search) filters.push({ field: "email", operator: "$contains", value: search });
 
   const pagination = { page, pageSize: pageLimit };
 
   const authors = await getAllAuthors({ fields, filters, pagination, sort, revalidate: 60 * 60 * 5, tags: ["authors"] });
 
-  if (authors?.error) return <ServerError message="Oops! Something went wrong. Please try again. Need help? Contact support." />
+  if (authors?.error) return <ServerError message="An error occurred. Please try again later." />;
 
   const count = authors?.count;
 
@@ -53,7 +51,7 @@ export default async function AuthorListingPage() {
           </Link>
         </div>
         <Separator />
-        <AuthorTable data={authors?.data } totalData={count} />
+        <AuthorTable data={authors?.data} totalData={count} />
       </div>
     </PageContainer>
   );

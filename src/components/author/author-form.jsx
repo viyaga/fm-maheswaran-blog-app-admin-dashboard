@@ -1,6 +1,5 @@
 'use client';
 
-
 import * as React from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -12,7 +11,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage
+  FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import {
@@ -20,90 +19,105 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
+  SelectValue,
 } from '@/components/ui/select';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
-import { addAuthor, updateAuthor } from '@/lib/actions';
 import { useRouter } from 'next/navigation';
+import { addAuthor, updateAuthor } from '@/lib/actions/author';
 
 const formSchema = z.object({
   first_name: z.string().min(2, {
-    message: 'First name must be at least 1 characters.'
+    message: 'First name must be at least 2 characters.',
   }),
   last_name: z.string().min(1, {
-    message: 'Last name must be at least 1 characters.'
+    message: 'Last name must be at least 1 character.',
   }),
   email: z.string().email({
-    message: 'Please enter a valid email address.'
+    message: 'Please enter a valid email address.',
   }),
   country: z.string({
-    required_error: 'Please select a country.'
-  }),
-  role: z.string({
-    required_error: 'Please select a role.'
+    required_error: 'Please select a country.',
   }),
   password: z.string(),
   confPassword: z.string(),
 });
 
 export default function AuthorForm({ authorData }) {
-
-  const router = useRouter()
+  const router = useRouter();
 
   let defaultValues = {
-    first_name: '', last_name: '', email: '', country: '',
-    password: '', confPassword: '' // if add new Author
-  }
+    first_name: '',
+    last_name: '',
+    email: '',
+    country: '',
+    password: '',
+    confPassword: '', // For adding a new author
+  };
 
   if (authorData?.id) {
-    const { first_name, last_name, email, country } = authorData
+    const { first_name, last_name, email, country } = authorData;
 
     defaultValues = {
-      first_name, last_name, email, country,      //if update author
-      password: '', confPassword: '',
-    }
-
+      first_name,
+      last_name,
+      email,
+      country, // For updating an author
+      password: '',
+      confPassword: '',
+    };
   }
 
   const form = useForm({ resolver: zodResolver(formSchema), defaultValues });
 
   const onSubmit = async (values) => {
-    const { first_name, last_name, email, country, password, confPassword } = values
+    const { first_name, last_name, email, country, password, confPassword } = values;
 
-    if (!first_name || !last_name || !email || !country) return toast.error("Please enter the required field")
-    if (password !== confPassword) return toast.error("Password and confirm password must be same")
-
-    const data = { first_name, last_name, email, country, password, confPassword }
-
-    //update author
-    if (authorData?.id) {
-
-      const updatedAuthor = await updateAuthor({ id: authorData?.id, authorData: data, defaultValues })
-
-      if (updatedAuthor?.error) return toast.error(updatedAuthor?.error)
-
-      toast.success(updatedAuthor.message)
-      form.reset()
-      return router.push("/dashboard/authors")
+    if (!first_name || !last_name || !email || !country) {
+      return toast.error('Please enter the required fields.');
     }
 
-    //add new Author
-    const newAuthor = await addAuthor(data)
+    if (password !== confPassword) {
+      return toast.error('Password and confirm password must be the same.');
+    }
 
-    if (newAuthor?.error) return toast.error(newAuthor?.error)
+    if (password?.length > 0 && password?.length < 6) {
+      return toast.error('Password must be at least 6 characters.');
+    }
 
-    toast.success(newAuthor.message)
-    form.reset()
-    router.push("/dashboard/authors")
-  }
+    const data = { first_name, last_name, email, country, password };
+
+    // Update author
+    if (authorData?.documentId) {
+      const updatedAuthor = await updateAuthor({
+        documentId: authorData?.documentId,
+        authorData: data,
+        defaultValues,
+      });
+
+      if (updatedAuthor?.error) return toast.error(updatedAuthor?.error);
+
+      toast.success(updatedAuthor.message);
+      return router.push('/dashboard/authors');
+    }
+
+    // Add new author
+    const newAuthor = await addAuthor(data);
+
+    if (newAuthor?.error) return toast.error(newAuthor?.error);
+
+    toast.success(newAuthor.message);
+
+    form.reset();
+
+    router.push('/dashboard/authors');
+  };
 
   return (
     <Card className="mx-auto w-full">
       <CardHeader>
         <CardTitle className="text-left text-2xl font-bold">
-          {authorData ? "Author Information" : "Add New Author"}
+          {authorData ? 'Author Information' : 'Add New Author'}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -188,7 +202,11 @@ export default function AuthorForm({ authorData }) {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter Password" type="password" {...field} />
+                      <Input
+                        placeholder="Enter Password"
+                        type="password"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -201,14 +219,20 @@ export default function AuthorForm({ authorData }) {
                   <FormItem>
                     <FormLabel>Confirm Password</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter Confirm Password" type="password" {...field} />
+                      <Input
+                        placeholder="Enter Confirm Password"
+                        type="password"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
-            <Button type="submit" className="flex justify-end">{authorData ? "Update" : "Add"}</Button>
+            <Button type="submit" className="flex justify-end">
+              {authorData ? 'Update' : 'Add'}
+            </Button>
           </form>
         </Form>
       </CardContent>

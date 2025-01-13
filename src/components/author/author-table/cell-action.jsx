@@ -24,7 +24,7 @@ export const CellAction = ({ data }) => {
   const onConfirm = () => {
 
     startTransition(async () => {
-      const res = await deleteAuthor(data?.id)
+      const res = await deleteAuthor(data?.documentId)
       setOpen(false)
       
       if (res?.success) return toast.success(res?.message) //if success
@@ -51,7 +51,7 @@ export const CellAction = ({ data }) => {
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
           <DropdownMenuItem
-            onClick={() => router.push(`/dashboard/admins/${data.id}`)}
+            onClick={() => router.push(`/dashboard/authors/${data.documentId}`)}
           >
             <Edit className="mr-2 h-4 w-4" /> Update
           </DropdownMenuItem>

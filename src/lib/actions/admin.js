@@ -88,7 +88,7 @@ const getAllAdmins = async (args) => {
         const data = await getAdminsData({ url, fields, filters, pagination, sort, revalidate, tags });
         if (data?.error) return { error: errResponse(data.error) }
         console.log("hello");
-        
+
         return data;
     } catch (error) {
         return { error: errResponse(error) };
@@ -123,7 +123,7 @@ const addAdmin = async (args) => {
 
     try {
         setAuthToken()
-        const username = await generateUsername(first_name, last_name)
+        const username = await generateUsername({ first_name, last_name })
         const adminData = { username, first_name, last_name, email, country, password, role: 1 } //Role Id 1 = Admin
 
         const newAdmin = await axios.post(`${SERVER_ONE}/users`, adminData);

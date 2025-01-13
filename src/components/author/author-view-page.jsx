@@ -1,10 +1,10 @@
-import UserForm from './author-form';
+import AuthorForm from './author-form';
 import PageContainer from '@/components/layout/page-container';
 
-export default function UserViewPage({ userData }) {
+export default function AuthorViewPage({ authorData }) {
   return (
     <PageContainer>
-      <UserForm userData={userData} />
+      <AuthorForm authorData={authorData} />
     </PageContainer>
   );
 }

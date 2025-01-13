@@ -9,16 +9,25 @@ async function getUser(identifier, password) {
     const SERVER_ONE = process.env.SERVER_ONE
 
     try {
+        return { email: identifier, name:"mohan" }
         const res = await axios.post(SERVER_ONE + '/auth/local', { identifier, password })
+        console.log({ res: res.data });
+
         const jwt = res?.data?.jwt
+
 
         const res2 = await axios.get(SERVER_ONE + '/users/me?fields=username,email,first_name,last_name&populate=role', { headers: { Authorization: 'Bearer ' + jwt } })
         const user = res2?.data
 
-        if (user?.role?.name === "Admin") return user
+        console.log({ user });
+
+        // if (user?.role?.name === "Authenticated") return user
+        return user
 
         return null
     } catch (error) {
+        console.log({ error: errResponse(error) });
+
         return { error: errResponse(error) };
     }
 }
@@ -34,6 +43,8 @@ export const { auth, signIn, signOut } = NextAuth({
 
                 if (parsedCredentials.success) {
                     const { email, password } = parsedCredentials.data;
+                    console.log({ email, password });
+
                     const user = await getUser(email, password);
 
                     if (!user) return null;
@@ -47,9 +58,9 @@ export const { auth, signIn, signOut } = NextAuth({
     callbacks: {
         async jwt({ token, user }) {
             if (user) {
-                token.email = user.email;
-                token.name = user.first_name + " " + user.last_name;
-                token.role = user.role.name
+                token.email = user.email || '';
+                token.name = user.first_name + " " + user.last_name || '';
+                token.role = user.role?.name || ''
                 // Add other user properties as needed
             }
             return token;

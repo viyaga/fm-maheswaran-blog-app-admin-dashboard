@@ -6,14 +6,13 @@ import { DataTableSearch } from '@/components/shared/table/data-table-search';
 import { columns } from './columns';
 import { useAuthorTableFilters } from './use-author-table-filters';
 
-export default function AuthorTable({ data, totalData}) {
-  
+export default function AuthorTable({ data, totalData }) {
   const {
     isAnyFilterActive,
     resetFilters,
     searchQuery,
     setPage,
-    setSearchQuery
+    setSearchQuery,
   } = useAuthorTableFilters();
 
   return (

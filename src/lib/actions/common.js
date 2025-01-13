@@ -1,6 +1,5 @@
 "use server"
 
-
 import axios from "axios";
 import { errResponse } from "../utils";
 
@@ -52,16 +51,17 @@ const createStrapiApiUrl = (args) => {
     return fullUrl;
 };
 
+const generateUsername = async ({ first_name, last_name, attempt = 0, url }) => {
+    if (!first_name || !last_name) throw new Error("Give the required field")
 
-const generateUsername = async (firstName, lastName, attempt = 0) => {
-    const normalizedFirstName = firstName.toLowerCase();
-    const normalizedLastName = lastName.toLowerCase();
+    const normalizedFirstName = first_name.toLowerCase();
+    const normalizedLastName = last_name.toLowerCase();
 
     const baseUsername = `${normalizedFirstName}${normalizedLastName}`;
     const randomNumber = Math.floor(1000 + Math.random() * 9000);
     const newUsername = `${baseUsername}${randomNumber}`;
 
-    const existingUser = await getData("/users", "username", [
+    const existingUser = await getData(url ? url : "/users", "username", [
         { field: "username", operator: "$eq", value: newUsername },
     ]);
 
@@ -69,7 +69,7 @@ const generateUsername = async (firstName, lastName, attempt = 0) => {
         if (attempt >= 10) {
             throw new Error("Unable to generate a unique username after 10 attempts");
         }
-        return generateUsername(firstName, lastName, attempt + 1);
+        return generateUsername({ first_name, last_name, attempt: attempt + 1 });
     }
 
     return newUsername;

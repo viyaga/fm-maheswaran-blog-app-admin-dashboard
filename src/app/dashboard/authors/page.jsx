@@ -3,7 +3,7 @@ import { searchParamsCache } from '@/lib/searchparams';
 import React from 'react';
 
 export const metadata = {
-  title: 'Dashboard : Employees'
+  title: 'Dashboard : Authors',
 };
 
 export default async function Page({ searchParams }) {

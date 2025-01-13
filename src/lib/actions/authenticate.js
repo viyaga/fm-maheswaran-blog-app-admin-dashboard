@@ -7,6 +7,8 @@ export const loginUser = async (email, password) => {
         await signIn("credentials", { email, password, redirect: false });
         return { success: "Login successfull" }
     } catch (err) {
+        console.log({err});
+        
         return { error: "Wrong Credentials!" }
     }
 };
