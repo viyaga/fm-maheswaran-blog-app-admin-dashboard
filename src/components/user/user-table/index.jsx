@@ -7,7 +7,7 @@ import { DataTableSearch } from '@/components/shared/table/data-table-search';
 import { columns } from './columns';
 import { PRIME_OPTIONS, useUserTableFilters } from './use-user-table-filters';
 
-export default function UserTable({ data, totalData}) {
+export default function UserTable({ data, totalData }) {
   
   const {
     primeFilter,
@@ -23,14 +23,14 @@ export default function UserTable({ data, totalData}) {
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-4">
         <DataTableSearch
-          searchKey="name"
+          searchKey="username"
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           setPage={setPage}
         />
         <DataTableFilterBox
           filterKey="prime"
-          title="Subscribtion"
+          title="Prime Membership"
           options={PRIME_OPTIONS}
           setFilterValue={setPrimeFilter}
           filterValue={primeFilter}

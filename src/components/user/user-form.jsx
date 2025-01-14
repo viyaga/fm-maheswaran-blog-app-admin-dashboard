@@ -1,6 +1,5 @@
 'use client';
 
-
 import * as React from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -12,7 +11,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage
+  FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import {
@@ -20,93 +19,106 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
+  SelectValue,
 } from '@/components/ui/select';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
-import { addUser, updateUser } from '@/lib/actions';
 import { useRouter } from 'next/navigation';
+import { addUser, updateUser } from '@/lib/actions/user'; // Updated to user actions
 
 const formSchema = z.object({
   first_name: z.string().min(2, {
-    message: 'First name must be at least 1 characters.'
+    message: 'First name must be at least 2 characters.',
   }),
   last_name: z.string().min(1, {
-    message: 'Last name must be at least 1 characters.'
+    message: 'Last name must be at least 1 character.',
   }),
   email: z.string().email({
-    message: 'Please enter a valid email address.'
+    message: 'Please enter a valid email address.',
   }),
   country: z.string({
-    required_error: 'Please select a country.'
-  }),
-  role: z.string({
-    required_error: 'Please select a role.'
-  }),
-  prime_membership: z.number().min(0, {
-    message: 'Subscription amount is required.'
+    required_error: 'Please select a country.',
   }),
   password: z.string(),
   confPassword: z.string(),
 });
 
 export default function UserForm({ userData }) {
-
-  const router = useRouter()
+  const router = useRouter();
 
   let defaultValues = {
-    first_name: '', last_name: '', email: '', country: '',
-    prime_membership: '', role: '', password: '', confPassword: '' // if add new user
-  }
+    first_name: '',
+    last_name: '',
+    email: '', // email is now the unique identifier
+    country: '',
+    password: '',
+    confPassword: '', // For adding a new user
+  };
 
-  if (userData?.id) {
-    const { first_name, last_name, email, country, prime_membership, role } = userData
+  if (userData?.documentId) {
+    const { first_name, last_name, email, country } = userData;
 
     defaultValues = {
-      first_name, last_name, email, country, prime_membership,  //if update user
-      role: role?.id?.toString(), password: '', confPassword: '',
-    }
-
+      first_name,
+      last_name,
+      email, // Use email as the unique identifier
+      country, // For updating an existing user
+      password: '',
+      confPassword: '',
+    };
   }
 
   const form = useForm({ resolver: zodResolver(formSchema), defaultValues });
 
   const onSubmit = async (values) => {
-    const { first_name, last_name, email, country, role, prime_membership, password, confPassword } = values
 
-    if (!first_name || !last_name || !email || !country || !role || !prime_membership) return toast.error("Please enter the required field")
-    if (password !== confPassword) return toast.error("Password and confirm password must be same")
+    const { first_name, last_name, email, country, password, confPassword } = values;
 
-    const data = { first_name, last_name, email, country, role, prime_membership, password, confPassword }
-
-    //update user
-    if (userData?.id) {
-
-      const updatedUser = await updateUser({ id: userData?.id, userData: data, defaultValues })
-
-      if (updatedUser?.error) return toast.error(updatedUser?.error)
-
-      toast.success(updatedUser.message)
-      form.reset()
-      return router.push("/dashboard/users")
+    if (!first_name || !last_name || !email || !country) {
+      return toast.error('Please enter the required fields.');
     }
 
-    //add new user
-    const newUser = await addUser(data)
+    if (password !== confPassword) {
+      return toast.error('Password and confirm password must be the same.');
+    }
 
-    if (newUser?.error) return toast.error(newUser?.error)
+    if (password?.length > 0 && password?.length < 6) {
+      return toast.error('Password must be at least 6 characters.');
+    }
 
-    toast.success(newUser.message)
-    form.reset()
-    router.push("/dashboard/users")
-  }
+    const data = { first_name, last_name, email, country, password };
+
+    // Update user
+    if (userData?.documentId) {
+      const updatedUser = await updateUser({
+        documentId: userData?.documentId,
+        userData: data,
+        defaultValues
+      });
+
+      if (updatedUser?.error) return toast.error(updatedUser?.error);
+
+      toast.success(updatedUser.message);
+      return router.push('/dashboard/users');
+    }
+
+    // Add new user
+    const newUser = await addUser(data);
+
+    if (newUser?.error) return toast.error(newUser?.error);
+
+    toast.success(newUser.message);
+
+    form.reset();
+
+    router.push('/dashboard/users');
+  };
 
   return (
     <Card className="mx-auto w-full">
       <CardHeader>
         <CardTitle className="text-left text-2xl font-bold">
-          {userData ? "User Information" : "Add New User"}
+          {userData ? 'User Information' : 'Add New User'}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -186,51 +198,16 @@ export default function UserForm({ userData }) {
               />
               <FormField
                 control={form.control}
-                name="role"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Role</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a role" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="1">User</SelectItem>
-                        <SelectItem value="3">Admin</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="prime_membership"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Subscription (USD)</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        placeholder="Enter subscription amount"
-                        {...field}
-                        onChange={(e) => field.onChange(Number(e.target.value))}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
                 name="password"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter Password" type="password" {...field} />
+                      <Input
+                        placeholder="Enter Password"
+                        type="password"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -243,14 +220,20 @@ export default function UserForm({ userData }) {
                   <FormItem>
                     <FormLabel>Confirm Password</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter Confirm Password" type="password" {...field} />
+                      <Input
+                        placeholder="Enter Confirm Password"
+                        type="password"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
-            <Button type="submit" className="flex justify-end">{userData ? "Update" : "Add"}</Button>
+            <Button type="submit" className="flex justify-end">
+              {userData ? 'Update' : 'Add'}
+            </Button>
           </form>
         </Form>
       </CardContent>

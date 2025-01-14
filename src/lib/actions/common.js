@@ -51,32 +51,39 @@ const createStrapiApiUrl = (args) => {
     return fullUrl;
 };
 
-const generateUsername = async ({ first_name, last_name, attempt = 0, url }) => {
+const generateUsername = async ({ first_name, last_name, attempt = 0, url = "/users" }) => {
     if (!first_name || !last_name) throw new Error("Give the required field")
 
-    const normalizedFirstName = first_name.toLowerCase();
-    const normalizedLastName = last_name.toLowerCase();
+    try {
+        const normalizedFirstName = first_name.toLowerCase();
+        const normalizedLastName = last_name.toLowerCase();
 
-    const baseUsername = `${normalizedFirstName}${normalizedLastName}`;
-    const randomNumber = Math.floor(1000 + Math.random() * 9000);
-    const newUsername = `${baseUsername}${randomNumber}`;
+        const baseUsername = `${normalizedFirstName}${normalizedLastName}`;
+        const randomNumber = Math.floor(1000 + Math.random() * 9000);
+        const newUsername = `${baseUsername}${randomNumber}`;
 
-    const existingUser = await getData(url ? url : "/users", "username", [
-        { field: "username", operator: "$eq", value: newUsername },
-    ]);
+        const existingUser = await getData({ url, fields: "username", filters: [{ field: "username", operator: "$eq", value: newUsername }] });
 
-    if (existingUser?.length > 0) {
-        if (attempt >= 10) {
-            throw new Error("Unable to generate a unique username after 10 attempts");
+        if (existingUser?.data?.length > 0) {
+            if (attempt >= 10) {
+                throw new Error("Unable to generate a unique username after 10 attempts");
+            }
+            return generateUsername({ first_name, last_name, attempt: attempt + 1 });
         }
-        return generateUsername({ first_name, last_name, attempt: attempt + 1 });
+
+        return newUsername;
+
+    } catch (error) {
+        return { error: errResponse(error) }
     }
 
-    return newUsername;
 };
 
 const getData = async (args) => {
+
     const { url, fields = "", filters = [], pagination = {}, populate = "", sort = "", revalidate = 2, tags = [] } = args
+
+    if (!url) throw new Error("Url Required to get data")
 
     const BEARER_API_TOKEN = "Bearer " + process.env.API_TOKEN
 

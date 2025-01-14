@@ -50,7 +50,7 @@ const addUser = async (userData) => {
         return { error: `Missing required fields: ${missingFields.join(", ")}` };
     }
 
-    const { first_name, last_name, password } = userData;
+    const { first_name, last_name, email, password } = userData;
 
     // Encrypt the password before proceeding
     const saltRounds = 10;
@@ -60,14 +60,21 @@ const addUser = async (userData) => {
         return { error: "Failed to encrypt the password." };
     }
 
-    // Generate username
-    userData.username = await generateUsername({ first_name, last_name, url: "/website-users" });
-
-    console.log({ userData });
     try {
         setAuthToken();
+
+        // is existing User Email
+        const existingUser = await getData({ url: "/website-users", fields: "email", filters: [{ field: "email", operator: "$eq", value: email }] });
+
+        if (existingUser?.data?.length > 0) {
+            throw new Error("Email must be unique");
+        }
+
+        // Generate username
+        userData.username = await generateUsername({ first_name, last_name, url: "/website-users" });
+
         const { data } = await axios.post(`${SERVER_ONE}/website-users`, { data: userData });
-        revalidateTag("website-users");
+        revalidateTag("users");
 
         return {
             success: true,
@@ -84,12 +91,14 @@ const addUser = async (userData) => {
 const updateUser = async ({ documentId, userData, defaultValues }) => {
     if (!documentId) return { error: "User ID is required" };
 
+    console.log({userData, defaultValues});
+    
     const updatedFields = getUpdatedFields(userData, defaultValues);
     if (Object.keys(updatedFields).length === 0) {
         return { error: "No fields to update" };
     }
 
-    const { password } = updatedFields;
+    const { email, password } = updatedFields;
 
     if (password?.length > 0) {
 
@@ -102,16 +111,25 @@ const updateUser = async ({ documentId, userData, defaultValues }) => {
         try {
             updatedFields.password = await bcrypt.hash(password, saltRounds);
         } catch (encryptionError) {
-            console.log({ encryptionError });
-
             return { error: "Failed to encrypt the password." };
         }
     }
 
     try {
         setAuthToken();
+
+        // is existingUser
+        if (email) {
+            const existingUser = await getData({ url: "/website-users", fields: "email", filters: [{ field: "email", operator: "$eq", value: email }] });
+
+        if (existingUser?.data?.length > 0) {
+            throw new Error("Email must be unique");
+        }
+        }
+
+        //update data
         const { data } = await axios.put(`${SERVER_ONE}/website-users/${documentId}`, { data: updatedFields });
-        revalidateTag("website-users");
+        revalidateTag("users");
 
         return {
             success: true,
@@ -133,7 +151,7 @@ const deleteUser = async (documentId) => {
 
         setAuthToken();
         const { data } = await axios.delete(`${SERVER_ONE}/website-users/${documentId}`);
-        revalidateTag("website-users");
+        revalidateTag("users");
 
         return {
             success: true,
