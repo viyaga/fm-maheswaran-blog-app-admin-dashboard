@@ -2,47 +2,39 @@
 
 import axios from "axios";
 import { errResponse, getUpdatedFields } from "../utils";
-import { generateUsername, getData, setAuthToken } from "./common";
+import { asyncHandler, generateUsername, getData, setAuthToken } from "./common";
 import { revalidateTag } from "next/cache";
 import bcrypt from "bcryptjs";
 
 const SERVER_ONE = process.env.SERVER_ONE;
 
-const getAllUsers = async (args) => {
+const getAllUsers = asyncHandler(async (args) => {
     const { fields = "", filters = [], pagination, sort, revalidate = 2, tags = [] } = args;
     const url = "/website-users";
 
-    try {
-        const { data, count } = await getData({ url, fields, filters, pagination, sort, revalidate, tags });
+    const { data, count } = await getData({ url, fields, filters, pagination, sort, revalidate, tags });
 
-        if (data?.error) return { error: errResponse(data.error) };
+    if (data?.error) return { error: errResponse(data.error) };
 
-        console.log({ data, count });
+    console.log({ data, count });
 
-        return { data, count };
-    } catch (error) {
-        return { error: errResponse(error) };
-    }
-};
+    return { data, count };
+});
 
-const getUserById = async ({ documentId, fields = null, populate = [] }) => {
+const getUserById = asyncHandler(async ({ documentId, fields = null, populate = [] }) => {
     if (!documentId) return { error: "User ID is required." };
 
     let apiUrl = `${SERVER_ONE}/website-users/${documentId}`;
     if (fields) apiUrl += `?fields=${fields}`;
 
-    try {
-        setAuthToken();
-        const res = await axios.get(apiUrl);
-        if (res?.data?.data?.user_status === 0) throw new Error("User Not Found");
+    setAuthToken();
+    const res = await axios.get(apiUrl);
+    if (res?.data?.data?.user_status === 0) throw new Error("User Not Found");
 
-        return res?.data?.data;
-    } catch (error) {
-        return { error: errResponse(error) };
-    }
-};
+    return res?.data?.data;
+});
 
-const addUser = async (userData) => {
+const addUser = asyncHandler(async (userData) => {
     const requiredFields = ["first_name", "last_name", "email", "password", "country"];
     const missingFields = requiredFields.filter((field) => !userData[field]);
 
@@ -54,45 +46,33 @@ const addUser = async (userData) => {
 
     // Encrypt the password before proceeding
     const saltRounds = 10;
-    try {
-        userData.password = await bcrypt.hash(password, saltRounds);
-    } catch (encryptionError) {
-        return { error: "Failed to encrypt the password." };
+    userData.password = await bcrypt.hash(password, saltRounds);
+
+    setAuthToken();
+
+    // Check if email already exists
+    const existingUser = await getData({ url: "/website-users", fields: "email", filters: [{ field: "email", operator: "$eq", value: email }] });
+
+    if (existingUser?.data?.length > 0) {
+        throw new Error("Email must be unique");
     }
 
-    try {
-        setAuthToken();
+    // Generate username
+    userData.username = await generateUsername({ first_name, last_name, url: "/website-users" });
 
-        // is existing User Email
-        const existingUser = await getData({ url: "/website-users", fields: "email", filters: [{ field: "email", operator: "$eq", value: email }] });
+    const { data } = await axios.post(`${SERVER_ONE}/website-users`, { data: userData });
+    revalidateTag("users");
 
-        if (existingUser?.data?.length > 0) {
-            throw new Error("Email must be unique");
-        }
+    return {
+        success: true,
+        message: "User added successfully",
+        user: data,
+    };
+});
 
-        // Generate username
-        userData.username = await generateUsername({ first_name, last_name, url: "/website-users" });
-
-        const { data } = await axios.post(`${SERVER_ONE}/website-users`, { data: userData });
-        revalidateTag("users");
-
-        return {
-            success: true,
-            message: "User added successfully",
-            user: data,
-        };
-    } catch (error) {
-        console.log({ error });
-
-        return { error: errResponse(error) };
-    }
-};
-
-const updateUser = async ({ documentId, userData, defaultValues }) => {
+const updateUser = asyncHandler(async ({ documentId, userData, defaultValues }) => {
     if (!documentId) return { error: "User ID is required" };
 
-    console.log({userData, defaultValues});
-    
     const updatedFields = getUpdatedFields(userData, defaultValues);
     if (Object.keys(updatedFields).length === 0) {
         return { error: "No fields to update" };
@@ -101,70 +81,51 @@ const updateUser = async ({ documentId, userData, defaultValues }) => {
     const { email, password } = updatedFields;
 
     if (password?.length > 0) {
-
         if (password?.length < 6) {
             return { error: "Password must be at least 6 characters." };
         }
 
         // Encrypt the password before proceeding
         const saltRounds = 10;
-        try {
-            updatedFields.password = await bcrypt.hash(password, saltRounds);
-        } catch (encryptionError) {
-            return { error: "Failed to encrypt the password." };
-        }
+        updatedFields.password = await bcrypt.hash(password, saltRounds);
     }
 
-    try {
-        setAuthToken();
+    setAuthToken();
 
-        // is existingUser
-        if (email) {
-            const existingUser = await getData({ url: "/website-users", fields: "email", filters: [{ field: "email", operator: "$eq", value: email }] });
+    // Check if email already exists
+    if (email) {
+        const existingUser = await getData({ url: "/website-users", fields: "email", filters: [{ field: "email", operator: "$eq", value: email }] });
 
         if (existingUser?.data?.length > 0) {
             throw new Error("Email must be unique");
         }
-        }
-
-        //update data
-        const { data } = await axios.put(`${SERVER_ONE}/website-users/${documentId}`, { data: updatedFields });
-        revalidateTag("users");
-
-        return {
-            success: true,
-            message: "User updated successfully",
-            user: data,
-        };
-    } catch (error) {
-        return { error: errResponse(error) };
     }
-};
 
-const deleteUser = async (documentId) => {
+    const { data } = await axios.put(`${SERVER_ONE}/website-users/${documentId}`, { data: updatedFields });
+    revalidateTag("users");
 
+    return {
+        success: true,
+        message: "User updated successfully",
+        user: data,
+    };
+});
+
+const deleteUser = asyncHandler(async (documentId) => {
     if (!documentId) {
         return { error: "User ID is required" };
     }
 
-    try {
+    setAuthToken();
+    const { data } = await axios.delete(`${SERVER_ONE}/website-users/${documentId}`);
+    revalidateTag("users");
 
-        setAuthToken();
-        const { data } = await axios.delete(`${SERVER_ONE}/website-users/${documentId}`);
-        revalidateTag("users");
-
-        return {
-            success: true,
-            message: "User deleted successfully",
-            data,
-        };
-
-    } catch (error) {
-        console.log({ error });
-
-        return { error: errResponse(error) };
-    }
-};
+    return {
+        success: true,
+        message: "User deleted successfully",
+        data,
+    };
+});
 
 export {
     getAllUsers,
