@@ -28,7 +28,7 @@ export default async function AuthorListingPage() {
 
   const pagination = { page, pageSize: pageLimit };
 
-  const authors = await getAllAuthors({ fields, filters, pagination, sort, revalidate: 60 * 60 * 5, tags: ["authors"] });
+  const authors = await getAllAuthors({ fields, filters, pagination, sort, revalidate: 60 * 60 * 24 * 365, tags: ["authors"] });
 
   if (authors?.error) return <ServerError message="An error occurred. Please try again later." />;
 

@@ -31,7 +31,7 @@ export default async function AdminListingPage() {
 
   const pagination = { page, pageSize: pageLimit };
 
-  const admins = await getAllAdmins({ fields, filters, pagination, sort, revalidate: 60 * 60 * 5, tags: ["admins"] });
+  const admins = await getAllAdmins({ fields, filters, pagination, sort, revalidate: 60 * 60 * 24 * 365, tags: ["admins"] });
 
   if (admins?.error) return <ServerError message="An error occurred. Please try again later." />
 

@@ -79,7 +79,7 @@ const getAdminById = asyncHandler(async ({ adminId, fields = null }) => {
 
     if (fields) apiUrl += `?fields=${fields}`;
 
-    setAuthToken();
+    
     const admin = await axios.get(apiUrl);
     return admin?.data;
 });
@@ -91,7 +91,7 @@ const addAdmin = asyncHandler(async (args) => {
         return { error: "Enter Required Field" };
     }
 
-    setAuthToken();
+    
     const username = await generateUsername({ first_name, last_name });
     const adminData = { username, first_name, last_name, email, country, password, role: 1 };
 
@@ -122,7 +122,7 @@ const updateAdmin = asyncHandler(async ({ id, adminData, defaultValues }) => {
         return { error: "Password must be at least 6 characters." };
     }
 
-    setAuthToken();
+    
 
     const { data } = await axios.put(`${SERVER_ONE}/users/${id}`, updatedFields);
 
@@ -140,7 +140,7 @@ const deleteAdmin = asyncHandler(async (adminId) => {
         return { error: "Admin ID is required" };
     }
 
-    setAuthToken();
+    
 
     const { data } = await axios.delete(`${SERVER_ONE}/users/${adminId}`);
 

@@ -1,3 +1,5 @@
+"use server"
+
 import { asyncHandler } from "./common";
 const { signOut, signIn } = require("@/auth");
 

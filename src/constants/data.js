@@ -105,7 +105,7 @@ export const navItems = [
       {
         title: 'Site Settings',
         shortcut: ['s', 's'],
-        url: '/',
+        url: '/dashboard/site-setting',
         icon: 'login'
       }
     ]

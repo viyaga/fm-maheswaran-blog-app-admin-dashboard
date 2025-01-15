@@ -27,7 +27,7 @@ const getUserById = asyncHandler(async ({ documentId, fields = null, populate = 
     let apiUrl = `${SERVER_ONE}/website-users/${documentId}`;
     if (fields) apiUrl += `?fields=${fields}`;
 
-    setAuthToken();
+    
     const res = await axios.get(apiUrl);
     if (res?.data?.data?.user_status === 0) throw new Error("User Not Found");
 
@@ -48,7 +48,7 @@ const addUser = asyncHandler(async (userData) => {
     const saltRounds = 10;
     userData.password = await bcrypt.hash(password, saltRounds);
 
-    setAuthToken();
+    
 
     // Check if email already exists
     const existingUser = await getData({ url: "/website-users", fields: "email", filters: [{ field: "email", operator: "$eq", value: email }] });
@@ -90,7 +90,7 @@ const updateUser = asyncHandler(async ({ documentId, userData, defaultValues }) 
         updatedFields.password = await bcrypt.hash(password, saltRounds);
     }
 
-    setAuthToken();
+    
 
     // Check if email already exists
     if (email) {
@@ -116,7 +116,7 @@ const deleteUser = asyncHandler(async (documentId) => {
         return { error: "User ID is required" };
     }
 
-    setAuthToken();
+    
     const { data } = await axios.delete(`${SERVER_ONE}/website-users/${documentId}`);
     revalidateTag("users");
 

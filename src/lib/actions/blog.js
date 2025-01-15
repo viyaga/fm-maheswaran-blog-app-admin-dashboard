@@ -26,7 +26,7 @@ const getBlogById = asyncHandler(async ({ blogId, fields = null, populate = [] }
     let apiUrl = `${SERVER_ONE}/blogs/${blogId}`;
     if (fields) apiUrl += `?fields=${fields}`;
 
-    setAuthToken();
+    
     const res = await axios.get(apiUrl);
     if(res?.data?.data?.blog_status === "deleted") throw new Error("Blog Not Found");
 
@@ -41,7 +41,7 @@ const addBlog = asyncHandler(async (blogData) => {
         return { error: `Missing required fields: ${missingFields.join(", ")}` };
     }
 
-    setAuthToken();
+    
     const { data } = await axios.post(`${SERVER_ONE}/blogs`, { data: blogData });
     revalidateTag("blogs");
 
@@ -60,7 +60,7 @@ const updateBlog = asyncHandler(async ({ documentId, blogData, defaultValues }) 
         return { error: "No fields to update" };
     }
 
-    setAuthToken();
+    
     const { data } = await axios.put(`${SERVER_ONE}/blogs/${documentId}`, { data: updatedFields });
     revalidateTag("blogs");
 
@@ -76,7 +76,7 @@ const deleteBlog = asyncHandler(async (documentId) => {
         return { error: "Blog ID is required" };
     }
 
-    setAuthToken();
+    
     const { data } = await axios.put(`${SERVER_ONE}/blogs/${documentId}`, { data: { blog_status: "deleted" } });
     revalidateTag("blogs");
 

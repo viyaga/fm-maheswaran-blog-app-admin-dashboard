@@ -36,7 +36,7 @@ export default async function BlogListingPage() {
 
   const pagination = { page, pageSize: pageLimit };
 
-  const blogs = await getAllBlogs({ fields, filters, pagination, sort, revalidate: 60 * 60 * 5, tags: ["blogs"] });
+  const blogs = await getAllBlogs({ fields, filters, pagination, sort, revalidate: 60 * 60 * 24 * 365, tags: ["blogs"] });
 
   if (blogs?.error) return <ServerError message="An error occurred. Please try again later." />
 

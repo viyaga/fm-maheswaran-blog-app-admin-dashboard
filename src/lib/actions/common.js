@@ -1,3 +1,5 @@
+"use server"
+
 import axios from "axios";
 import { errResponse } from "../utils";
 
@@ -7,6 +9,8 @@ const setAuthToken = () => {
 }
 
 const asyncHandler = (fn) => async (...args) => {
+    setAuthToken()
+
     try {
         return await fn(...args);
     } catch (error) {
@@ -39,8 +43,10 @@ const createStrapiApiUrl = (args) => {
     const sortUrl = sort ? `sort=${sort}&` : "";
     const populateUrl = populate ? `populate=${populate}&` : "";
 
-    const queryString = `${fieldsUrl}${filtersUrl}${paginationUrl}${sortUrl}${populateUrl}`.slice(0, -1);
-    const fullUrl = `${SERVER_ONE}${url}?${queryString}`;
+    let queryString = `${fieldsUrl}${filtersUrl}${paginationUrl}${sortUrl}${populateUrl}`.slice(0, -1);
+    queryString = queryString ? `?${queryString}` : "" // add ? before queryString
+
+    const fullUrl = `${SERVER_ONE}${url}${queryString}`;
 
     console.log({ fullUrl });
 
@@ -68,7 +74,7 @@ const generateUsername = asyncHandler(async ({ first_name, last_name, attempt = 
     }
 
     return newUsername;
-    
+
 });
 
 const getData = asyncHandler(async (args) => {
@@ -87,7 +93,7 @@ const getData = asyncHandler(async (args) => {
         next: { revalidate, tags },
     });
 
-    const { data, meta, error } = await res.json(); 
+    const { data, meta, error } = await res.json();
 
     console.log({ data, meta, error });
 

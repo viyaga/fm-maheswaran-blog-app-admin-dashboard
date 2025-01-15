@@ -27,7 +27,7 @@ const getAuthorById = asyncHandler(async ({ documentId, fields = null, populate 
     let apiUrl = `${SERVER_ONE}/authors/${documentId}`;
     if (fields) apiUrl += `?fields=${fields}`;
 
-    setAuthToken();
+    
     const res = await axios.get(apiUrl);
     if (res?.data?.data?.author_status === 0) throw new Error("Author Not Found");
 
@@ -51,7 +51,7 @@ const addAuthor = asyncHandler(async (authorData) => {
 
     console.log({ authorData });
 
-    setAuthToken();
+    
     const { data } = await axios.post(`${SERVER_ONE}/authors`, { data: authorData });
     revalidateTag("authors");
 
@@ -81,7 +81,7 @@ const updateAuthor = asyncHandler(async ({ documentId, authorData, defaultValues
         updatedFields.password = await bcrypt.hash(password, saltRounds);
     }
 
-    setAuthToken();
+    
     const { data } = await axios.put(`${SERVER_ONE}/authors/${documentId}`, { data: updatedFields });
     revalidateTag("authors");
 
@@ -97,7 +97,7 @@ const deleteAuthor = asyncHandler(async (documentId) => {
         return { error: "Author ID is required" };
     }
 
-    setAuthToken();
+    
     const { data } = await axios.delete(`${SERVER_ONE}/authors/${documentId}`);
     revalidateTag("authors");
 
