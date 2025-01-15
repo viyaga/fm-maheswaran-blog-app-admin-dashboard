@@ -26,6 +26,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { addBlog, updateBlog } from '@/lib/actions/blog';
+import RichTextEditor from './rich-text-editor';
 
 const formSchema = z.object({
   title: z.string().min(1, { message: 'Title is required.' }),
@@ -194,7 +195,7 @@ export default function BlogForm({ blogData }) {
                 </FormItem>
               )}
             />
-            <FormField
+            {/* <FormField
               control={form.control}
               name="content"
               render={({ field }) => (
@@ -210,7 +211,8 @@ export default function BlogForm({ blogData }) {
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
+            <RichTextEditor />
             <Button type="submit" className="flex justify-end">
               {blogData ? 'Update Blog' : 'Add Blog'}
             </Button>
