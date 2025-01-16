@@ -1,40 +1,36 @@
 "use client";
-// components/RichTextEditor.js
 
-import './styles.css'
+import { useEditor, EditorContent } from "@tiptap/react";
+import extensions from "./extensions";
+import Toolbar from "./toolbar";
 
-import { useEditor, EditorContent } from '@tiptap/react'
-import React from 'react'
-import extensions from './extensions';
-import Toolbar from './toolbar';
+const RichTextEditor = ({ onChange }) => {
 
-export default function RichTextEditor() {
+  const handleChange = (newContent) => {
+    onChange(newContent);
+  };
+
   const editor = useEditor({
     extensions: extensions,
-    content: `
-      <p>This is a basic example of implementing images. Drag to re-order.</p>
-    `,
-  })
-
-  const addImage = () => {
-    const url = window.prompt('Enter the image URL')
-
-    if (url) {
-      editor.chain().focus().setImage({ src: url }).run()
-    }
-  }
-
-  if (!editor) {
-    return null
-  }
+    editorProps: {
+      attributes: {
+        class:
+          "flex flex-col px-4 py-3 justify-start border-b border-r border-l border-gray-700 text-gray-400 items-start w-full gap-3 font-medium text-[16px] pt-4 rounded-bl-md rounded-br-md outline-none",
+      },
+    },
+    immediatelyRender: false,
+    // shouldRerenderOnTransaction: false,
+    onUpdate: ({ editor }) => {
+      handleChange(editor.getHTML());
+    },
+  });
 
   return (
-    <>
+    <div className="w-full">
       <Toolbar editor={editor} />
-      <div className="button-group">
-        <button onClick={addImage}>Add image from URL</button>
-      </div>
-      <EditorContent editor={editor} />
-    </>
-  )
-}
+      <EditorContent style={{ whiteSpace: "pre-line" }} editor={editor} />
+    </div>
+  );
+};
+
+export default RichTextEditor;

@@ -41,6 +41,7 @@ const formSchema = z.object({
 });
 
 export default function BlogForm({ blogData }) {
+  const [content, setContent] = React.useState("")
   const router = useRouter();
 
   let defaultValues = {
@@ -85,6 +86,8 @@ export default function BlogForm({ blogData }) {
 
   const onSubmit = async (values) => {
     const data = { ...values };
+
+    return console.log({ content });
 
     if (blogData?.documentId) {
       const updatedBlog = await updateBlog({ documentId: blogData.documentId, blogData: data, defaultValues });
@@ -195,24 +198,28 @@ export default function BlogForm({ blogData }) {
                 </FormItem>
               )}
             />
-            {/* <FormField
+            <FormField
               control={form.control}
               name="content"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Content</FormLabel>
                   <FormControl>
-                    <Textarea
-                      placeholder="Enter the main content of the blog"
-                      {...field}
-                      rows={8}
+                    <RichTextEditor
+                      content={content}
+                      onChange={(newContent) => setContent(newContent)}
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
-            /> */}
-            <RichTextEditor />
+            />
+            {/* <FormField>
+            <RichTextEditor
+              content={content}
+              onChange={(newContent) => setContent(newContent)}
+            />
+            </FormField> */}
             <Button type="submit" className="flex justify-end">
               {blogData ? 'Update Blog' : 'Add Blog'}
             </Button>
