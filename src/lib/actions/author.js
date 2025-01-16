@@ -16,8 +16,6 @@ const getAllAuthors = asyncHandler(async (args) => {
 
     if (data?.error) return { error: errResponse(data.error) };
 
-    console.log({ data, count });
-
     return { data, count };
 });
 
@@ -48,9 +46,6 @@ const addAuthor = asyncHandler(async (authorData) => {
     authorData.password = await bcrypt.hash(password, saltRounds);
 
     authorData.username = await generateUsername({ first_name, last_name, url: "/authors" });
-
-    console.log({ authorData });
-
     
     const { data } = await axios.post(`${SERVER_ONE}/authors`, { data: authorData });
     revalidateTag("authors");

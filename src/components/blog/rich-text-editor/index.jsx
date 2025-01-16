@@ -4,7 +4,7 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import extensions from "./extensions";
 import Toolbar from "./toolbar";
 
-const RichTextEditor = ({ onChange }) => {
+const RichTextEditor = ({ onChange, content }) => {
 
   const handleChange = (newContent) => {
     onChange(newContent);
@@ -12,6 +12,7 @@ const RichTextEditor = ({ onChange }) => {
 
   const editor = useEditor({
     extensions: extensions,
+    content: content || "",
     editorProps: {
       attributes: {
         class:

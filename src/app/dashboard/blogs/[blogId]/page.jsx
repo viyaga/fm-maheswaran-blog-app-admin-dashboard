@@ -14,7 +14,7 @@ export default async function Page({ params }) {
   let blogData = null;
 
   if (blogId !== "add") {
-    blogData = await getBlogById({ blogId, fields: "title,slug,excerpt,content,featured_image,createdAt,blog_status" });
+    blogData = await getBlogById({ documentId: blogId, fields: "title,slug,excerpt,content,featured_image,createdAt,blog_status" });
 
     if (!blogData || blogData?.error) {
       return <p className='text-center mt-5 font-normal'>Blog Not Found</p>;

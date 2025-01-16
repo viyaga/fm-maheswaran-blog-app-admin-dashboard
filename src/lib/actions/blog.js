@@ -15,15 +15,13 @@ const getAllBlogs = asyncHandler(async (args) => {
 
     if (data?.error) return { error: errResponse(data.error) };
 
-    console.log({ data, count });
-
     return { data, count };
 });
 
-const getBlogById = asyncHandler(async ({ blogId, fields = null, populate = [] }) => {
-    if (!blogId) return { error: "Blog ID is required." };
+const getBlogById = asyncHandler(async ({ documentId, fields = null, populate = [] }) => {
+    if (!documentId) return { error: "Blog ID is required." };
 
-    let apiUrl = `${SERVER_ONE}/blogs/${blogId}`;
+    let apiUrl = `${SERVER_ONE}/blogs/${documentId}`;
     if (fields) apiUrl += `?fields=${fields}`;
 
     

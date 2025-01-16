@@ -41,7 +41,6 @@ const formSchema = z.object({
 });
 
 export default function BlogForm({ blogData }) {
-  const [content, setContent] = React.useState("")
   const router = useRouter();
 
   let defaultValues = {
@@ -86,8 +85,6 @@ export default function BlogForm({ blogData }) {
 
   const onSubmit = async (values) => {
     const data = { ...values };
-
-    return console.log({ content });
 
     if (blogData?.documentId) {
       const updatedBlog = await updateBlog({ documentId: blogData.documentId, blogData: data, defaultValues });
@@ -206,8 +203,8 @@ export default function BlogForm({ blogData }) {
                   <FormLabel>Content</FormLabel>
                   <FormControl>
                     <RichTextEditor
-                      content={content}
-                      onChange={(newContent) => setContent(newContent)}
+                      content={field.value}
+                      onChange={field.onChange}
                     />
                   </FormControl>
                   <FormMessage />

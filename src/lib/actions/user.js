@@ -16,8 +16,6 @@ const getAllUsers = asyncHandler(async (args) => {
 
     if (data?.error) return { error: errResponse(data.error) };
 
-    console.log({ data, count });
-
     return { data, count };
 });
 
