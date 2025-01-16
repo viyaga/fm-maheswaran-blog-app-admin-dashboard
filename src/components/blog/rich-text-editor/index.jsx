@@ -6,7 +6,7 @@ import './styles.css'
 import { useEditor, EditorContent } from '@tiptap/react'
 import React from 'react'
 import extensions from './extensions';
-import MenuBar from './menu-bar';
+import Toolbar from './toolbar';
 
 export default function RichTextEditor() {
   const editor = useEditor({
@@ -30,7 +30,7 @@ export default function RichTextEditor() {
 
   return (
     <>
-      <MenuBar editor={editor} />
+      <Toolbar editor={editor} />
       <div className="button-group">
         <button onClick={addImage}>Add image from URL</button>
       </div>

@@ -1,4 +1,4 @@
-const MenuBar = ({ editor }) => {
+const Toolbar = ({ editor }) => {
   if (!editor) {
     return null
   }
@@ -47,4 +47,4 @@ const MenuBar = ({ editor }) => {
   )
 }
 
-export default MenuBar
+export default Toolbar
