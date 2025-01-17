@@ -18,6 +18,12 @@ const nextConfig = {
                 pathname: '/**', // Adjust based on your image path
 
             },
+            {
+                protocol: 'https',
+                hostname: 'en.chessbase.com',
+                pathname: '/**', // Adjust based on your image path
+
+            },
         ],
     },
 };

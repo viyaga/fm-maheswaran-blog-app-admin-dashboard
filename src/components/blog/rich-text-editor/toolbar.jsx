@@ -8,6 +8,8 @@ import {
   List,
   ListOrdered,
   Heading2,
+  Heading1,
+  Heading3,
   Underline,
   Quote,
   Undo,
@@ -22,7 +24,24 @@ import {
   AlignRight,
   AlignJustify,
   Check,
+  VideoIcon,
+  PencilLine,
+  Palette,
 } from "lucide-react";
+
+// Helper function to convert YouTube URL to embed format
+const convertToEmbedUrl = (url) => {
+  const videoId = url.match(/(?:youtu\.be\/|youtube\.com\/(?:[^\/]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=))([a-zA-Z0-9_-]{11})/);
+  if (videoId) {
+    return `https://www.youtube-nocookie.com/embed/${videoId[1]}`;
+  }
+  return '';
+};
+
+const isYouTubeURL = (url) => {
+  const pattern = /^(https?:\/\/)?(www\.)?(youtube|youtu|youtube-nocookie)\.(com|be)\/.+/;
+  return pattern.test(url);
+};
 
 const Toolbar = ({ editor }) => {
   if (!editor) {
@@ -55,10 +74,22 @@ const Toolbar = ({ editor }) => {
       label: "Strikethrough",
     },
     {
+      icon: Heading1,
+      action: () => editor.chain().focus().toggleHeading({ level: 1 }).run(),
+      isActive: editor.isActive("heading", { level: 1 }),
+      label: "Heading 1",
+    },
+    {
       icon: Heading2,
       action: () => editor.chain().focus().toggleHeading({ level: 2 }).run(),
       isActive: editor.isActive("heading", { level: 2 }),
       label: "Heading 2",
+    },
+    {
+      icon: Heading3,
+      action: () => editor.chain().focus().toggleHeading({ level: 3 }).run(),
+      isActive: editor.isActive("heading", { level: 3 }),
+      label: "Heading 3",
     },
     {
       icon: List,
@@ -115,6 +146,36 @@ const Toolbar = ({ editor }) => {
       label: "Insert Table",
     },
     {
+      icon: VideoIcon,
+      action: () => {
+        const url = prompt("Enter YouTube video URL (e.g., https://www.youtube.com/watch?v=...):");
+        if (url && isYouTubeURL(url)) {
+          const embedUrl = convertToEmbedUrl(url);
+          const iframe = `<iframe width="560" height="315" src="${embedUrl}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+          editor.chain().focus().insertContent(iframe).run();
+        } else {
+          alert("Please enter a valid YouTube URL.");
+        }
+      },
+      isActive: false,
+      label: "Insert Video",
+    },
+    {
+      icon: PencilLine,
+      action: () => editor.chain().focus().setHorizontalRule().run(),
+      isActive: false,
+      label: "Horizontal Rule",
+    },
+    {
+      icon: Palette,
+      action: () => {
+        const color = prompt("Enter text color");
+        if (color) editor.chain().focus().setColor(color).run();
+      },
+      isActive: false,
+      label: "Text Color",
+    },
+    {
       icon: AlignLeft,
       action: () => editor.chain().focus().setTextAlign("left").run(),
       isActive: editor.isActive({ textAlign: "left" }),
@@ -159,10 +220,7 @@ const Toolbar = ({ editor }) => {
   ];
 
   return (
-    <div
-      className="px-4 py-3 rounded-tl-md rounded-tr-md flex justify-between items-start
-      gap-5 w-full flex-wrap border border-gray-700"
-    >
+    <div className="px-4 py-3 rounded-tl-md rounded-tr-md flex justify-between items-start gap-5 w-full flex-wrap border border-gray-700">
       <div className="flex justify-start items-center gap-5 w-full flex-wrap">
         {buttons.map(({ icon: Icon, action, isActive, label }, idx) => (
           <button

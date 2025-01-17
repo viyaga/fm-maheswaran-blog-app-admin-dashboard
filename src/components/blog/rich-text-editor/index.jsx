@@ -27,7 +27,7 @@ const RichTextEditor = ({ onChange, content }) => {
   });
 
   return (
-    <div className="w-full">
+   <div className="prose max-w-full">
       <Toolbar editor={editor} />
       <EditorContent style={{ whiteSpace: "pre-line" }} editor={editor} />
     </div>
