@@ -2,7 +2,7 @@
 
 import React from 'react'
 import dynamic from 'next/dynamic'
-import RichTextEditor from '@/components/blog/rich-text-editor'
+import RichTextEditor from '@/components/pages/blog/rich-text-editor'
 
 // Dynamically import the editor to prevent SSR issues
 // const RichTextEditor = dynamic(() => import('@/components/blog/blog-editor'), { ssr: false })

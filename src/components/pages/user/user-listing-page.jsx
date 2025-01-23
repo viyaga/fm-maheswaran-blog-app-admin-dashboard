@@ -8,7 +8,7 @@ import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import UserTable from './user-table';
 import { getAllUsers } from '@/lib/actions/user';
-import ServerError from '../shared/serverError';
+import ServerError from '../../shared/serverError';
 
 export default async function UserListingPage() {
   // Showcasing the use of search params cache in nested RSCs

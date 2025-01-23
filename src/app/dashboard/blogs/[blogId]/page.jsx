@@ -1,4 +1,4 @@
-import BlogViewPage from '@/components/blog/blog-view-page';
+import BlogViewPage from '@/components/pages/blog/blog-view-page';
 import FormCardSkeleton from '@/components/form-card-skeleton';
 import PageContainer from '@/components/layout/page-container';
 import { getBlogById } from '@/lib/actions/blog';

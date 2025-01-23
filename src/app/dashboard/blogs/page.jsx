@@ -8,8 +8,8 @@ import { cn } from '@/lib/utils';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import { Suspense } from 'react';
-import BlogListingPage from '@/components/blog/blog-listing';
-import BlogTableAction from '@/components/blog/blog-tables/blog-table-action';
+import BlogListingPage from '@/components/pages/blog/blog-listing';
+import BlogTableAction from '@/components/pages/blog/blog-tables/blog-table-action';
 
 export const metadata = {
   title: 'Dashboard: Blogs'

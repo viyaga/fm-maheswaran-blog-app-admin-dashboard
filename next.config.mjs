@@ -16,7 +16,6 @@ const nextConfig = {
                 hostname: 'localhost',
                 port: '3000',
                 pathname: '/**', // Adjust based on your image path
-
             },
             {
                 protocol: 'https',

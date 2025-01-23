@@ -1,4 +1,4 @@
-import UsersViewPage from '@/components/user/user-view-page';
+import UsersViewPage from '@/components/pages/user/user-view-page';
 import { getUserById } from '@/lib/actions/user';
 
 export const metadata = {

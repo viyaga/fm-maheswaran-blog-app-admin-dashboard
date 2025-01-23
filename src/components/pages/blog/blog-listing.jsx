@@ -2,7 +2,7 @@ import { searchParamsCache } from '@/lib/searchparams';
 import { DataTable as BlogTable } from '@/components/shared/table/data-table';
 import { columns } from './blog-tables/columns';
 import { getAllBlogs } from '@/lib/actions/blog';
-import ServerError from '../shared/serverError';
+import ServerError from '../../shared/serverError';
 
 export default async function BlogListingPage() {
   // Showcasing the use of search params cache in nested RSCs
@@ -19,11 +19,10 @@ export default async function BlogListingPage() {
   //   ...(categories && { categories: categories })
   // };
 
-  const fields = "title,subtitle,featured_image,views,comments_count,createdAt,blog_status"; // Fetch only username and email fields
+  const fields = "title,subtitle,featured_image,views,comments_count,createdAt,blog_status";
 
   const filters = [
-    { field: "blog_status", operator: "$ne", value: "deleted" }, // Filtering by Role ID = 1 (Admin users)
-    // { field: "admin_status", operator: "$eq", value: 1 },     // Filtering only active admins
+    { field: "blog_status", operator: "$ne", value: "deleted" }
   ];
 
   // search by email

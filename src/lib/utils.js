@@ -30,8 +30,8 @@ const formatBytes = (bytes, opts = {}) => {
 }
 
 const errResponse = (error) => {
-  const message = error?.response?.data?.error?.message || error?.response?.data?.message 
-  || error?.error?.message || error.message || error.toString()
+  const message = error?.response?.data?.error?.message || error?.response?.data?.message
+    || error?.error?.message || error.message || error.toString()
   return message
 }
 
@@ -44,7 +44,7 @@ const capitalize = (str) => {
 };
 
 
-const getUpdatedFields = (updatedFields, defaultValues) => {  
+const getUpdatedFields = (updatedFields, defaultValues) => {
   // Filter the updated fields to include only those that have changed
   const obj = Object.fromEntries(
     Object.entries(updatedFields).filter(
@@ -55,6 +55,15 @@ const getUpdatedFields = (updatedFields, defaultValues) => {
   return obj
 };
 
+const truncateString = (str, char) => {
+  // Check if the string length is more than 15
+  if (str.length > char) {
+    return str.slice(0, char) + '...';
+  }
+  return str; // Return the original string if it's 15 or fewer characters
+}
+
 export {
-  cn, hasDraggableData, formatBytes, errResponse, capitalize, getUpdatedFields
+  cn, hasDraggableData, formatBytes, errResponse, capitalize, getUpdatedFields,
+  truncateString
 }

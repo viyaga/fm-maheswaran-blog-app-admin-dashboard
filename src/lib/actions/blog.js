@@ -2,7 +2,7 @@
 
 import axios from "axios";
 import { errResponse, getUpdatedFields } from "../utils";
-import { asyncHandler, getData, setAuthToken } from "./common";
+import { asyncHandler, getData } from "./common";
 import { revalidateTag } from "next/cache";
 
 const SERVER_ONE = process.env.SERVER_ONE;

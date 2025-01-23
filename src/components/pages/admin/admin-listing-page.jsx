@@ -8,7 +8,7 @@ import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import AdminTable from './admin-table';
 import { getAllAdmins } from '@/lib/actions/admin';
-import ServerError from '../shared/serverError';
+import ServerError from '../../shared/serverError';
 
 export default async function AdminListingPage() {
   // Showcasing the use of search params cache in nested RSCs

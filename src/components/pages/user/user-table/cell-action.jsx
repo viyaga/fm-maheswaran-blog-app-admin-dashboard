@@ -1,7 +1,6 @@
-'use client';
+'use client'
 
-
-import { AlertModal } from '@/components/modal/alert-modal';
+import { AlertModal } from '@/components/shared/modal/alert-modal';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -10,7 +9,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { deleteAdmin } from '@/lib/actions/admin';
+import { deleteUser } from '@/lib/actions/user'; // Updated to user action
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
@@ -22,9 +21,8 @@ export const CellAction = ({ data }) => {
   const router = useRouter();
 
   const onConfirm = () => {
-
     startTransition(async () => {
-      const res = await deleteAdmin(data?.id)
+      const res = await deleteUser(data?.documentId) // Updated to deleteUser function
       setOpen(false)
       
       if (res?.success) return toast.success(res?.message) //if success
@@ -51,7 +49,7 @@ export const CellAction = ({ data }) => {
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
           <DropdownMenuItem
-            onClick={() => router.push(`/dashboard/admins/${data.id}`)}
+            onClick={() => router.push(`/dashboard/users/${data.documentId}`)} // Updated URL to users
           >
             <Edit className="mr-2 h-4 w-4" /> Update
           </DropdownMenuItem>

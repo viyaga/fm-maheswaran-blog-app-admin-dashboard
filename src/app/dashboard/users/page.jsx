@@ -1,4 +1,4 @@
-import UserListingPage from '@/components/user/user-listing-page';
+import UserListingPage from '@/components/pages/user/user-listing-page';
 import { searchParamsCache } from '@/lib/searchparams';
 import React from 'react';
 

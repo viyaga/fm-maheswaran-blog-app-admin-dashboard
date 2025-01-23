@@ -1,4 +1,4 @@
-import AdminViewPage from '@/components/admin/admin-view-page';
+import AdminViewPage from '@/components/pages/admin/admin-view-page';
 import { getAdminById } from '@/lib/actions/admin';
 
 export const metadata = {

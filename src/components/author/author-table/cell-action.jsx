@@ -1,7 +1,7 @@
 'use client';
 
 
-import { AlertModal } from '@/components/modal/alert-modal';
+import { AlertModal } from '@/components/shared/modal/alert-modal';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,

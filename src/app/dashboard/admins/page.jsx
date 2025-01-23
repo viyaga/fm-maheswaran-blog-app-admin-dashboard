@@ -1,4 +1,4 @@
-import AdminListingPage from '@/components/admin/admin-listing-page';
+import AdminListingPage from '@/components/pages/admin/admin-listing-page';
 import { searchParamsCache } from '@/lib/searchparams';
 import React from 'react';
 
