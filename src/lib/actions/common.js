@@ -21,7 +21,7 @@ const asyncHandler = (fn) => async (...args) => {
 const createStrapiApiUrl = (args) => {
     const { url, fields = "", filters = [], pagination = {}, sort = "", populate = "" } = args;
     const SERVER_ONE = process.env.SERVER_ONE;
-
+    
     const fieldsUrl = fields ? `fields=${fields}&` : "";
     let filtersUrl = "";
     if (Array.isArray(filters) && filters?.length > 0) {
@@ -102,4 +102,29 @@ const getData = asyncHandler(async (args) => {
     return { data, count: meta?.pagination?.total || 0 };
 });
 
-export { setAuthToken, asyncHandler, createStrapiApiUrl, generateUsername, getData };
+const getMediaData = asyncHandler(async (args) => {
+    const { url, fields = "", filters = [], pagination = {}, populate = "", sort = "", revalidate = 2, tags = [] } = args;
+
+    if (!url) throw new Error("Url Required to get data");
+
+    const BEARER_API_TOKEN = "Bearer " + process.env.API_TOKEN;
+    let fullUrl = createStrapiApiUrl({ url, fields, filters, pagination, populate, sort });
+
+    const res = await fetch(fullUrl, {
+        method: "GET",
+        headers: {
+            Authorization: BEARER_API_TOKEN,
+        },
+        next: { revalidate, tags },
+    });
+
+    const data = await res.json();
+
+    console.log({ data });
+
+    // if (error) return { error };
+
+    return data;
+});
+
+export { setAuthToken, asyncHandler, createStrapiApiUrl, generateUsername, getData, getMediaData };

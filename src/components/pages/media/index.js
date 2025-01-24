@@ -1,14 +1,38 @@
 import PageContainer from "@/components/layout/page-container";
 import MediaCard from "./media-card";
-import { Plus } from "lucide-react";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import { Heading } from "@/components/shared/heading";
-import Link from "next/link";
-import { cn } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button";
+import { searchParamsCache } from "@/lib/searchparams";
+import { getAllMediaFiles } from "@/lib/actions/media";
+import ServerError from "@/components/shared/serverError";
+import UploadButton from "./upload";
 
+const MediaLibrary = async () => {
 
-export default function MediaLibrary() {
+  const page = searchParamsCache.get('page');
+  const search = searchParamsCache.get('q');
+  const pageLimit = searchParamsCache.get('limit');
+  let sort = searchParamsCache.get('sort');
+
+  const fields = "name,url,width,height,alternativeText,ext"; // Fetch relevant fields
+
+  const filters = [];
+
+  // Search by name
+  if (search) filters.push({ field: "name", operator: "$contains", value: search });
+
+  const pagination = { page, pageSize: pageLimit };
+
+  sort = sort ? sort : "createdAt:DESC";
+
+  const mediaFiles = await getAllMediaFiles({ fields, filters, pagination, sort, revalidate: 60 * 60 * 24 * 365, tags: ["mediaFiles"] });
+
+  console.log({mediaFiles});
+  
+  if (mediaFiles?.error) return <ServerError message="An error occurred. Please try again later." />;
+
+  const count = mediaFiles?.count;
+
   const mediaItems = [
     {
       imageUrl: "https://en.chessbase.com/Portals/all/thumbs/123/123123.jpeg",
@@ -125,20 +149,15 @@ export default function MediaLibrary() {
       <div className="space-y-4 pb-4">
         <div className="flex items-start justify-between">
           <Heading
-            title={`Admins`}
-            description="Manage Admins"
+            title="Media library"
+            description="Manage Images"
           />
 
-          <Link
-            href={'/dashboard/admins/add'}
-            className={cn(buttonVariants({ variant: 'default' }))}
-          >
-            <Plus className="mr-2 h-4 w-4" /> Add New
-          </Link>
+          <UploadButton />
         </div>
         <Separator />
         <div className="grid lg:grid-cols-4 sm:grid-cols-2 gap-4 w-full mx-auto">
-          {mediaItems.map((item, index) => (
+          {mediaFiles.map((item, index) => (
             <MediaCard key={index} {...item} />
           ))}
         </div>
@@ -146,3 +165,6 @@ export default function MediaLibrary() {
     </PageContainer>
   );
 }
+
+
+export default MediaLibrary;

@@ -63,7 +63,11 @@ const truncateString = (str, char) => {
   return str; // Return the original string if it's 15 or fewer characters
 }
 
+const getExtensionOfImage = (filename) => {
+  return filename.split('.').pop();
+};
+
 export {
   cn, hasDraggableData, formatBytes, errResponse, capitalize, getUpdatedFields,
-  truncateString
+  truncateString, getExtensionOfImage
 }
