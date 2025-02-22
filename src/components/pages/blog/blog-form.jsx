@@ -27,12 +27,13 @@ import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { addBlog, updateBlog } from '@/lib/actions/blog';
 import RichTextEditor from './rich-text-editor';
+import { generateSlug } from '@/lib/utils';
 
 const formSchema = z.object({
   title: z.string().min(1, { message: 'Title is required.' }),
   slug: z.string().min(1, { message: 'Slug is required.' }),
   excerpt: z.string().optional(),
-  content: z.string().min(1, { message: 'Content is required.' }),
+  free_content: z.string().min(1, { message: 'Content is required.' }),
   featured_image: z.string().url({ message: 'Please enter a valid image URL.' }).optional(),
   blog_status: z.enum(['draft', 'published'], { message: 'Please select a status.' }),
   seo_meta_title: z.string().optional(),
@@ -47,6 +48,7 @@ export default function BlogForm({ blogData }) {
     title: '',
     slug: '',
     excerpt: '',
+    free_content: '',
     content: '',
     featured_image: '',
     blog_status: 'draft',
@@ -60,6 +62,7 @@ export default function BlogForm({ blogData }) {
       title,
       slug,
       excerpt,
+      free_content,
       content,
       featured_image,
       blog_status,
@@ -72,6 +75,7 @@ export default function BlogForm({ blogData }) {
       title,
       slug,
       excerpt: excerpt || '',
+      free_content: free_content || '',
       content: content || '',
       featured_image: featured_image || '',
       blog_status: blog_status || '',
@@ -121,7 +125,15 @@ export default function BlogForm({ blogData }) {
                   <FormItem>
                     <FormLabel>Title</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter blog title" {...field} />
+                      <Input
+                        placeholder="Enter blog title"
+                        {...field}
+                        onChange={(e) => {
+                          form.setValue('title', e.target.value);
+                          const slug = generateSlug(e.target.value);
+                          form.setValue('slug', slug);
+                        }}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -132,7 +144,7 @@ export default function BlogForm({ blogData }) {
                 name="slug"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Slug</FormLabel>
+                    <FormLabel>Slug (URL)</FormLabel>
                     <FormControl>
                       <Input placeholder="Enter blog slug" {...field} />
                     </FormControl>
@@ -197,10 +209,26 @@ export default function BlogForm({ blogData }) {
             />
             <FormField
               control={form.control}
+              name="free_content"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Free Content</FormLabel>
+                  <FormControl>
+                    <RichTextEditor
+                      content={field.value}
+                      onChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="content"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Content</FormLabel>
+                  <FormLabel>Premium Content</FormLabel>
                   <FormControl>
                     <RichTextEditor
                       content={field.value}

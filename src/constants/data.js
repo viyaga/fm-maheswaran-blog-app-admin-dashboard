@@ -86,14 +86,14 @@ export const navItems = [
     items: [
       {
         title: 'Profile',
-        url: '/dashboard/profile',
+        url: '/dashboard/account/profile',
         icon: 'userPen',
-        shortcut: ['m', 'm']
+        shortcut: ['p', 'p']
       },
       {
         title: 'Change password',
-        shortcut: ['l', 'l'],
-        url: '/',
+        shortcut: ['c', 'p'],
+        url: '/dashboard/account/change-password',
         icon: 'login'
       }
     ]

@@ -4,6 +4,7 @@ import React from 'react'
 
 const page = async ({ searchParams }) => {
   await searchParamsCache.parse(searchParams);
+  
   return <MediaLibrary />
 }
 

@@ -1,4 +1,4 @@
-import AuthorViewPage from '@/components/author/author-view-page';
+import AuthorViewPage from '@/components/pages/author/author-view-page';
 import { getAuthorById } from '@/lib/actions/author';
 
 export const metadata = {

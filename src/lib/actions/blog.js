@@ -32,7 +32,7 @@ const getBlogById = asyncHandler(async ({ documentId, fields = null, populate = 
 });
 
 const addBlog = asyncHandler(async (blogData) => {
-    const requiredFields = ["title", "slug", "content", "blog_status"];
+    const requiredFields = ["title", "slug", "free_content", "blog_status"];
     const missingFields = requiredFields.filter((field) => !blogData[field]);
 
     if (missingFields.length > 0) {
@@ -52,6 +52,13 @@ const addBlog = asyncHandler(async (blogData) => {
 
 const updateBlog = asyncHandler(async ({ documentId, blogData, defaultValues }) => {
     if (!documentId) return { error: "Blog ID is required" };
+
+    const requiredFields = ["title", "slug", "free_content", "blog_status"];
+    const missingFields = requiredFields.filter((field) => !blogData[field]);
+
+    if (missingFields.length > 0) {
+        return { error: `Missing required fields: ${missingFields.join(", ")}` };
+    }
 
     const updatedFields = getUpdatedFields(blogData, defaultValues);
     if (Object.keys(updatedFields).length === 0) {

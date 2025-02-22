@@ -21,7 +21,7 @@ const asyncHandler = (fn) => async (...args) => {
 const createStrapiApiUrl = (args) => {
     const { url, fields = "", filters = [], pagination = {}, sort = "", populate = "" } = args;
     const SERVER_ONE = process.env.SERVER_ONE;
-    
+
     const fieldsUrl = fields ? `fields=${fields}&` : "";
     let filtersUrl = "";
     if (Array.isArray(filters) && filters?.length > 0) {
@@ -108,7 +108,10 @@ const getMediaData = asyncHandler(async (args) => {
     if (!url) throw new Error("Url Required to get data");
 
     const BEARER_API_TOKEN = "Bearer " + process.env.API_TOKEN;
-    let fullUrl = createStrapiApiUrl({ url, fields, filters, pagination, populate, sort });
+    let fullUrl = createStrapiApiUrl({ url, fields, filters, populate, sort });
+
+    const { page, pageSize } = pagination;
+    fullUrl += `&start=${pageSize * (page - 1)}&limit=${pageSize}`;
 
     const res = await fetch(fullUrl, {
         method: "GET",

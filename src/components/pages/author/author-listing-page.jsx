@@ -8,7 +8,7 @@ import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import AuthorTable from './author-table';
 import { getAllAuthors } from '@/lib/actions/author';
-import ServerError from '../shared/serverError';
+import ServerError from '../../shared/serverError';
 
 export default async function AuthorListingPage() {
   // Showcasing the use of search params cache in nested RSCs
