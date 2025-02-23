@@ -10,5 +10,5 @@ export default async function Page({ searchParams }) {
   // Allow nested RSCs to access the search params (in a type-safe way)
   await searchParamsCache.parse(searchParams);
 
-  return <CommentsListingPage />;
+  return <CommentsListingPage />
 }

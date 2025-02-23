@@ -9,7 +9,7 @@ async function getUser(identifier, password) {
     const SERVER_ONE = process.env.SERVER_ONE
 
     try {
-        return { email: identifier, name:"mohan" }
+        return { email: identifier, first_name:"mohan", last_name:"maheswaran", role: { name: "Authenticated" } }
         const res = await axios.post(SERVER_ONE + '/auth/local', { identifier, password })
         console.log({ res: res.data });
 
