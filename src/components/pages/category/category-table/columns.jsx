@@ -26,32 +26,33 @@ export const columns = [
     enableHiding: false
   },
   {
-    accessorKey: 'username',
-    header: 'USERNAME',
-    cell: ({ row }) => "@" + row.original.username.toLowerCase()
+    accessorKey: 'name',
+    header: 'CATEGORY NAME',
+    cell: ({ row }) => capitalize(row.original.name) || "-"
   },
   {
-    accessorKey: 'email',
-    header: 'EMAIL'
+    accessorKey: 'slug',
+    header: 'SLUG',
+    cell: ({ row }) => row.original.slug || "-"
   },
   {
-    accessorKey: 'first_name',
-    header: 'FIRST NAME',
-    cell: ({ row }) => capitalize(row.original.first_name) || "-"
+    accessorKey: 'description',
+    header: 'DESCRIPTION',
+    cell: ({ row }) => row.original.description || "-"
   },
   {
-    accessorKey: 'last_name',
-    header: 'LAST NAME',
-    cell: ({ row }) => capitalize(row.original.last_name) || "-"
+    accessorKey: 'parent_id',
+    header: 'PARENT CATEGORY',
+    cell: ({ row }) => row.original.parent_id ? capitalize(row.original.parent_id) : "None"
   },
   {
-    accessorKey: 'country',
-    header: 'COUNTRY',
-    cell: ({ row }) => capitalize(row.original.country) || "-"
+    accessorKey: 'status',
+    header: 'STATUS',
+    cell: ({ row }) => (row.original.status === 1 ? "Active" : "Inactive")
   },
   {
     accessorKey: 'createdAt',
-    header: 'REGISTERED ON',
+    header: 'CREATED ON',
     cell: ({ row }) => format(new Date(row.original.createdAt), "dd/MM/yyyy")
   },
   {

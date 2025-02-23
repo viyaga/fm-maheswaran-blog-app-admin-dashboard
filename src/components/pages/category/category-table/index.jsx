@@ -4,22 +4,22 @@ import { DataTable } from '@/components/shared/table/data-table';
 import { DataTableResetFilter } from '@/components/shared/table/data-table-reset-filter';
 import { DataTableSearch } from '@/components/shared/table/data-table-search';
 import { columns } from './columns';
-import { useAuthorTableFilters } from './use-author-table-filters';
+import { useCategoryTableFilters } from './use-category-table-filters';
 
-export default function AuthorTable({ data, totalData }) {
+export default function CategoryTable({ data, totalData }) {
   const {
     isAnyFilterActive,
     resetFilters,
     searchQuery,
     setPage,
     setSearchQuery,
-  } = useAuthorTableFilters();
+  } = useCategoryTableFilters();
 
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-4">
         <DataTableSearch
-          searchKey="email"
+          searchKey="name"
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           setPage={setPage}

@@ -4,22 +4,13 @@ import { searchParams } from '@/lib/searchparams';
 import { useQueryState } from 'nuqs';
 import { useCallback, useMemo } from 'react';
 
-export const PRIME_OPTIONS = [
-  { value: 'male', label: 'Male' },
-  { value: 'female', label: 'Female' }
-];
 
-export function useAuthorTableFilters() {
+export function useCategoryTableFilters() {
   const [searchQuery, setSearchQuery] = useQueryState(
     'q',
     searchParams.q
       .withOptions({ shallow: false, throttleMs: 1000 })
       .withDefault('')
-  );
-
-  const [primeFilter, setPrimeFilter] = useQueryState(
-    'prime',
-    searchParams.prime.withOptions({ shallow: false }).withDefault('')
   );
 
   const [page, setPage] = useQueryState(
@@ -29,20 +20,16 @@ export function useAuthorTableFilters() {
 
   const resetFilters = useCallback(() => {
     setSearchQuery(null);
-    setPrimeFilter(null);
-
     setPage(1);
-  }, [setSearchQuery, setPrimeFilter, setPage]);
+  }, [setSearchQuery, setPage]);
 
   const isAnyFilterActive = useMemo(() => {
-    return !!searchQuery || !!primeFilter;
-  }, [searchQuery, primeFilter]);
+    return !!searchQuery;
+  }, [searchQuery]);
 
   return {
     searchQuery,
     setSearchQuery,
-    primeFilter,
-    setPrimeFilter,
     page,
     setPage,
     resetFilters,

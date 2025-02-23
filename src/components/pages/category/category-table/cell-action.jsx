@@ -1,6 +1,5 @@
 'use client';
 
-
 import { AlertModal } from '@/components/shared/modal/alert-modal';
 import { Button } from '@/components/ui/button';
 import {
@@ -10,26 +9,25 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { deleteAuthor } from '@/lib/actions/author';
+import { deleteCategory } from '@/lib/actions/category';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
 import { toast } from 'sonner';
 
 export const CellAction = ({ data }) => {
-  const [isPending, startTransition] = useTransition()
+  const [isPending, startTransition] = useTransition();
   const [open, setOpen] = useState(false);
   const router = useRouter();
 
   const onConfirm = () => {
-
     startTransition(async () => {
-      const res = await deleteAuthor(data?.documentId)
-      setOpen(false)
+      const res = await deleteCategory(data?.documentId);
+      setOpen(false);
       
-      if (res?.success) return toast.success(res?.message) //if success
-      return toast.error(res?.error) // if error
-    })
+      if (res?.success) return toast.success(res?.message); // if success
+      return toast.error(res?.error); // if error
+    });
   };
 
   return (
@@ -51,7 +49,7 @@ export const CellAction = ({ data }) => {
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
           <DropdownMenuItem
-            onClick={() => router.push(`/dashboard/authors/${data.documentId}`)}
+            onClick={() => router.push(`/dashboard/categories/${data.documentId}`)}
           >
             <Edit className="mr-2 h-4 w-4" /> Update
           </DropdownMenuItem>
