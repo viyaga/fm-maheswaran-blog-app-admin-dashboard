@@ -2,7 +2,7 @@
 
 import axios from "axios";
 import { errResponse, getUpdatedFields } from "../utils";
-import { asyncHandler, generateUsername, getData, setAuthToken } from "./common";
+import { asyncHandler, generateUsername, getData } from "./common";
 import { revalidateTag } from "next/cache";
 import bcrypt from "bcryptjs";
 
@@ -13,7 +13,6 @@ const getAllAuthors = asyncHandler(async (args) => {
     const url = "/authors";
 
     const { data, count } = await getData({ url, fields, filters, pagination, sort, revalidate, tags });
-
     if (data?.error) return { error: errResponse(data.error) };
 
     return { data, count };

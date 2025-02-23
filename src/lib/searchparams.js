@@ -13,6 +13,7 @@ export const searchParams = {
   prime: parseAsString,
   categories: parseAsString,
   blog_status: parseAsString,
+  spam: parseAsString,
 };
 
 export const searchParamsCache = createSearchParamsCache(searchParams);

@@ -75,7 +75,9 @@ const generateSlug = (string) => {
     .replace(/\s+/g, "-"); // Replace spaces with dashes
 };
 
+const fakeDelay = async(ms) => await new Promise((resolve) => setTimeout(resolve, ms));
+
 export {
   cn, hasDraggableData, formatBytes, errResponse, capitalize, getUpdatedFields,
-  truncateString, getExtensionOfImage, generateSlug
+  truncateString, getExtensionOfImage, generateSlug, fakeDelay
 }

@@ -12,7 +12,7 @@ const getAllBlogs = asyncHandler(async (args) => {
     const url = "/blogs";
 
     const { data, count } = await getData({ url, fields, filters, pagination, sort, revalidate, tags });
-
+    
     if (data?.error) return { error: errResponse(data.error) };
 
     return { data, count };
