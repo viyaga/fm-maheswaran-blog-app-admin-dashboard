@@ -9,7 +9,7 @@ const SERVER_ONE = process.env.SERVER_ONE;
 
 const getAllCategories = asyncHandler(async (args) => {
     const { fields = "", filters = [], pagination, sort, revalidate = 2, tags = [] } = args;
-    const url = "/blog-categories";
+    const url = "/categories";
 
     const { data, count } = await getData({ url, fields, filters, pagination, sort, revalidate, tags });
     if (data?.error) return { error: errResponse(data.error) };
@@ -20,7 +20,7 @@ const getAllCategories = asyncHandler(async (args) => {
 const getCategoryById = asyncHandler(async ({ documentId, fields = null }) => {
     if (!documentId) return { error: "Category ID is required." };
 
-    let apiUrl = `${SERVER_ONE}/blog-categories/${documentId}`;
+    let apiUrl = `${SERVER_ONE}/categories/${documentId}`;
     if (fields) apiUrl += `?fields=${fields}`;
 
     const res = await axios.get(apiUrl);
@@ -37,8 +37,8 @@ const addCategory = asyncHandler(async (categoryData) => {
         return { error: `Missing required fields: ${missingFields.join(", ")}` };
     }
 
-    const { data } = await axios.post(`${SERVER_ONE}/blog-categories`, { data: categoryData });
-    revalidateTag("blog-categories");
+    const { data } = await axios.post(`${SERVER_ONE}/categories`, { data: categoryData });
+    revalidateTag("categories");
 
     return {
         success: true,
@@ -55,8 +55,8 @@ const updateCategory = asyncHandler(async ({ documentId, categoryData, defaultVa
         return { error: "No fields to update" };
     }
 
-    const { data } = await axios.put(`${SERVER_ONE}/blog-categories/${documentId}`, { data: updatedFields });
-    revalidateTag("blog-categories");
+    const { data } = await axios.put(`${SERVER_ONE}/categories/${documentId}`, { data: updatedFields });
+    revalidateTag("categories");
 
     return {
         success: true,
@@ -70,8 +70,8 @@ const deleteCategory = asyncHandler(async (documentId) => {
         return { error: "Category ID is required" };
     }
 
-    const { data } = await axios.delete(`${SERVER_ONE}/blog-categories/${documentId}`);
-    revalidateTag("blog-categories");
+    const { data } = await axios.delete(`${SERVER_ONE}/categories/${documentId}`);
+    revalidateTag("categories");
 
     return {
         success: true,

@@ -39,7 +39,6 @@ export default async function BlogListingPage() {
 
   if (blogs?.error) return <ServerError message="An error occurred. Please try again later." />
 
-
   const totalBlogs = blogs?.count;
 
   return (

@@ -16,7 +16,7 @@ const RichTextEditor = ({ onChange, content }) => {
     editorProps: {
       attributes: {
         class:
-          "flex flex-col px-4 py-3 justify-start border-b border-r border-l border-gray-700 text-gray-400 items-start w-full gap-3 font-medium text-[16px] pt-4 rounded-bl-md rounded-br-md outline-none",
+          "flex flex-col px-4 py-3 justify-start border border-border text-foreground bg-background items-start w-full gap-3 font-medium text-[16px] pt-4 rounded-md outline-none focus:border-primary transition"
       },
     },
     immediatelyRender: false,
@@ -27,7 +27,7 @@ const RichTextEditor = ({ onChange, content }) => {
   });
 
   return (
-   <div className="prose max-w-full">
+    <div className="prose max-w-full">
       <Toolbar editor={editor} />
       <EditorContent style={{ whiteSpace: "pre-line" }} editor={editor} />
     </div>

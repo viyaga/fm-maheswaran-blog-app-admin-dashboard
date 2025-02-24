@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -27,7 +28,7 @@ import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { addBlog, updateBlog } from '@/lib/actions/blog';
 import RichTextEditor from './rich-text-editor';
-import { generateSlug } from '@/lib/utils';
+import { capitalize, generateSlug } from '@/lib/utils';
 
 const formSchema = z.object({
   title: z.string().min(1, { message: 'Title is required.' }),
@@ -36,12 +37,13 @@ const formSchema = z.object({
   free_content: z.string().min(1, { message: 'Content is required.' }),
   featured_image: z.string().url({ message: 'Please enter a valid image URL.' }).optional(),
   blog_status: z.enum(['draft', 'published'], { message: 'Please select a status.' }),
+  author: z.string().min(1, { message: 'Author is required.' }),
+  categories: z.array(z.string()),
   seo_meta_title: z.string().optional(),
   seo_meta_description: z.string().optional(),
-  tags: z.array(z.string()).optional(),
 });
 
-export default function BlogForm({ blogData }) {
+export default function BlogForm({ blogData, authors, categories }) {
   const router = useRouter();
 
   let defaultValues = {
@@ -52,9 +54,10 @@ export default function BlogForm({ blogData }) {
     content: '',
     featured_image: '',
     blog_status: 'draft',
+    author: "",
+    categories: [],
     seo_meta_title: '',
     seo_meta_description: '',
-    tags: [],
   };
 
   if (blogData?.documentId) {
@@ -66,9 +69,10 @@ export default function BlogForm({ blogData }) {
       content,
       featured_image,
       blog_status,
+      author,
+      categories,
       seo_meta_title,
       seo_meta_description,
-      tags,
     } = blogData;
 
     defaultValues = {
@@ -79,9 +83,10 @@ export default function BlogForm({ blogData }) {
       content: content || '',
       featured_image: featured_image || '',
       blog_status: blog_status || '',
+      author: author?.id?.toString() || '',
+      categories: categories || [],
       seo_meta_title: seo_meta_title || '',
       seo_meta_description: seo_meta_description || '',
-      tags: tags || [],
     };
   }
 
@@ -130,8 +135,8 @@ export default function BlogForm({ blogData }) {
                         {...field}
                         onChange={(e) => {
                           form.setValue('title', e.target.value);
-                          const slug = generateSlug(e.target.value);
-                          form.setValue('slug', slug);
+                          form.setValue('slug', generateSlug(e.target.value));
+                          form.setValue('seo_meta_title', e.target.value);
                         }}
                       />
                     </FormControl>
@@ -171,11 +176,63 @@ export default function BlogForm({ blogData }) {
               />
               <FormField
                 control={form.control}
+                name="author"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Author</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select an author" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {authors?.map((author) => (
+                          <SelectItem key={author.documentId} value={author.id?.toString()}>
+                            {author.username}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="categories"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Categories</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a categories" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {categories?.map((category) => (
+                          <span key={categories.id}>
+                            <SelectItem value={category.id?.toString()}>{capitalize(category.name)}</SelectItem>
+                          </span>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
                 name="blog_status"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Status</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <Select onValueChange={(value) => {
+                      form.setValue('blog_status', value);
+                      console.log({ value, name: categories.find((category) => category.id === value)?.name });
+
+                    }} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select a status" />
@@ -199,8 +256,12 @@ export default function BlogForm({ blogData }) {
                   <FormLabel>Excerpt</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Enter a short excerpt for the blog"
                       {...field}
+                      placeholder="Enter a short excerpt for the blog"
+                      onChange={(e) => {
+                        form.setValue('excerpt', e.target.value);
+                        form.setValue('seo_meta_description', e.target.value);
+                      }}
                     />
                   </FormControl>
                   <FormMessage />
@@ -239,6 +300,44 @@ export default function BlogForm({ blogData }) {
                 </FormItem>
               )}
             />
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <FormField
+                control={form.control}
+                name="seo_meta_title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>SEO Meta Title</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter SEO Meta title"
+                        {...field}
+                        onChange={(e) => {
+                          form.setValue('title', e.target.value);
+                          const slug = generateSlug(e.target.value);
+                          form.setValue('slug', slug);
+                        }}
+                      />
+                    </FormControl>
+                    <FormDescription>Recommended max 60 characters</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="seo_meta_description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>SEO Meta Description</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter SEO Meta Description" {...field} />
+                    </FormControl>
+                    <FormDescription>Recommended max 160 characters</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             {/* <FormField>
             <RichTextEditor
               content={content}

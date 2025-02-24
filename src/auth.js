@@ -4,19 +4,21 @@ import { authConfig } from './auth.config';
 import { z } from 'zod';
 import axios from 'axios';
 import { errResponse } from './lib/utils';
+import { removeAuthToken } from './lib/actions/common';
 
 async function getUser(identifier, password) {
     const SERVER_ONE = process.env.SERVER_ONE
 
     try {
-        return { email: identifier, first_name:"mohan", last_name:"maheswaran", role: { name: "Authenticated" } }
+        // return { email: identifier, first_name:"mohan", last_name:"maheswaran", role: { name: "Authenticated" } }
+        removeAuthToken()
         const res = await axios.post(SERVER_ONE + '/auth/local', { identifier, password })
         console.log({ res: res.data });
 
         const jwt = res?.data?.jwt
 
 
-        const res2 = await axios.get(SERVER_ONE + '/users/me?fields=username,email,first_name,last_name&populate=role', { headers: { Authorization: 'Bearer ' + jwt } })
+        const res2 = await axios.get(SERVER_ONE + '/users/me?fields=username,email,first_name,last_name&populate[role]=name', { headers: { Authorization: 'Bearer ' + jwt } })
         const user = res2?.data
 
         console.log({ user });

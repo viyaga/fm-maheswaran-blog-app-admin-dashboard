@@ -1,5 +1,6 @@
 "use server"
 
+import { redirect } from "next/navigation";
 import { asyncHandler } from "./common";
 const { signOut, signIn } = require("@/auth");
 
@@ -9,5 +10,6 @@ export const loginUser = asyncHandler(async (email, password) => {
 });
 
 export const logoutUser = asyncHandler(async () => {
-    await signOut();
+    await signOut({ redirect: false });
+    return { success: "Logout successful" };
 });

@@ -8,6 +8,10 @@ const setAuthToken = () => {
     axios.defaults.headers.common['Authorization'] = BEARER_API_TOKEN;
 }
 
+const removeAuthToken = () => {
+    axios.defaults.headers.common["Authorization"] = undefined;
+};
+
 const asyncHandler = (fn) => async (...args) => {
     setAuthToken()
 
@@ -130,4 +134,4 @@ const getMediaData = asyncHandler(async (args) => {
     return data;
 });
 
-export { setAuthToken, asyncHandler, createStrapiApiUrl, generateUsername, getData, getMediaData };
+export { setAuthToken, removeAuthToken, asyncHandler, createStrapiApiUrl, generateUsername, getData, getMediaData };

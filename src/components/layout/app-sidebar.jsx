@@ -41,11 +41,13 @@ import {
   LogOut
 } from 'lucide-react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import * as React from 'react';
 import { Icons } from '../icons';
 import { logoutUser } from '@/lib/actions/authenticate';
 import { capitalize } from '@/lib/utils';
+import { signOut } from '@/auth';
+import { toast } from 'sonner';
 
 export const company = {
   name: 'Acme Inc',
@@ -55,6 +57,16 @@ export const company = {
 
 export default function AppSidebar({ session }) {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const onLogout = async () => {
+    const res = await logoutUser();
+    if (res?.success) {
+      return router.replace('/');
+    } else {
+      toast.error("Something went wrong, please try again later");
+    }
+  }
 
   return (
     <Sidebar collapsible="icon">
@@ -206,11 +218,14 @@ export default function AppSidebar({ session }) {
                 <DropdownMenuSeparator />
 
                 {/* logout BTN===============================*/}
-                <DropdownMenuItem className="cursor-pointer" onClick={logoutUser}>
-                  <LogOut />
-                  Log out
-                </DropdownMenuItem>
-
+                <form action={onLogout}>
+                  <button type='submit' className="flex items-center gap-2 px-1 py-1.5 text-left text-sm w-full">
+                    <DropdownMenuItem className="cursor-pointer">
+                      <LogOut />
+                      Log out
+                    </DropdownMenuItem>
+                  </button>
+                </form>
               </DropdownMenuContent>
             </DropdownMenu>
           </SidebarMenuItem>

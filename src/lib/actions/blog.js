@@ -12,7 +12,7 @@ const getAllBlogs = asyncHandler(async (args) => {
     const url = "/blogs";
 
     const { data, count } = await getData({ url, fields, filters, pagination, sort, revalidate, tags });
-    
+
     if (data?.error) return { error: errResponse(data.error) };
 
     return { data, count };
@@ -21,12 +21,13 @@ const getAllBlogs = asyncHandler(async (args) => {
 const getBlogById = asyncHandler(async ({ documentId, fields = null, populate = [] }) => {
     if (!documentId) return { error: "Blog ID is required." };
 
-    let apiUrl = `${SERVER_ONE}/blogs/${documentId}`;
-    if (fields) apiUrl += `?fields=${fields}`;
+    let apiUrl = `${SERVER_ONE}/blogs/${documentId}?populate[author][fields]=id&populate[categories][fields]=id`; //strapi utl type
+    if (fields) apiUrl += `&fields=${fields}`;
 
+    console.log({ apiUrl });
     
     const res = await axios.get(apiUrl);
-    if(res?.data?.data?.blog_status === "deleted") throw new Error("Blog Not Found");
+    if (res?.data?.data?.blog_status === "deleted") throw new Error("Blog Not Found");
 
     return res?.data?.data;
 });
@@ -39,7 +40,7 @@ const addBlog = asyncHandler(async (blogData) => {
         return { error: `Missing required fields: ${missingFields.join(", ")}` };
     }
 
-    
+
     const { data } = await axios.post(`${SERVER_ONE}/blogs`, { data: blogData });
     revalidateTag("blogs");
 
@@ -65,7 +66,7 @@ const updateBlog = asyncHandler(async ({ documentId, blogData, defaultValues }) 
         return { error: "No fields to update" };
     }
 
-    
+
     const { data } = await axios.put(`${SERVER_ONE}/blogs/${documentId}`, { data: updatedFields });
     revalidateTag("blogs");
 
@@ -81,7 +82,7 @@ const deleteBlog = asyncHandler(async (documentId) => {
         return { error: "Blog ID is required" };
     }
 
-    
+
     const { data } = await axios.put(`${SERVER_ONE}/blogs/${documentId}`, { data: { blog_status: "deleted" } });
     revalidateTag("blogs");
 

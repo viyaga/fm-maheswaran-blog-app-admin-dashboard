@@ -93,7 +93,7 @@ const addAdmin = asyncHandler(async (args) => {
 
     
     const username = await generateUsername({ first_name, last_name });
-    const adminData = { username, first_name, last_name, email, country, password, role: 1 };
+    const adminData = { username, first_name, last_name, email, country, password, role: 1, confirmed:true };
 
     const newAdmin = await axios.post(`${SERVER_ONE}/users`, adminData);
 

@@ -26,7 +26,7 @@ export default async function CategoryListingPage() {
 
   const pagination = { page, pageSize: pageLimit };
 
-  const categories = await getAllCategories({ fields, filters, pagination, sort, revalidate: 60 * 60 * 24 * 365, tags: ["blog-categories"] });
+  const categories = await getAllCategories({ fields, filters, pagination, sort, revalidate: 60 * 60 * 24 * 365, tags: ["categories"] });
 
   if (categories?.error) return <ServerError message="An error occurred. Please try again later." />;
 
