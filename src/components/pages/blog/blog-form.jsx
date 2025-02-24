@@ -29,6 +29,7 @@ import { useRouter } from 'next/navigation';
 import { addBlog, updateBlog } from '@/lib/actions/blog';
 import RichTextEditor from './rich-text-editor';
 import { capitalize, generateSlug } from '@/lib/utils';
+import { X } from 'lucide-react';
 
 const formSchema = z.object({
   title: z.string().min(1, { message: 'Title is required.' }),
@@ -38,12 +39,15 @@ const formSchema = z.object({
   featured_image: z.string().url({ message: 'Please enter a valid image URL.' }).optional(),
   blog_status: z.enum(['draft', 'published'], { message: 'Please select a status.' }),
   author: z.string().min(1, { message: 'Author is required.' }),
-  categories: z.array(z.string()),
   seo_meta_title: z.string().optional(),
   seo_meta_description: z.string().optional(),
 });
 
 export default function BlogForm({ blogData, authors, categories }) {
+  const defaultCategories = (blogData?.categories?.length > 1) ? blogData.categories.map((cat) => cat.id) : [];
+  const [selectedCategories, setSelectedCategories] = React.useState(defaultCategories);
+  console.log({ selectedCategories });
+
   const router = useRouter();
 
   let defaultValues = {
@@ -55,7 +59,6 @@ export default function BlogForm({ blogData, authors, categories }) {
     featured_image: '',
     blog_status: 'draft',
     author: "",
-    categories: [],
     seo_meta_title: '',
     seo_meta_description: '',
   };
@@ -70,7 +73,6 @@ export default function BlogForm({ blogData, authors, categories }) {
       featured_image,
       blog_status,
       author,
-      categories,
       seo_meta_title,
       seo_meta_description,
     } = blogData;
@@ -84,7 +86,6 @@ export default function BlogForm({ blogData, authors, categories }) {
       featured_image: featured_image || '',
       blog_status: blog_status || '',
       author: author?.id?.toString() || '',
-      categories: categories || [],
       seo_meta_title: seo_meta_title || '',
       seo_meta_description: seo_meta_description || '',
     };
@@ -93,7 +94,8 @@ export default function BlogForm({ blogData, authors, categories }) {
   const form = useForm({ resolver: zodResolver(formSchema), defaultValues });
 
   const onSubmit = async (values) => {
-    const data = { ...values };
+    if (selectedCategories.length < 1) return form.setError("categories", { message: "At least one category is requird" })
+    const data = { ...values, categories: selectedCategories };
 
     if (blogData?.documentId) {
       const updatedBlog = await updateBlog({ documentId: blogData.documentId, blogData: data, defaultValues });
@@ -198,7 +200,65 @@ export default function BlogForm({ blogData, authors, categories }) {
                   </FormItem>
                 )}
               />
-              <FormField
+              <div>
+                <FormField
+                  control={form.control}
+                  name="categories"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Categories</FormLabel>
+                      <Select
+                        onValueChange={(value) => {
+                          form.setValue('categories', value);
+                          // Prevent duplicates
+                          if (!selectedCategories.includes(+value)) { // + to convert string to number
+                            setSelectedCategories([...selectedCategories, +value]);
+                          }
+                        }}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Add categories" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {categories.map((category) => (
+                            <SelectItem key={category.id} value={category.id.toString()}>
+                              {category.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Display selected categories */}
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {selectedCategories.length > 0 &&
+                    selectedCategories.map((categoryId) => {
+
+                      const category = categories.find((c) => c.id === categoryId);
+
+                      return (
+                        <div key={categoryId} className="bg-gray-200 px-3 py-1 rounded-full flex items-center">
+                          {category?.name}
+                          <button
+                            type="button"
+                            className="ml-2 text-red-500 hover:text-red-700"
+                            onClick={() => {
+                              setSelectedCategories(selectedCategories.filter((id) => id !== categoryId));
+                            }}
+                          >
+                            <X size={14} />
+                          </button>
+                        </div>
+                      );
+                    })}
+                </div>
+              </div>
+              {/* <FormField
                 control={form.control}
                 name="categories"
                 render={({ field }) => (
@@ -221,7 +281,7 @@ export default function BlogForm({ blogData, authors, categories }) {
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
               <FormField
                 control={form.control}
                 name="blog_status"
