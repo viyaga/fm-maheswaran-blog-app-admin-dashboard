@@ -30,6 +30,7 @@ import { addBlog, updateBlog } from '@/lib/actions/blog';
 import RichTextEditor from './rich-text-editor';
 import { capitalize, generateSlug } from '@/lib/utils';
 import { X } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 
 const formSchema = z.object({
   title: z.string().min(1, { message: 'Title is required.' }),
@@ -39,14 +40,14 @@ const formSchema = z.object({
   featured_image: z.string().url({ message: 'Please enter a valid image URL.' }).optional(),
   blog_status: z.enum(['draft', 'published'], { message: 'Please select a status.' }),
   author: z.string().min(1, { message: 'Author is required.' }),
-  seo_meta_title: z.string().optional(),
-  seo_meta_description: z.string().optional(),
+  categories: z.array().optional(),
+  seo_meta_title: z.string().min(1, { message: 'SEO Meta title is required.' }),
+  seo_meta_description: z.string().min(1, { message: 'SEO Meta description is required.' }),
 });
 
 export default function BlogForm({ blogData, authors, categories }) {
   const defaultCategories = (blogData?.categories?.length > 1) ? blogData.categories.map((cat) => cat.id) : [];
   const [selectedCategories, setSelectedCategories] = React.useState(defaultCategories);
-  console.log({ selectedCategories });
 
   const router = useRouter();
 
@@ -92,6 +93,7 @@ export default function BlogForm({ blogData, authors, categories }) {
   }
 
   const form = useForm({ resolver: zodResolver(formSchema), defaultValues });
+  console.log("categories", form.watch("categories"));
 
   const onSubmit = async (values) => {
     if (selectedCategories.length < 1) return form.setError("categories", { message: "At least one category is requird" })
@@ -209,24 +211,26 @@ export default function BlogForm({ blogData, authors, categories }) {
                       <FormLabel>Categories</FormLabel>
                       <Select
                         onValueChange={(value) => {
-                          form.setValue('categories', value);
                           // Prevent duplicates
-                          if (!selectedCategories.includes(+value)) { // + to convert string to number
+                          if (!selectedCategories.includes(+value)) {             // + to convert string to number
+                            form.setValue('categories', []);
                             setSelectedCategories([...selectedCategories, +value]);
                           }
                         }}
                       >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Add categories" />
+                            <SelectValue placeholder="Add category">Add category</SelectValue>
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {categories.map((category) => (
-                            <SelectItem key={category.id} value={category.id.toString()}>
-                              {category.name}
-                            </SelectItem>
-                          ))}
+                          {categories
+                            .filter((category) => !selectedCategories.includes(category.id))
+                            .map((category) => (
+                              <SelectItem key={category.id} value={category.id}>
+                                {category.name}
+                              </SelectItem>
+                            ))}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -235,7 +239,34 @@ export default function BlogForm({ blogData, authors, categories }) {
                 />
 
                 {/* Display selected categories */}
+
                 <div className="mt-2 flex flex-wrap gap-2">
+                  {selectedCategories.length > 0 &&
+                    selectedCategories.map((categoryId) => {
+                      const category = categories.find((c) => c.id === categoryId);
+
+                      return (
+                        <Badge
+                          key={categoryId}
+                          variant="secondary" // Uses shadcn's built-in badge styling
+                          className="flex items-center gap-1 px-3 py-1 rounded-full"
+                        >
+                          {category?.name}
+                          <button
+                            type="button"
+                            className="ml-1 text-destructive hover:text-destructive/80" // shadcn's color system
+                            onClick={() => {
+                              setSelectedCategories(selectedCategories.filter((id) => id !== categoryId));
+                            }}
+                          >
+                            <X size={14} />
+                          </button>
+                        </Badge>
+                      );
+                    })}
+                </div>
+
+                {/* <div className="mt-2 flex flex-wrap gap-2">
                   {selectedCategories.length > 0 &&
                     selectedCategories.map((categoryId) => {
 
@@ -256,7 +287,7 @@ export default function BlogForm({ blogData, authors, categories }) {
                         </div>
                       );
                     })}
-                </div>
+                </div> */}
               </div>
               {/* <FormField
                 control={form.control}
@@ -290,8 +321,6 @@ export default function BlogForm({ blogData, authors, categories }) {
                     <FormLabel>Status</FormLabel>
                     <Select onValueChange={(value) => {
                       form.setValue('blog_status', value);
-                      console.log({ value, name: categories.find((category) => category.id === value)?.name });
-
                     }} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
