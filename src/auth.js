@@ -10,27 +10,28 @@ async function getUser(identifier, password) {
     const SERVER_ONE = process.env.SERVER_ONE
 
     try {
-        // return { email: identifier, first_name:"mohan", last_name:"maheswaran", role: { name: "Authenticated" } }
         removeAuthToken()
         const res = await axios.post(SERVER_ONE + '/auth/local', { identifier, password })
-        console.log({ res: res.data });
 
         const jwt = res?.data?.jwt
+        const user = res?.data?.user
 
+        if (!jwt || !user) return null
 
-        const res2 = await axios.get(SERVER_ONE + '/users/me?fields=username,email,first_name,last_name&populate[role]=name', { headers: { Authorization: 'Bearer ' + jwt } })
-        const user = res2?.data
+        const res2 = await axios.get(
+            SERVER_ONE + '/users/me?fields=id&populate[role][fields]=name', // get user role only for strapi user permissions plugin
+            { headers: { Authorization: 'Bearer ' + jwt } }
+        )
 
-        console.log({ user });
+        const role = res2?.data?.role
+        if (!role?.name === "Authenticated") return null
 
-        // if (user?.role?.name === "Authenticated") return user
+        user.role = role
+
         return user
 
-        return null
     } catch (error) {
-        console.log({ error: errResponse(error) });
-
-        return { error: errResponse(error) };
+        return null;
     }
 }
 
@@ -45,9 +46,9 @@ export const { auth, signIn, signOut } = NextAuth({
 
                 if (parsedCredentials.success) {
                     const { email, password } = parsedCredentials.data;
-                    console.log({ email, password });
 
                     const user = await getUser(email, password);
+                    console.log({ user });
 
                     if (!user) return null;
                     return user;

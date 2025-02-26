@@ -14,7 +14,7 @@ export const metadata = {
 const getBlogData = async (blogId) => {
   const data = await getBlogById({
     documentId: blogId,
-    fields: "title,slug,excerpt,free_content,content,featured_image,seo_meta_title,seo_meta_description,blog_status",
+    fields: "title,subtitle,slug,excerpt,free_content,content,featured_image,seo_meta_title,seo_meta_description,blog_status,is_featured",
 
   });
   return data;

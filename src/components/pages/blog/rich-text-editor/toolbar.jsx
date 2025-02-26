@@ -151,7 +151,21 @@ const Toolbar = ({ editor }) => {
         const url = prompt("Enter YouTube video URL (e.g., https://www.youtube.com/watch?v=...):");
         if (url && isYouTubeURL(url)) {
           const embedUrl = convertToEmbedUrl(url);
-          const iframe = `<iframe width="560" height="315" src="${embedUrl}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+          const iframe = `
+              <iframe width="100%" height="100%" 
+              src="${embedUrl}" 
+              title="YouTube video player" 
+              frameborder="0" 
+              allow="accelerometer; 
+              autoplay; 
+              clipboard-write; 
+              encrypted-media; 
+              gyroscope; 
+              picture-in-picture; 
+              web-share" 
+              referrerpolicy="strict-origin-when-cross-origin" 
+              allowfullscreen>
+              </iframe>`;
           editor.chain().focus().insertContent(iframe).run();
         } else {
           alert("Please enter a valid YouTube URL.");
@@ -160,6 +174,7 @@ const Toolbar = ({ editor }) => {
       isActive: false,
       label: "Insert Video",
     },
+
     {
       icon: PencilLine,
       action: () => editor.chain().focus().setHorizontalRule().run(),

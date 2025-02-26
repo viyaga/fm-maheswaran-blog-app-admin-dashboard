@@ -31,18 +31,23 @@ import RichTextEditor from './rich-text-editor';
 import { capitalize, generateSlug } from '@/lib/utils';
 import { X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { Switch } from '@/components/ui/switch';
+import { sub } from 'date-fns';
 
 const formSchema = z.object({
   title: z.string().min(1, { message: 'Title is required.' }),
+  subtitle: z.string().optional(),
   slug: z.string().min(1, { message: 'Slug is required.' }),
   excerpt: z.string().optional(),
   free_content: z.string().min(1, { message: 'Content is required.' }),
+  content: z.string().optional(),
   featured_image: z.string().url({ message: 'Please enter a valid image URL.' }).optional(),
   blog_status: z.enum(['draft', 'published'], { message: 'Please select a status.' }),
   author: z.string().min(1, { message: 'Author is required.' }),
   categories: z.array().optional(),
   seo_meta_title: z.string().min(1, { message: 'SEO Meta title is required.' }),
   seo_meta_description: z.string().min(1, { message: 'SEO Meta description is required.' }),
+  is_featured: z.boolean().optional(),
 });
 
 export default function BlogForm({ blogData, authors, categories }) {
@@ -53,6 +58,7 @@ export default function BlogForm({ blogData, authors, categories }) {
 
   let defaultValues = {
     title: '',
+    subtitle: '',
     slug: '',
     excerpt: '',
     free_content: '',
@@ -62,11 +68,13 @@ export default function BlogForm({ blogData, authors, categories }) {
     author: "",
     seo_meta_title: '',
     seo_meta_description: '',
+    is_featured: false,
   };
 
   if (blogData?.documentId) {
     const {
       title,
+      subtitle,
       slug,
       excerpt,
       free_content,
@@ -76,10 +84,12 @@ export default function BlogForm({ blogData, authors, categories }) {
       author,
       seo_meta_title,
       seo_meta_description,
+      is_featured
     } = blogData;
 
     defaultValues = {
       title,
+      subtitle: subtitle || '',
       slug,
       excerpt: excerpt || '',
       free_content: free_content || '',
@@ -89,6 +99,7 @@ export default function BlogForm({ blogData, authors, categories }) {
       author: author?.id?.toString() || '',
       seo_meta_title: seo_meta_title || '',
       seo_meta_description: seo_meta_description || '',
+      is_featured: is_featured || false
     };
   }
 
@@ -117,7 +128,7 @@ export default function BlogForm({ blogData, authors, categories }) {
   };
 
   return (
-    <Card className="mx-auto w-full">
+    <Card className="mx-auto w-full max-w-[90vw]">
       <CardHeader>
         <CardTitle className="text-left text-2xl font-bold">
           {blogData ? 'Edit Blog' : 'Add New Blog'}
@@ -148,6 +159,15 @@ export default function BlogForm({ blogData, authors, categories }) {
                   </FormItem>
                 )}
               />
+              <FormField control={form.control} name="subtitle" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Subtitle</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="Enter subtitle" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
               <FormField
                 control={form.control}
                 name="slug"
@@ -265,54 +285,7 @@ export default function BlogForm({ blogData, authors, categories }) {
                       );
                     })}
                 </div>
-
-                {/* <div className="mt-2 flex flex-wrap gap-2">
-                  {selectedCategories.length > 0 &&
-                    selectedCategories.map((categoryId) => {
-
-                      const category = categories.find((c) => c.id === categoryId);
-
-                      return (
-                        <div key={categoryId} className="bg-gray-200 px-3 py-1 rounded-full flex items-center">
-                          {category?.name}
-                          <button
-                            type="button"
-                            className="ml-2 text-red-500 hover:text-red-700"
-                            onClick={() => {
-                              setSelectedCategories(selectedCategories.filter((id) => id !== categoryId));
-                            }}
-                          >
-                            <X size={14} />
-                          </button>
-                        </div>
-                      );
-                    })}
-                </div> */}
               </div>
-              {/* <FormField
-                control={form.control}
-                name="categories"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Categories</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a categories" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {categories?.map((category) => (
-                          <span key={categories.id}>
-                            <SelectItem value={category.id?.toString()}>{capitalize(category.name)}</SelectItem>
-                          </span>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              /> */}
               <FormField
                 control={form.control}
                 name="blog_status"
@@ -336,6 +309,17 @@ export default function BlogForm({ blogData, authors, categories }) {
                   </FormItem>
                 )}
               />
+              <FormField control={form.control} name="is_featured" render={({ field }) => (
+                <FormItem>
+                  <div className="flex flex-col justify-center gap-5">
+                  <FormLabel>Featured</FormLabel>
+                  <FormControl>
+                    <Switch checked={field.value} onCheckedChange={field.onChange} />
+                  </FormControl>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )} />
             </div>
             <FormField
               control={form.control}
@@ -427,15 +411,9 @@ export default function BlogForm({ blogData, authors, categories }) {
                 )}
               />
             </div>
-            {/* <FormField>
-            <RichTextEditor
-              content={content}
-              onChange={(newContent) => setContent(newContent)}
-            />
-            </FormField> */}
-            <Button type="submit" className="flex justify-end">
-              {blogData ? 'Update Blog' : 'Add Blog'}
-            </Button>
+              <Button type="submit" className="flex justify-end">
+                {blogData ? 'Update Blog' : 'Add Blog'}
+              </Button>
           </form>
         </Form>
       </CardContent>

@@ -66,6 +66,8 @@ const updateBlog = asyncHandler(async ({ documentId, blogData, defaultValues }) 
         return { error: "No fields to update" };
     }
 
+    console.log({ updatedFields });
+    
 
     const { data } = await axios.put(`${SERVER_ONE}/blogs/${documentId}`, { data: updatedFields });
     revalidateTag("blogs");
