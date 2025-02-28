@@ -1,12 +1,12 @@
 "use server";
 
 import axios from "axios";
-import { errResponse, getUpdatedFields } from "../utils";
+import { errResponse, getUpdatedFields } from "../../utils";
 import { asyncHandler, generateUsername, getData, setAuthToken } from "./common";
 import { revalidateTag } from "next/cache";
 import bcrypt from "bcryptjs";
 
-const SERVER_ONE = process.env.SERVER_ONE;
+const STRAPI_API_ENDPOINT = process.env.STRAPI_API_ENDPOINT;
 
 const getAllUsers = asyncHandler(async (args) => {
     const { fields = "", filters = [], pagination, sort, revalidate = 2, tags = [] } = args;
@@ -22,7 +22,7 @@ const getAllUsers = asyncHandler(async (args) => {
 const getUserById = asyncHandler(async ({ documentId, fields = null, populate = [] }) => {
     if (!documentId) return { error: "User ID is required." };
 
-    let apiUrl = `${SERVER_ONE}/website-users/${documentId}`;
+    let apiUrl = `${STRAPI_API_ENDPOINT}/website-users/${documentId}`;
     if (fields) apiUrl += `?fields=${fields}`;
 
     
@@ -58,7 +58,7 @@ const addUser = asyncHandler(async (userData) => {
     // Generate username
     userData.username = await generateUsername({ first_name, last_name, url: "/website-users" });
 
-    const { data } = await axios.post(`${SERVER_ONE}/website-users`, { data: userData });
+    const { data } = await axios.post(`${STRAPI_API_ENDPOINT}/website-users`, { data: userData });
     revalidateTag("users");
 
     return {
@@ -99,7 +99,7 @@ const updateUser = asyncHandler(async ({ documentId, userData, defaultValues }) 
         }
     }
 
-    const { data } = await axios.put(`${SERVER_ONE}/website-users/${documentId}`, { data: updatedFields });
+    const { data } = await axios.put(`${STRAPI_API_ENDPOINT}/website-users/${documentId}`, { data: updatedFields });
     revalidateTag("users");
 
     return {
@@ -115,7 +115,7 @@ const deleteUser = asyncHandler(async (documentId) => {
     }
 
     
-    const { data } = await axios.delete(`${SERVER_ONE}/website-users/${documentId}`);
+    const { data } = await axios.delete(`${STRAPI_API_ENDPOINT}/website-users/${documentId}`);
     revalidateTag("users");
 
     return {

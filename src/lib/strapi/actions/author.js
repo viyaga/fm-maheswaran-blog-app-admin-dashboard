@@ -1,12 +1,12 @@
 "use server";
 
 import axios from "axios";
-import { errResponse, getUpdatedFields } from "../utils";
+import { errResponse, getUpdatedFields } from "../../utils";
 import { asyncHandler, generateUsername, getData } from "./common";
 import { revalidateTag } from "next/cache";
 import bcrypt from "bcryptjs";
 
-const SERVER_ONE = process.env.SERVER_ONE;
+const STRAPI_API_ENDPOINT = process.env.STRAPI_API_ENDPOINT;
 
 const getAllAuthors = asyncHandler(async (args) => {
     const { fields = "", filters = [], pagination, sort, revalidate = 2, tags = [] } = args;
@@ -21,7 +21,7 @@ const getAllAuthors = asyncHandler(async (args) => {
 const getAuthorById = asyncHandler(async ({ documentId, fields = null, populate = [] }) => {
     if (!documentId) return { error: "Author ID is required." };
 
-    let apiUrl = `${SERVER_ONE}/authors/${documentId}`;
+    let apiUrl = `${STRAPI_API_ENDPOINT}/authors/${documentId}`;
     if (fields) apiUrl += `?fields=${fields}`;
 
     
@@ -46,7 +46,7 @@ const addAuthor = asyncHandler(async (authorData) => {
 
     authorData.username = await generateUsername({ first_name, last_name, url: "/authors" });
     
-    const { data } = await axios.post(`${SERVER_ONE}/authors`, { data: authorData });
+    const { data } = await axios.post(`${STRAPI_API_ENDPOINT}/authors`, { data: authorData });
     revalidateTag("authors");
 
     return {
@@ -76,7 +76,7 @@ const updateAuthor = asyncHandler(async ({ documentId, authorData, defaultValues
     }
 
     
-    const { data } = await axios.put(`${SERVER_ONE}/authors/${documentId}`, { data: updatedFields });
+    const { data } = await axios.put(`${STRAPI_API_ENDPOINT}/authors/${documentId}`, { data: updatedFields });
     revalidateTag("authors");
 
     return {
@@ -92,7 +92,7 @@ const deleteAuthor = asyncHandler(async (documentId) => {
     }
 
     
-    const { data } = await axios.delete(`${SERVER_ONE}/authors/${documentId}`);
+    const { data } = await axios.delete(`${STRAPI_API_ENDPOINT}/authors/${documentId}`);
     revalidateTag("authors");
 
     return {

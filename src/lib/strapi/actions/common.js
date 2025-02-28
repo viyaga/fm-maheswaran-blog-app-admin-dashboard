@@ -1,7 +1,7 @@
 "use server"
 
 import axios from "axios";
-import { errResponse } from "../utils";
+import { errResponse } from "../../utils";
 
 const setAuthToken = () => {
     const BEARER_API_TOKEN = "Bearer " + process.env.API_TOKEN;
@@ -24,7 +24,7 @@ const asyncHandler = (fn) => async (...args) => {
 
 const createStrapiApiUrl = (args) => {
     const { url, fields = "", filters = [], pagination = {}, sort = "", populate = "" } = args;
-    const SERVER_ONE = process.env.SERVER_ONE;
+    const STRAPI_API_ENDPOINT = process.env.STRAPI_API_ENDPOINT;
 
     const fieldsUrl = fields ? `fields=${fields}&` : "";
     let filtersUrl = "";
@@ -50,7 +50,7 @@ const createStrapiApiUrl = (args) => {
     let queryString = `${fieldsUrl}${filtersUrl}${paginationUrl}${sortUrl}${populateUrl}`.slice(0, -1);
     queryString = queryString ? `?${queryString}` : "" // add ? before queryString
 
-    const fullUrl = `${SERVER_ONE}${url}${queryString}`;
+    const fullUrl = `${STRAPI_API_ENDPOINT}${url}${queryString}`;
 
     console.log({ fullUrl });
 

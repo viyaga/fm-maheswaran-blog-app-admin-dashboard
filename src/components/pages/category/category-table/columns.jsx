@@ -23,11 +23,16 @@ export const columns = [
       />
     ),
     enableSorting: false,
-    enableHiding: false
+    enableHiding: false,
+  },
+  {
+    id: 'sNo',
+    header: 'S.No.',
+    cell: ({ row }) => row.index + 1
   },
   {
     accessorKey: 'name',
-    header: 'CATEGORY NAME',
+    header: 'NAME',
     cell: ({ row }) => capitalize(row.original.name) || "-"
   },
   {
@@ -41,9 +46,9 @@ export const columns = [
     cell: ({ row }) => row.original.description || "-"
   },
   {
-    accessorKey: 'parent_id',
+    accessorKey: '2tegory',
     header: 'PARENT CATEGORY',
-    cell: ({ row }) => row.original.parent_id ? capitalize(row.original.parent_id) : "None"
+    cell: ({ row }) => row.original.parent_category ? capitalize(row.original.parent_category) : "None"
   },
   {
     accessorKey: 'status',

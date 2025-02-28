@@ -17,7 +17,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
-import { addCategory, updateCategory } from '@/lib/actions/category';
+import { addCategory, updateCategory } from '@/lib/strapi/actions/category';
 
 const formSchema = z.object({
   name: z.string().min(2, {

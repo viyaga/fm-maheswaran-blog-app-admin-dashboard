@@ -18,7 +18,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
-import { updateSiteSetting } from '@/lib/actions/site-setting';
+import { updateSiteSetting } from '@/lib/strapi/actions/site-setting';
 import { capitalize, Utils } from '@/lib/utils';
 
 const formSchema = z.object({

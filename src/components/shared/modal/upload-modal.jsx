@@ -5,7 +5,7 @@ import { Modal } from "@/components/shared/modal";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { FileUploader } from "@/components/file-uploader";
-import { addMultipleFiles } from "@/lib/actions/media";
+import { addMultipleFiles } from "@/lib/strapi/actions/media";
 import { toast } from "sonner";
 
 const UploadModal = ({ isOpen, onClose, onSubmit }) => {

@@ -1,5 +1,5 @@
 import AuthorViewPage from '@/components/pages/author/author-view-page';
-import { getAuthorById } from '@/lib/actions/author';
+import { getAuthorById } from '@/lib/strapi/actions/author';
 
 export const metadata = {
   title: 'Dashboard : Author View',

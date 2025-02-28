@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import AdminTable from './admin-table';
-import { getAllAdmins } from '@/lib/actions/admin';
+import { getAllAdmins } from '@/lib/strapi/actions/admin';
 import ServerError from '../../shared/serverError';
 
 export default async function AdminListingPage() {

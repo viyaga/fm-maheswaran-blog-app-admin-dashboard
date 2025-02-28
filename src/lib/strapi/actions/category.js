@@ -1,11 +1,11 @@
 "use server";
 
 import axios from "axios";
-import { errResponse, getUpdatedFields } from "../utils";
+import { errResponse, getUpdatedFields } from "../../utils";
 import { asyncHandler, getData } from "./common";
 import { revalidateTag } from "next/cache";
 
-const SERVER_ONE = process.env.SERVER_ONE;
+const STRAPI_API_ENDPOINT = process.env.STRAPI_API_ENDPOINT;
 
 const getAllCategories = asyncHandler(async (args) => {
     const { fields = "", filters = [], pagination, sort, revalidate = 2, tags = [] } = args;
@@ -17,16 +17,14 @@ const getAllCategories = asyncHandler(async (args) => {
     return { data, count };
 });
 
-const getCategoryById = asyncHandler(async ({ documentId, fields = null }) => {
+const getCategoryById = asyncHandler(async ({ documentId, fields = null, populate }) => {
     if (!documentId) return { error: "Category ID is required." };
 
-    let apiUrl = `${SERVER_ONE}/categories/${documentId}`;
-    if (fields) apiUrl += `?fields=${fields}`;
+    const { data } = await getData({ url: `/categories/${documentId}`, fields, populate, tags: ["categories"] })
 
-    const res = await axios.get(apiUrl);
-    if (!res?.data?.data) throw new Error("Category Not Found");
+    if (data?.error)  return { error: errResponse(data.error) };
 
-    return res?.data?.data;
+    return data;
 });
 
 const addCategory = asyncHandler(async (categoryData) => {
@@ -37,7 +35,7 @@ const addCategory = asyncHandler(async (categoryData) => {
         return { error: `Missing required fields: ${missingFields.join(", ")}` };
     }
 
-    const { data } = await axios.post(`${SERVER_ONE}/categories`, { data: categoryData });
+    const { data } = await axios.post(`${STRAPI_API_ENDPOINT}/categories`, { data: categoryData });
     revalidateTag("categories");
 
     return {
@@ -55,7 +53,7 @@ const updateCategory = asyncHandler(async ({ documentId, categoryData, defaultVa
         return { error: "No fields to update" };
     }
 
-    const { data } = await axios.put(`${SERVER_ONE}/categories/${documentId}`, { data: updatedFields });
+    const { data } = await axios.put(`${STRAPI_API_ENDPOINT}/categories/${documentId}`, { data: updatedFields });
     revalidateTag("categories");
 
     return {
@@ -70,7 +68,7 @@ const deleteCategory = asyncHandler(async (documentId) => {
         return { error: "Category ID is required" };
     }
 
-    const { data } = await axios.delete(`${SERVER_ONE}/categories/${documentId}`);
+    const { data } = await axios.delete(`${STRAPI_API_ENDPOINT}/categories/${documentId}`);
     revalidateTag("categories");
 
     return {

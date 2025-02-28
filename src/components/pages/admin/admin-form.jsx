@@ -26,7 +26,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
-import { addAdmin, updateAdmin } from '@/lib/actions/admin';
+import { addAdmin, updateAdmin } from '@/lib/strapi/actions/admin';
 
 const formSchema = z.object({
   first_name: z.string().min(2, {

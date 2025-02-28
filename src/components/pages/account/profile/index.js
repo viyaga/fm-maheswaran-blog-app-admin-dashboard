@@ -17,7 +17,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
-import { updateProfile } from '@/lib/actions/profile';
+import { updateProfile } from '@/lib/strapi/actions/profile';
 
 const formSchema = z.object({
   first_name: z.string().min(2, {

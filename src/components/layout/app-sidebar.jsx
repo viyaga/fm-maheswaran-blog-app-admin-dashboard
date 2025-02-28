@@ -44,7 +44,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import * as React from 'react';
 import { Icons } from '../icons';
-import { logoutUser } from '@/lib/actions/authenticate';
+import { logoutUser } from '@/lib/strapi/actions/authenticate';
 import { capitalize } from '@/lib/utils';
 import { signOut } from '@/auth';
 import { toast } from 'sonner';

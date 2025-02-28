@@ -1,5 +1,5 @@
 import UsersViewPage from '@/components/pages/user/user-view-page';
-import { getUserById } from '@/lib/actions/user';
+import { getUserById } from '@/lib/strapi/actions/user';
 
 export const metadata = {
   title: 'Dashboard : User View'

@@ -3,7 +3,7 @@ import MediaCard from "./media-card";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import { Heading } from "@/components/shared/heading";
 import { searchParamsCache } from "@/lib/searchparams";
-import { getAllMediaFiles } from "@/lib/actions/media";
+import { getAllMediaFiles } from "@/lib/strapi/actions/media";
 import ServerError from "@/components/shared/serverError";
 import UploadButton from "./upload";
 

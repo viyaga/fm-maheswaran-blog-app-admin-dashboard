@@ -1,11 +1,11 @@
 "use server";
 
 import axios from "axios";
-import { errResponse, getUpdatedFields } from "../utils";
+import { errResponse, getUpdatedFields } from "../../utils";
 import { asyncHandler, createStrapiApiUrl, generateUsername, setAuthToken } from "./common";
 import { revalidateTag } from "next/cache";
 
-const SERVER_ONE = process.env.SERVER_ONE;
+const STRAPI_API_ENDPOINT = process.env.STRAPI_API_ENDPOINT;
 
 const getAdminsData = asyncHandler(async (args) => {
     const { url, fields = "", filters = [], pagination = {}, populate = "", sort = "", revalidate = 2, tags = [] } = args;
@@ -75,7 +75,7 @@ const getAllAdmins = asyncHandler(async (args) => {
 });
 
 const getAdminById = asyncHandler(async ({ adminId, fields = null }) => {
-    let apiUrl = `${SERVER_ONE}/users/${adminId}`;
+    let apiUrl = `${STRAPI_API_ENDPOINT}/users/${adminId}`;
 
     if (fields) apiUrl += `?fields=${fields}`;
 
@@ -95,7 +95,7 @@ const addAdmin = asyncHandler(async (args) => {
     const username = await generateUsername({ first_name, last_name });
     const adminData = { username, first_name, last_name, email, country, password, role: 1, confirmed:true };
 
-    const newAdmin = await axios.post(`${SERVER_ONE}/users`, adminData);
+    const newAdmin = await axios.post(`${STRAPI_API_ENDPOINT}/users`, adminData);
 
     revalidateTag("admins");
     revalidateTag("adminCount");
@@ -124,7 +124,7 @@ const updateAdmin = asyncHandler(async ({ id, adminData, defaultValues }) => {
 
     
 
-    const { data } = await axios.put(`${SERVER_ONE}/users/${id}`, updatedFields);
+    const { data } = await axios.put(`${STRAPI_API_ENDPOINT}/users/${id}`, updatedFields);
 
     revalidateTag("admins");
 
@@ -142,7 +142,7 @@ const deleteAdmin = asyncHandler(async (adminId) => {
 
     
 
-    const { data } = await axios.delete(`${SERVER_ONE}/users/${adminId}`);
+    const { data } = await axios.delete(`${STRAPI_API_ENDPOINT}/users/${adminId}`);
 
     revalidateTag("admins");
     revalidateTag("adminCount");

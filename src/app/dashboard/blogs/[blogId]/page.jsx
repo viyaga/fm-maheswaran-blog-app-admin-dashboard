@@ -1,11 +1,11 @@
 import BlogViewPage from '@/components/pages/blog/blog-view-page';
 import FormCardSkeleton from '@/components/form-card-skeleton';
 import PageContainer from '@/components/layout/page-container';
-import { getBlogById } from '@/lib/actions/blog';
+import { getBlogById } from '@/lib/strapi/actions/blog';
 import { Suspense } from 'react';
 import { get } from 'react-hook-form';
-import { getAllAuthors } from '@/lib/actions/author';
-import { getAllCategories } from '@/lib/actions/category';
+import { getAllAuthors } from '@/lib/strapi/actions/author';
+import { getAllCategories } from '@/lib/strapi/actions/category';
 
 export const metadata = {
   title: 'Dashboard : Blog View',

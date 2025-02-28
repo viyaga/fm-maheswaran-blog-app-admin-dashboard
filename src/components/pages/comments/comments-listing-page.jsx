@@ -6,7 +6,7 @@ import { searchParamsCache } from '@/lib/searchparams';
 import { cn } from '@/lib/utils';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
-import { getAllComments } from '@/lib/actions/comment';
+import { getAllComments } from '@/lib/strapi/actions/comment';
 import CommentsTable from './comments-table';
 import ServerError from '@/components/shared/serverError';
 

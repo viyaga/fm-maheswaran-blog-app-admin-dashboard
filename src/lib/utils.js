@@ -36,8 +36,11 @@ const errResponse = (error) => {
 }
 
 const capitalize = (str) => {
+  console.log({str});
+  
   if (!str) return null
   return str
+    .toString()
     .split(' ')
     .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join(' ');

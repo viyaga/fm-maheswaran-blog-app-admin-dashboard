@@ -3,10 +3,10 @@
 import axios from "axios";
 import { revalidateTag } from "next/cache";
 
-const { getUpdatedFields } = require("../utils");
+const { getUpdatedFields } = require("../../utils");
 const { getData, asyncHandler } = require("./common");
 
-const SERVER_ONE = process.env.SERVER_ONE;
+const STRAPI_API_ENDPOINT = process.env.STRAPI_API_ENDPOINT;
 
 const getSettingData = asyncHandler(async () => {
     const { data } = await getData({ url: "/site-setting", revalidate: 60 * 60 * 24 * 365, tags: ["site-setting"] });
@@ -33,7 +33,7 @@ const updateSiteSetting = asyncHandler(async ({ settingData, defaultValues }) =>
     
 
     // Update the record in the database via API
-    const { data } = await axios.put(`${SERVER_ONE}/site-setting`, { data: updatedFields });
+    const { data } = await axios.put(`${STRAPI_API_ENDPOINT}/site-setting`, { data: updatedFields });
 
     revalidateTag("site-setting"); 
 

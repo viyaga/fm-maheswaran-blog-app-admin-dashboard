@@ -24,7 +24,7 @@ import {
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
-import { addAuthor, updateAuthor } from '@/lib/actions/author';
+import { addAuthor, updateAuthor } from '@/lib/strapi/actions/author';
 
 const formSchema = z.object({
   first_name: z.string().min(2, {

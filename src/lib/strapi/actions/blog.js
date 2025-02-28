@@ -1,11 +1,11 @@
 "use server";
 
 import axios from "axios";
-import { errResponse, getUpdatedFields } from "../utils";
+import { errResponse, getUpdatedFields } from "../../utils";
 import { asyncHandler, getData } from "./common";
 import { revalidateTag } from "next/cache";
 
-const SERVER_ONE = process.env.SERVER_ONE;
+const STRAPI_API_ENDPOINT = process.env.STRAPI_API_ENDPOINT;
 
 const getAllBlogs = asyncHandler(async (args) => {
     const { fields = "", filters = [], pagination, sort, revalidate = 2, tags = [] } = args;
@@ -21,7 +21,7 @@ const getAllBlogs = asyncHandler(async (args) => {
 const getBlogById = asyncHandler(async ({ documentId, fields = null, populate = [] }) => {
     if (!documentId) return { error: "Blog ID is required." };
 
-    let apiUrl = `${SERVER_ONE}/blogs/${documentId}?populate[author][fields]=id&populate[categories][fields]=id`; //strapi utl type
+    let apiUrl = `${STRAPI_API_ENDPOINT}/blogs/${documentId}?populate[author][fields]=id&populate[categories][fields]=id`; //strapi utl type
     if (fields) apiUrl += `&fields=${fields}`;
 
     console.log({ apiUrl });
@@ -41,7 +41,7 @@ const addBlog = asyncHandler(async (blogData) => {
     }
 
 
-    const { data } = await axios.post(`${SERVER_ONE}/blogs`, { data: blogData });
+    const { data } = await axios.post(`${STRAPI_API_ENDPOINT}/blogs`, { data: blogData });
     revalidateTag("blogs");
 
     return {
@@ -69,7 +69,7 @@ const updateBlog = asyncHandler(async ({ documentId, blogData, defaultValues }) 
     console.log({ updatedFields });
     
 
-    const { data } = await axios.put(`${SERVER_ONE}/blogs/${documentId}`, { data: updatedFields });
+    const { data } = await axios.put(`${STRAPI_API_ENDPOINT}/blogs/${documentId}`, { data: updatedFields });
     revalidateTag("blogs");
 
     return {
@@ -85,7 +85,7 @@ const deleteBlog = asyncHandler(async (documentId) => {
     }
 
 
-    const { data } = await axios.put(`${SERVER_ONE}/blogs/${documentId}`, { data: { blog_status: "deleted" } });
+    const { data } = await axios.put(`${STRAPI_API_ENDPOINT}/blogs/${documentId}`, { data: { blog_status: "deleted" } });
     revalidateTag("blogs");
 
     return {

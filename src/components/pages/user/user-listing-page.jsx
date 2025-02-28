@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import UserTable from './user-table';
-import { getAllUsers } from '@/lib/actions/user';
+import { getAllUsers } from '@/lib/strapi/actions/user';
 import ServerError from '../../shared/serverError';
 
 export default async function UserListingPage() {

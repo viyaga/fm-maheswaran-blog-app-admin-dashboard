@@ -1,11 +1,11 @@
 "use server";
 
 import axios from "axios";
-import { errResponse, getUpdatedFields } from "../utils";
+import { errResponse, getUpdatedFields } from "../../utils";
 import { asyncHandler, getData } from "./common";
 import { revalidateTag } from "next/cache";
 
-const SERVER_ONE = process.env.SERVER_ONE;
+const STRAPI_API_ENDPOINT = process.env.STRAPI_API_ENDPOINT;
 
 const getAllComments = asyncHandler(async (args) => {
     const { fields = "", filters = [], pagination, sort, revalidate = 2, tags = [] } = args;
@@ -21,7 +21,7 @@ const getAllComments = asyncHandler(async (args) => {
 const getCommentById = asyncHandler(async ({ documentId, fields = null }) => {
     if (!documentId) return { error: "Comment ID is required." };
 
-    let apiUrl = `${SERVER_ONE}/comments/${documentId}`;
+    let apiUrl = `${STRAPI_API_ENDPOINT}/comments/${documentId}`;
     if (fields) apiUrl += `?fields=${fields}`;
 
     const res = await axios.get(apiUrl);
@@ -38,7 +38,7 @@ const addComment = asyncHandler(async (commentData) => {
         return { error: `Missing required fields: ${missingFields.join(", ")}` };
     }
 
-    const { data } = await axios.post(`${SERVER_ONE}/comments`, { data: commentData });
+    const { data } = await axios.post(`${STRAPI_API_ENDPOINT}/comments`, { data: commentData });
     revalidateTag("comments");
 
     return {
@@ -56,7 +56,7 @@ const updateComment = asyncHandler(async ({ documentId, commentData, defaultValu
         return { error: "No fields to update" };
     }
 
-    const { data } = await axios.put(`${SERVER_ONE}/comments/${documentId}`, { data: updatedFields });
+    const { data } = await axios.put(`${STRAPI_API_ENDPOINT}/comments/${documentId}`, { data: updatedFields });
     revalidateTag("comments");
 
     return {
@@ -71,7 +71,7 @@ const deleteComment = asyncHandler(async (documentId) => {
         return { error: "Comment ID is required" };
     }
 
-    const { data } = await axios.delete(`${SERVER_ONE}/comments/${documentId}`);
+    const { data } = await axios.delete(`${STRAPI_API_ENDPOINT}/comments/${documentId}`);
     revalidateTag("comments");
 
     return {

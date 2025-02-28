@@ -1,7 +1,7 @@
 import { searchParamsCache } from '@/lib/searchparams';
 import { DataTable as BlogTable } from '@/components/shared/table/data-table';
 import { columns } from './blog-tables/columns';
-import { getAllBlogs } from '@/lib/actions/blog';
+import { getAllBlogs } from '@/lib/strapi/actions/blog';
 import ServerError from '../../shared/serverError';
 
 export default async function BlogListingPage() {

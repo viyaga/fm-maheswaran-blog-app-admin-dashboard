@@ -17,7 +17,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
-import { changePassword } from '@/lib/actions/profile';
+import { changePassword } from '@/lib/strapi/actions/profile';
 
 const formSchema = z.object({
   current_password: z.string().min(6, {

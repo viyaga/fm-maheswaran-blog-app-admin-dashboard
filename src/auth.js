@@ -4,14 +4,14 @@ import { authConfig } from './auth.config';
 import { z } from 'zod';
 import axios from 'axios';
 import { errResponse } from './lib/utils';
-import { removeAuthToken } from './lib/actions/common';
+import { removeAuthToken } from './lib/strapi/actions/common';
 
 async function getUser(identifier, password) {
-    const SERVER_ONE = process.env.SERVER_ONE
+    const STRAPI_API_ENDPOINT = process.env.STRAPI_API_ENDPOINT
 
     try {
         removeAuthToken()
-        const res = await axios.post(SERVER_ONE + '/auth/local', { identifier, password })
+        const res = await axios.post(STRAPI_API_ENDPOINT + '/auth/local', { identifier, password })
 
         const jwt = res?.data?.jwt
         const user = res?.data?.user
@@ -19,7 +19,7 @@ async function getUser(identifier, password) {
         if (!jwt || !user) return null
 
         const res2 = await axios.get(
-            SERVER_ONE + '/users/me?fields=id&populate[role][fields]=name', // get user role only for strapi user permissions plugin
+            STRAPI_API_ENDPOINT + '/users/me?fields=id&populate[role][fields]=name', // get user role only for strapi user permissions plugin
             { headers: { Authorization: 'Bearer ' + jwt } }
         )
 

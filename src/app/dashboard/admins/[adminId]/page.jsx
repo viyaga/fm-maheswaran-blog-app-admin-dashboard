@@ -1,5 +1,5 @@
 import AdminViewPage from '@/components/pages/admin/admin-view-page';
-import { getAdminById } from '@/lib/actions/admin';
+import { getAdminById } from '@/lib/strapi/actions/admin';
 
 export const metadata = {
   title: 'Dashboard : Admin View'

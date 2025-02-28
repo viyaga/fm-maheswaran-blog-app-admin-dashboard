@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import CategoryTable from './category-table';
-import { getAllCategories } from '@/lib/actions/category';
+import { getAllCategories } from '@/lib/strapi/actions/category';
 import ServerError from '../../shared/serverError';
 
 export default async function CategoryListingPage() {

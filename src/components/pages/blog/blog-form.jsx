@@ -26,7 +26,7 @@ import {
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
-import { addBlog, updateBlog } from '@/lib/actions/blog';
+import { addBlog, updateBlog } from '@/lib/strapi/actions/blog';
 import RichTextEditor from './rich-text-editor';
 import { capitalize, generateSlug } from '@/lib/utils';
 import { X } from 'lucide-react';

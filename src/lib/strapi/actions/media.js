@@ -1,11 +1,11 @@
 "use server";
 
 import axios from "axios";
-import { errResponse, getUpdatedFields } from "../utils";
+import { errResponse, getUpdatedFields } from "../../utils";
 import { asyncHandler, getData, getMediaData } from "./common";
 import { revalidateTag } from "next/cache";
 
-const SERVER_ONE = process.env.SERVER_ONE;
+const STRAPI_API_ENDPOINT = process.env.STRAPI_API_ENDPOINT;
 
 // Get All Media Files
 const getAllMediaFiles = asyncHandler(async (args) => {
@@ -23,7 +23,7 @@ const getAllMediaFiles = asyncHandler(async (args) => {
 const getMediaFileById = asyncHandler(async ({ documentId, fields = null }) => {
   if (!documentId) return { error: "Media File ID is required." };
 
-  let apiUrl = `${SERVER_ONE}/upload/files/${documentId}`;
+  let apiUrl = `${STRAPI_API_ENDPOINT}/upload/files/${documentId}`;
   if (fields) apiUrl += `?fields=${fields}`;
 
   const res = await axios.get(apiUrl);
@@ -48,7 +48,7 @@ const addMediaFile = asyncHandler(async (fileData, additionalData = {}) => {
     formData.append(`data.${key}`, additionalData[key]);
   });
 
-  const { data } = await axios.post(`${SERVER_ONE}/upload`, formData, {
+  const { data } = await axios.post(`${STRAPI_API_ENDPOINT}/upload`, formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
   revalidateTag("mediaFiles");
@@ -81,7 +81,7 @@ const addMultipleFiles = asyncHandler(async (files, additionalData = {}) => {
   });
 
   try {
-    const { data } = await axios.post(`${SERVER_ONE}/upload`, formData, {
+    const { data } = await axios.post(`${STRAPI_API_ENDPOINT}/upload`, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
 
@@ -108,7 +108,7 @@ const updateMediaFile = asyncHandler(async ({ documentId, updateData }) => {
     return { error: "No fields to update" };
   }
 
-  const { data } = await axios.put(`${SERVER_ONE}/upload/files/${documentId}`, { data: updatedFields });
+  const { data } = await axios.put(`${STRAPI_API_ENDPOINT}/upload/files/${documentId}`, { data: updatedFields });
   revalidateTag("mediaFiles");
 
   return {
@@ -124,7 +124,7 @@ const deleteMediaFile = asyncHandler(async (documentId) => {
     return { error: "Media File ID is required" };
   }
 
-  const { data } = await axios.delete(`${SERVER_ONE}/upload/files/${documentId}`);
+  const { data } = await axios.delete(`${STRAPI_API_ENDPOINT}/upload/files/${documentId}`);
   revalidateTag("mediaFiles");
 
   return {
