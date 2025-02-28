@@ -1,5 +1,8 @@
 "use server"
 
+import axios from "axios";
+import { revalidateTag } from "next/cache";
+
 const { getUpdatedFields } = require("../utils");
 const { getData, asyncHandler } = require("./common");
 
@@ -13,7 +16,7 @@ const getSettingData = asyncHandler(async () => {
 const updateSiteSetting = asyncHandler(async ({ settingData, defaultValues }) => {
 
     // Validate required fields
-    const requiredFields = ["site_title", "site_logo_url", "favicon_url", "contact_email"];
+    const requiredFields = ["title", "logo", "favicon", "contact_email"];
     const missingFields = requiredFields.filter((field) => !settingData[field]);
 
     if (missingFields.length > 0) {
@@ -26,12 +29,13 @@ const updateSiteSetting = asyncHandler(async ({ settingData, defaultValues }) =>
         return { error: "No fields to update" };
     }
 
-
+    console.log({updatedFields});
+    
 
     // Update the record in the database via API
     const { data } = await axios.put(`${SERVER_ONE}/site-setting`, { data: updatedFields });
 
-    revalidateTag("site-setting"); // Optional: For cache invalidation if applicable
+    revalidateTag("site-setting"); 
 
     return {
         success: true,
