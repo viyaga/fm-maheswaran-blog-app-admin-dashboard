@@ -29,9 +29,6 @@ const updateSiteSetting = asyncHandler(async ({ settingData, defaultValues }) =>
         return { error: "No fields to update" };
     }
 
-    console.log({updatedFields});
-    
-
     // Update the record in the database via API
     const { data } = await axios.put(`${STRAPI_API_ENDPOINT}/site-setting`, { data: updatedFields });
 

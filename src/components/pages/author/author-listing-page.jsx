@@ -7,32 +7,20 @@ import { cn } from '@/lib/utils';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import AuthorTable from './author-table';
-import { getAllAuthors } from '@/lib/strapi/actions/author';
 import ServerError from '../../shared/serverError';
+import { getAllAuthors } from '@/lib/strapi';
 
 export default async function AuthorListingPage() {
   // Showcasing the use of search params cache in nested RSCs
   const page = searchParamsCache.get('page');
   const search = searchParamsCache.get('q');
-  const pageLimit = searchParamsCache.get('limit');
+  const pageSize = searchParamsCache.get('limit');
   const sort = searchParamsCache.get('sort');
 
-  const fields = "username,email,first_name,last_name,country,createdAt,author_status"; // Fetch relevant fields
-
-  const filters = [
-    { field: "author_status", operator: "$eq", value: 1 },  // Filtering only active authors
-  ];
-
-  // Search by email
-  if (search) filters.push({ field: "email", operator: "$contains", value: search });
-
-  const pagination = { page, pageSize: pageLimit };
-
-  const authors = await getAllAuthors({ fields, filters, pagination, sort, revalidate: 60 * 60 * 24 * 365, tags: ["authors"] });
-
-  if (authors?.error) return <ServerError message="An error occurred. Please try again later." />;
-
-  const count = authors?.count;
+  const authors = await getAllAuthors({ page, pageSize, sort, search });
+  console.log({authors:authors.data});
+  
+  const count = authors.meta.pagination.total;
 
   return (
     <PageContainer scrollable>

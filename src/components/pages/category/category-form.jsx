@@ -139,10 +139,10 @@ export default function CategoryForm({ categoryData }) {
               />
               <FormField
                 control={form.control}
-                name="parent_id"
+                name="parent_category"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Parent Category ID</FormLabel>
+                    <FormLabel>Parent Category</FormLabel>
                     <FormControl>
                       <Input placeholder="Enter Parent Category ID" {...field} />
                     </FormControl>

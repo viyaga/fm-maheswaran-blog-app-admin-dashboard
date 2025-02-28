@@ -27,8 +27,6 @@ const MediaLibrary = async () => {
 
   const mediaFiles = await getAllMediaFiles({ fields, filters, pagination, sort, revalidate: 60 * 60 * 24 * 365, tags: ["mediaFiles"] });
 
-  console.log({mediaFiles});
-  
   if (mediaFiles?.error) return <ServerError message="An error occurred. Please try again later." />;
 
   const count = mediaFiles?.count;

@@ -51,7 +51,6 @@ export default async function Page({ params }) {
 
   }
 
-  console.log({ blogData });
 
   const authors = await getAuthors();
   if (authors?.error) return <ServerError message="An error occurred. Please try again later." />;

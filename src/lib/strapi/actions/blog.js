@@ -24,8 +24,6 @@ const getBlogById = asyncHandler(async ({ documentId, fields = null, populate = 
     let apiUrl = `${STRAPI_API_ENDPOINT}/blogs/${documentId}?populate[author][fields]=id&populate[categories][fields]=id`; //strapi utl type
     if (fields) apiUrl += `&fields=${fields}`;
 
-    console.log({ apiUrl });
-    
     const res = await axios.get(apiUrl);
     if (res?.data?.data?.blog_status === "deleted") throw new Error("Blog Not Found");
 
@@ -66,8 +64,6 @@ const updateBlog = asyncHandler(async ({ documentId, blogData, defaultValues }) 
         return { error: "No fields to update" };
     }
 
-    console.log({ updatedFields });
-    
 
     const { data } = await axios.put(`${STRAPI_API_ENDPOINT}/blogs/${documentId}`, { data: updatedFields });
     revalidateTag("blogs");

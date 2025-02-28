@@ -45,7 +45,17 @@ const createStrapiApiUrl = (args) => {
     }
 
     const sortUrl = sort ? `sort=${sort}&` : "";
-    const populateUrl = populate ? `populate=${populate}&` : "";
+    
+    const populateUrl = (typeof populate === "string" && populate?.length > 0)
+        ? `populate=${populate}&` // Handle when `populate` is a string
+        : Object.entries(populate)
+            .map(([key, value]) =>
+                typeof value === "string"
+                    ? `populate[${key}]=${value}&`
+                    : `populate[${key}][fields]=${value.join(",")}&`
+            )
+            .join("&");
+
 
     let queryString = `${fieldsUrl}${filtersUrl}${paginationUrl}${sortUrl}${populateUrl}`.slice(0, -1);
     queryString = queryString ? `?${queryString}` : "" // add ? before queryString

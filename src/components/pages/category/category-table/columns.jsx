@@ -3,7 +3,7 @@
 import { Checkbox } from '@/components/ui/checkbox';
 import { CellAction } from './cell-action';
 import { format } from 'date-fns';
-import { capitalize } from '@/lib/utils';
+import { capitalize, Utils } from '@/lib/utils';
 
 export const columns = [
   {
@@ -36,19 +36,14 @@ export const columns = [
     cell: ({ row }) => capitalize(row.original.name) || "-"
   },
   {
-    accessorKey: 'slug',
-    header: 'SLUG',
-    cell: ({ row }) => row.original.slug || "-"
-  },
-  {
     accessorKey: 'description',
     header: 'DESCRIPTION',
-    cell: ({ row }) => row.original.description || "-"
+    cell: ({ row }) => row.original.description? Utils.textTruncate(row.original.description, 60) : "-"
   },
   {
-    accessorKey: '2tegory',
+    accessorKey: 'parent_category',
     header: 'PARENT CATEGORY',
-    cell: ({ row }) => row.original.parent_category ? capitalize(row.original.parent_category) : "None"
+    cell: ({ row }) => row.original.parent_category ? capitalize(row.original.parent_category?.name) : "-"
   },
   {
     accessorKey: 'status',

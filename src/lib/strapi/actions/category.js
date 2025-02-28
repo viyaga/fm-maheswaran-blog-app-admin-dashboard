@@ -8,10 +8,10 @@ import { revalidateTag } from "next/cache";
 const STRAPI_API_ENDPOINT = process.env.STRAPI_API_ENDPOINT;
 
 const getAllCategories = asyncHandler(async (args) => {
-    const { fields = "", filters = [], pagination, sort, revalidate = 2, tags = [] } = args;
+    const { fields = "", filters = [], pagination, sort, revalidate = 2, tags = [], populate } = args;
     const url = "/categories";
 
-    const { data, count } = await getData({ url, fields, filters, pagination, sort, revalidate, tags });
+    const { data, count } = await getData({ url, fields, filters, pagination, sort, revalidate, tags, populate });
     if (data?.error) return { error: errResponse(data.error) };
 
     return { data, count };

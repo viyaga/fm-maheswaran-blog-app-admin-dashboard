@@ -104,7 +104,6 @@ export default function BlogForm({ blogData, authors, categories }) {
   }
 
   const form = useForm({ resolver: zodResolver(formSchema), defaultValues });
-  console.log("categories", form.watch("categories"));
 
   const onSubmit = async (values) => {
     if (selectedCategories.length < 1) return form.setError("categories", { message: "At least one category is requird" })

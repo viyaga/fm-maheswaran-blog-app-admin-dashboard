@@ -36,7 +36,6 @@ const errResponse = (error) => {
 }
 
 const capitalize = (str) => {
-  console.log({str});
   
   if (!str) return null
   return str
@@ -204,7 +203,6 @@ const Utils = {
   copyToClipboard: async (text) => {
     try {
       await navigator.clipboard.writeText(text);
-      console.log("Copied to clipboard!");
     } catch (err) {
       console.error("Clipboard copy failed:", err);
     }
