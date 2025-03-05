@@ -3,9 +3,8 @@ import FormCardSkeleton from '@/components/form-card-skeleton';
 import PageContainer from '@/components/layout/page-container';
 import { getBlogById } from '@/lib/strapi/actions/blog';
 import { Suspense } from 'react';
-import { get } from 'react-hook-form';
-import { getAllAuthors } from '@/lib/strapi/actions/author';
 import { getAllCategories } from '@/lib/strapi/actions/category';
+import { getAllAuthorsUsername } from '@/lib/strapi';
 
 export const metadata = {
   title: 'Dashboard : Blog View',
@@ -21,12 +20,7 @@ const getBlogData = async (blogId) => {
 }
 
 const getAuthors = async () => {
-  const fields = "username"; // Fetch relevant fields
-  const filters = [
-    { field: "author_status", operator: "$eq", value: 1 },  // Filtering only active authors
-  ];
-
-  const data = await getAllAuthors({ fields, filters, sort: "username:asc", revalidate: 60 * 60 * 24 * 365, tags: ["authors"] });
+  const data = await getAllAuthorsUsername();
   return data;
 }
 
@@ -50,7 +44,6 @@ export default async function Page({ params }) {
     }
 
   }
-
 
   const authors = await getAuthors();
   if (authors?.error) return <ServerError message="An error occurred. Please try again later." />;

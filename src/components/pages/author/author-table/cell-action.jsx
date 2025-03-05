@@ -10,7 +10,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { deleteAuthor } from '@/lib/strapi/actions/author';
+import { deleteAuthor } from '@/lib/strapi';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
@@ -26,8 +26,8 @@ export const CellAction = ({ data }) => {
     startTransition(async () => {
       const res = await deleteAuthor(data?.documentId)
       setOpen(false)
-      
-      if (res?.success) return toast.success(res?.message) //if success
+
+      if (res?.success) return toast.success(res?.message) // if success
       return toast.error(res?.error) // if error
     })
   };
@@ -50,9 +50,7 @@ export const CellAction = ({ data }) => {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
-          <DropdownMenuItem
-            onClick={() => router.push(`/dashboard/authors/${data.documentId}`)}
-          >
+          <DropdownMenuItem onClick={() => router.push(`/dashboard/authors/${data.documentId}`)}>
             <Edit className="mr-2 h-4 w-4" /> Update
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpen(true)}>

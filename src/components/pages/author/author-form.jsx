@@ -24,7 +24,8 @@ import {
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
-import { addAuthor, updateAuthor } from '@/lib/strapi/actions/author';
+import { addAuthor, updateAuthor } from '@/lib/strapi';
+import { getUpdatedFields } from '@/lib/utils';
 
 const formSchema = z.object({
   first_name: z.string().min(2, {
@@ -89,10 +90,16 @@ export default function AuthorForm({ authorData }) {
 
     // Update author
     if (authorData?.documentId) {
+
+      const updatedFields = getUpdatedFields(data, defaultValues);
+
+      if (Object.keys(updatedFields).length === 0) {
+        return toast.error("No fields to update");
+      }
+
       const updatedAuthor = await updateAuthor({
         documentId: authorData?.documentId,
-        authorData: data,
-        defaultValues,
+        updatedFields
       });
 
       if (updatedAuthor?.error) return toast.error(updatedAuthor?.error);

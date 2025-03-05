@@ -1,5 +1,5 @@
 import AuthorViewPage from '@/components/pages/author/author-view-page';
-import { getAuthorById } from '@/lib/strapi/actions/author';
+import { getAuthorById } from '@/lib/strapi';
 
 export const metadata = {
   title: 'Dashboard : Author View',
@@ -10,8 +10,9 @@ export default async function Page({ params }) {
 
   let authorData = null;
   if (authorId !== "add") {
-    authorData = await getAuthorById({ documentId:authorId, fields: "username,email,first_name,last_name,country" });
-
+    authorData = await getAuthorById({ documentId: authorId });
+    console.log({authorData});
+    
     if (!authorData || authorData?.error) {
       return <p className="text-center mt-5 font-normal">Author Not Found</p>;
     }

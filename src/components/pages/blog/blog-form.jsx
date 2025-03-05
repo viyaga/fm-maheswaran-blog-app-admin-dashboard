@@ -51,9 +51,11 @@ const formSchema = z.object({
 });
 
 export default function BlogForm({ blogData, authors, categories }) {
-  const defaultCategories = (blogData?.categories?.length > 1) ? blogData.categories.map((cat) => cat.id) : [];
+  const defaultCategories = (blogData?.categories?.length > 0) ? blogData.categories.map((cat) => cat.id) : [];
   const [selectedCategories, setSelectedCategories] = React.useState(defaultCategories);
 
+  console.log({blogData, categories, selectedCategories, defaultCategories});
+  
   const router = useRouter();
 
   let defaultValues = {
@@ -263,7 +265,6 @@ export default function BlogForm({ blogData, authors, categories }) {
                   {selectedCategories.length > 0 &&
                     selectedCategories.map((categoryId) => {
                       const category = categories.find((c) => c.id === categoryId);
-
                       return (
                         <Badge
                           key={categoryId}

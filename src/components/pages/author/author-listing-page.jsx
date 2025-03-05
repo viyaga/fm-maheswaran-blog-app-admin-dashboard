@@ -7,7 +7,6 @@ import { cn } from '@/lib/utils';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import AuthorTable from './author-table';
-import ServerError from '../../shared/serverError';
 import { getAllAuthors } from '@/lib/strapi';
 
 export default async function AuthorListingPage() {
@@ -20,7 +19,7 @@ export default async function AuthorListingPage() {
   const authors = await getAllAuthors({ page, pageSize, sort, search });
   console.log({authors:authors.data});
   
-  const count = authors.meta.pagination.total;
+  const count = authors.count;
 
   return (
     <PageContainer scrollable>
