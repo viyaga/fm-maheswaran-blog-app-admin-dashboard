@@ -7,8 +7,8 @@ import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import './globals.css';
 
 export const metadata = {
-  title: 'Next Shadcn',
-  description: 'Basic dashboard with Next.js and Shadcn'
+  title: "FM Mahesh",
+  description: "FIDE Master Maheswaran's chess blog admin dashboard",
 };
 
 const lato = Lato({
