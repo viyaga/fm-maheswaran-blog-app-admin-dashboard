@@ -3,7 +3,6 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import { authConfig } from './auth.config';
 import { z } from 'zod';
 import axios from 'axios';
-import { errResponse } from './lib/utils';
 import { removeAuthToken } from './lib/strapi/actions/common';
 
 async function getUser(identifier, password) {

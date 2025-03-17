@@ -13,6 +13,7 @@ import { Input } from '@/components/ui/input';
 import { loginUser } from '@/lib/strapi/actions/authenticate';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { error } from 'nuqs/dist/_tsup-dts-rollup';
 import { useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -41,6 +42,8 @@ export default function UserAuthForm() {
 
       if (res?.error) {
         toast.error(res.error)
+        console.log({error: res.fullError});
+        
       } else {
         toast.success('Signed In Successfully!');
         form.reset()

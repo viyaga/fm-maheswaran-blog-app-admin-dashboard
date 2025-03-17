@@ -9,7 +9,7 @@ export const loginUser = async (email, password) => {
         await signIn("credentials", { email, password, redirect: false });
         return { success: "Login successful" };
     } catch (error) {
-        return { error: "Invalid credentials" };
+        return { error: "Invalid credentials", fullError: error };
     }
 };
 
