@@ -15,6 +15,8 @@ async function getUser(identifier, password) {
         const jwt = res?.data?.jwt
         const user = res?.data?.user
 
+        console.log({ jwt, user });
+        
         if (!jwt || !user) return null
 
         const res2 = await axios.get(
@@ -22,6 +24,8 @@ async function getUser(identifier, password) {
             { headers: { Authorization: 'Bearer ' + jwt } }
         )
 
+        console.log({ res2 });
+        
         const role = res2?.data?.role
         if (!role?.name === "Authenticated") return null
 
@@ -30,6 +34,8 @@ async function getUser(identifier, password) {
         return user
 
     } catch (error) {
+        console.log({error});
+        
         return null;
     }
 }
