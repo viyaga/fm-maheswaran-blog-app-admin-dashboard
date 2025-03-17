@@ -7,7 +7,7 @@ import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import './globals.css';
 
 export const metadata = {
-  title: "FM Mahesh",
+  title: "FM Maheshwaran",
   description: "FIDE Master Maheswaran's chess blog admin dashboard",
 };
 
