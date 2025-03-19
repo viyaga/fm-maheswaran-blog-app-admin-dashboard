@@ -9,8 +9,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { deleteComment } from '@/lib/strapi/actions/comment';
-import { Edit, MoreHorizontal, Trash } from 'lucide-react';
+import { deleteComment, updateComment } from '@/lib/strapi';
+import { Ban, Check, MoreHorizontal, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
 import { toast } from 'sonner';
@@ -30,6 +30,18 @@ export const CellAction = ({ data }) => {
     })
   };
 
+  const onApprove = async() => {
+    const res = await updateComment({ documentId: data?.documentId, updatedFields: { comment_status: "approved" } })
+    if (res?.success) return toast.success(res?.message) //if success
+    return toast.error(res?.error) // if error
+  }
+
+  const onSpam = async() => {
+    const res = await updateComment({ documentId: data?.documentId, updatedFields: { comment_status: "spam" } })
+    if (res?.success) return toast.success(res?.message) //if success
+    return toast.error(res?.error) // if error
+  }
+
   return (
     <>
       <AlertModal
@@ -48,10 +60,11 @@ export const CellAction = ({ data }) => {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
-          <DropdownMenuItem
-            onClick={() => router.push(`/dashboard/comments/${data.documentId}`)}
-          >
-            <Edit className="mr-2 h-4 w-4" /> Update
+          <DropdownMenuItem onClick={() => onApprove()}>
+            <Check className="mr-2 h-4 w-4" /> Approve
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => onSpam()}>
+            <Ban className="mr-2 h-4 w-4" /> Spam 
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpen(true)}>
             <Trash className="mr-2 h-4 w-4" /> Delete

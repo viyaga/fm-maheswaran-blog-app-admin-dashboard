@@ -6,28 +6,21 @@ import { searchParamsCache } from '@/lib/searchparams';
 import { cn } from '@/lib/utils';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
-import { getAllComments } from '@/lib/strapi/actions/comment';
 import CommentsTable from './comments-table';
 import ServerError from '@/components/shared/serverError';
+import { getAllComments } from '@/lib/strapi';
 
 export default async function CommentListingPage() {
   // Showcasing the use of search params cache in nested RSCs
   const page = searchParamsCache.get('page');
   const search = searchParamsCache.get('q');
-  const pageLimit = searchParamsCache.get('limit');
+  const pageSize = searchParamsCache.get('limit');
   const sort = searchParamsCache.get('sort');
 
-  const fields = "content,comment_status,createdAt"; // Fetch relevant fields
 
-  const filters = [];
-
-  // Search by username
-  if (search) filters.push({ field: "username", operator: "$contains", value: search });
-
-  const pagination = { page, pageSize: pageLimit };
-
-  const comments = await getAllComments({ fields, filters, pagination, sort, revalidate: 60 * 60 * 24 * 365, tags: ["comments"] });
-
+  const comments = await getAllComments({ page, pageSize, sort, search });
+  console.log({ comments:comments.data });
+  
   if (comments?.error) return <ServerError message="An error occurred. Please try again later." />;
 
   const count = comments?.count;
@@ -41,12 +34,6 @@ export default async function CommentListingPage() {
             description="Manage Comments"
           />
 
-          <Link
-            href={'/dashboard/comments/add'}
-            className={cn(buttonVariants({ variant: 'default' }))}
-          >
-            <Plus className="mr-2 h-4 w-4" /> Add New
-          </Link>
         </div>
         <Separator />
         <CommentsTable data={comments?.data} totalData={count} />

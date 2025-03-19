@@ -6,6 +6,8 @@ export default function Error({ error, reset }) {
     console.log({ errorRespose: error });
 
     useEffect(() => {
+        console.error({error});
+        
         // Log the error to an error reporting service
     }, [error])
 

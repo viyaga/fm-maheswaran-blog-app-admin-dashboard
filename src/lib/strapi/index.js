@@ -6,6 +6,7 @@ import { getAllAuthorsQuery, getAllAuthorsUsernameQuery, getAuthorQuery, getExis
 import { errResponse } from '../utils';
 import { revalidateTag } from 'next/cache';
 import { generateUsername } from './actions/common';
+import { getAllCommentsQuery, getCommentQuery } from './queries/commentQuery';
 
 const endpoint = process.env.STRAPI_API_ENDPOINT;
 const headers = {
@@ -169,5 +170,70 @@ export async function deleteAuthor(documentId) {
     return {
         success: true,
         message: "Author deleted successfully",
+    };
+}
+
+export async function getAllComments({ page, pageSize, sort, search }) {
+    const query = getAllCommentsQuery({ page, pageSize, sort, search });
+
+    const res = await strapiFetch({ path: `/comments`, query, tags: ['comments'] });
+    if (res.error) return { error: res.error };
+
+    return { data: res.body.data, count: res.body.meta.pagination.total };
+}
+
+export async function getCommentById({ documentId }) {
+    if (!documentId) return { error: "Comment ID is required." };
+
+    const query = getCommentQuery();
+    const res = await strapiFetch({ path: `/comments/${documentId}`, query, tags: ['comments'] });
+    if (res.error) return { error: res.error };
+
+    return res.body.data;
+}
+
+export async function addComment(commentData) {
+    if (!commentData.content || !commentData.blog || !commentData.website_user) {
+        return { error: "Content, blog ID, and website user ID are required." };
+    }
+
+    const res = await strapiFetch({ path: '/comments', method: 'POST', body: { data: commentData } });
+    if (res.error) return { error: res.error };
+
+    revalidateTag("comments");
+
+    return {
+        success: true,
+        message: "Comment added successfully",
+    };
+}
+
+export async function updateComment({ documentId, updatedFields }) {
+    if (!documentId) return { error: "Comment ID is required" };
+
+    const res = await strapiFetch({ path: `/comments/${documentId}`, method: 'PUT', body: { data: updatedFields } });
+    if (res.error) return { error: res.error };
+
+    revalidateTag("comments");
+
+    return {
+        success: true,
+        message: "Comment updated successfully",
+    };
+}
+
+export async function deleteComment(documentId) {
+    if (!documentId) {
+        return { error: "Comment ID is required" };
+    }
+
+    const res = await strapiFetch({ path: `/comments/${documentId}`, method: 'DELETE' });
+    if (res.error) return { error: res.error };
+
+    revalidateTag("comments");
+
+    return {
+        success: true,
+        message: "Comment deleted successfully",
     };
 }

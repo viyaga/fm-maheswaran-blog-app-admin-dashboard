@@ -54,8 +54,8 @@ export default function BlogForm({ blogData, authors, categories }) {
   const defaultCategories = (blogData?.categories?.length > 0) ? blogData.categories.map((cat) => cat.id) : [];
   const [selectedCategories, setSelectedCategories] = React.useState(defaultCategories);
 
-  console.log({blogData, categories, selectedCategories, defaultCategories});
-  
+  console.log({ blogData, categories, selectedCategories, defaultCategories });
+
   const router = useRouter();
 
   let defaultValues = {
@@ -98,7 +98,7 @@ export default function BlogForm({ blogData, authors, categories }) {
       content: content || '',
       featured_image: featured_image || '',
       blog_status: blog_status || '',
-      author: author?.id?.toString() || '',
+      author: author?.documentId || '',
       seo_meta_title: seo_meta_title || '',
       seo_meta_description: seo_meta_description || '',
       is_featured: is_featured || false
@@ -213,7 +213,7 @@ export default function BlogForm({ blogData, authors, categories }) {
                       </FormControl>
                       <SelectContent>
                         {authors?.map((author) => (
-                          <SelectItem key={author.documentId} value={author.id?.toString()}>
+                          <SelectItem key={author.documentId} value={author.documentId}>
                             {author.username}
                           </SelectItem>
                         ))}
@@ -292,9 +292,11 @@ export default function BlogForm({ blogData, authors, categories }) {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Status</FormLabel>
-                    <Select onValueChange={(value) => {
-                      form.setValue('blog_status', value);
-                    }} value={field.value}>
+                    <Select
+                      onValueChange={(value) => {
+                        form.setValue('blog_status', value);
+                      }}
+                      value={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select a status" />
@@ -312,10 +314,10 @@ export default function BlogForm({ blogData, authors, categories }) {
               <FormField control={form.control} name="is_featured" render={({ field }) => (
                 <FormItem>
                   <div className="flex flex-col justify-center gap-5">
-                  <FormLabel>Featured</FormLabel>
-                  <FormControl>
-                    <Switch checked={field.value} onCheckedChange={field.onChange} />
-                  </FormControl>
+                    <FormLabel>Featured</FormLabel>
+                    <FormControl>
+                      <Switch checked={field.value} onCheckedChange={field.onChange} />
+                    </FormControl>
                   </div>
                   <FormMessage />
                 </FormItem>
@@ -411,9 +413,9 @@ export default function BlogForm({ blogData, authors, categories }) {
                 )}
               />
             </div>
-              <Button type="submit" className="flex justify-end">
-                {blogData ? 'Update Blog' : 'Add Blog'}
-              </Button>
+            <Button type="submit" className="flex justify-end">
+              {blogData ? 'Update Blog' : 'Add Blog'}
+            </Button>
           </form>
         </Form>
       </CardContent>

@@ -13,11 +13,19 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { addCategory, updateCategory } from '@/lib/strapi/actions/category';
+import { generateSlug } from '@/lib/utils';
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -27,39 +35,44 @@ const formSchema = z.object({
     message: 'Slug must be at least 2 characters.',
   }),
   description: z.string().optional(),
-  parent_id: z.string().optional(),
+  parent_category: z.string().optional(),
 });
 
-export default function CategoryForm({ categoryData }) {
+export default function CategoryForm({ categoryData, categories }) {
   const router = useRouter();
+  console.log({ categoryData, categories });
 
   let defaultValues = {
     name: '',
     slug: '',
     description: '',
-    parent_id: '',
+    parent_category: 'null',
   };
 
-  if (categoryData?.id) {
-    const { name, slug, description, parent_id } = categoryData;
+  if (categoryData?.documentId) {
+    const { name, slug, description, parent_category } = categoryData;
     defaultValues = {
       name,
       slug,
       description,
-      parent_id,
+      parent_category: parent_category? parent_category?.documentId : 'null',
     };
   }
 
   const form = useForm({ resolver: zodResolver(formSchema), defaultValues });
 
   const onSubmit = async (values) => {
-    const { name, slug, description, parent_id } = values;
+    console.log({ values });
+
+    const { name, slug, description, parent_category } = values;
 
     if (!name || !slug) {
       return toast.error('Please enter the required fields.');
     }
 
-    const data = { name, slug, description, parent_id };
+    const data = { name, slug, description, parent_category: parent_category === 'null' ? null : parent_category };
+
+    console.log({ data });
 
     // Update category
     if (categoryData?.documentId) {
@@ -105,7 +118,14 @@ export default function CategoryForm({ categoryData }) {
                   <FormItem>
                     <FormLabel>Category Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter Category Name" {...field} />
+                      <Input
+                        placeholder="Enter Category Name"
+                        {...field}
+                        onChange={(e) => {
+                          form.setValue('name', e.target.value);
+                          form.setValue('slug', generateSlug(e.target.value));
+                        }}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -137,7 +157,7 @@ export default function CategoryForm({ categoryData }) {
                   </FormItem>
                 )}
               />
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="parent_category"
                 render={({ field }) => (
@@ -146,6 +166,35 @@ export default function CategoryForm({ categoryData }) {
                     <FormControl>
                       <Input placeholder="Enter Parent Category ID" {...field} />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              /> */}
+              <FormField
+                control={form.control}
+                name="parent_category"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Parent Category</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Add Parent Category" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value='null'>
+                          Null
+                        </SelectItem>
+                        {categories
+                          .filter((category) => categoryData?.documentId !== category.documentId)
+                          .map((category) => (
+                            <SelectItem key={category.documentId} value={category.documentId}>
+                              {category.name}
+                            </SelectItem>
+                          ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}

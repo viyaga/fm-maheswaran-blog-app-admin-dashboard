@@ -3,7 +3,7 @@
 import { Checkbox } from '@/components/ui/checkbox';
 import { CellAction } from './cell-action';
 import { format } from 'date-fns';
-import { capitalize } from '@/lib/utils';
+import { capitalize, Utils } from '@/lib/utils';
 
 export const columns = [
   {
@@ -26,9 +26,14 @@ export const columns = [
     enableHiding: false
   },
   {
-    accessorKey: 'username',
+    accessorKey: 'website_user',
     header: 'USERNAME',
-    cell: ({ row }) => "@" + row.original.username.toLowerCase()
+    cell: ({ row }) => "@" + row.original.website_user.username.toLowerCase()
+  },
+  {
+    accessorKey: 'blog',
+    header: 'Blog',
+    cell: ({ row }) => Utils.textTruncate(row.original.blog.title, 20) || "-"
   },
   {
     accessorKey: 'content',

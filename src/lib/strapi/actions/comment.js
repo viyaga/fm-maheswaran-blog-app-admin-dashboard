@@ -10,9 +10,9 @@ const STRAPI_API_ENDPOINT = process.env.STRAPI_API_ENDPOINT;
 const getAllComments = asyncHandler(async (args) => {
     const { fields = "", filters = [], pagination, sort, revalidate = 2, tags = [] } = args;
     const url = "/comments";
-    populate = "website_user";
+    const populate = "website_user";
 
-    const { data, count } = await getData({ url, fields, filters, pagination, sort, revalidate, tags });
+    const { data, count } = await getData({ url, fields, filters, pagination, sort, populate, revalidate, tags });
     if (data?.error) return { error: errResponse(data.error) };
 
     return { data, count };
