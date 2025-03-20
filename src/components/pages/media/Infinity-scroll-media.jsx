@@ -15,13 +15,13 @@ const debounce = (callback, delay) => {
 };
 
 const InfinityScrollMedia = ({ initialMediaFiles }) => {
-  const [mediaFiles, setMediaFiles] = useState(initialMediaFiles);
+  const [mediaFiles, setMediaFiles] = useState([]);
   const [page, setPage] = useState(2); // Start from page 2 as page 1 is loaded on the server
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const observerRef = useRef(null);
 
-  const pageLimit = 12;
+  const pageSize = 10;
   const sort = "createdAt:DESC";
   const fields = "name,url,width,height,alternativeText,ext";
 
@@ -33,7 +33,7 @@ const InfinityScrollMedia = ({ initialMediaFiles }) => {
       const response = await getAllMediaFiles({
         fields,
         filters: [],
-        pagination: { page, pageSize: pageLimit },
+        pagination: { page, pageSize },
         sort,
         revalidate: 60 * 60 * 24 * 365,
         tags: ["mediaFiles"],
@@ -68,6 +68,11 @@ const InfinityScrollMedia = ({ initialMediaFiles }) => {
     observer.observe(observerRef.current);
     return () => observer.disconnect();
   }, [debouncedLoadMoreMediaFiles, hasMore]);
+
+  useEffect(() => {
+    if (initialMediaFiles.length) setMediaFiles(initialMediaFiles);
+    setHasMore(true); setPage(2);
+  }, [initialMediaFiles, setHasMore, setPage]);
 
   return (
     <>

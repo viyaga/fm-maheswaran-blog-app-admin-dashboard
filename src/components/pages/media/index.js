@@ -7,7 +7,7 @@ import UploadButton from "./upload";
 import InfinityScrollMedia from "./Infinity-scroll-media";
 
 const MediaLibrary = async () => {
-  const pageLimit = 12; // Default page size
+  const pageLimit = 10; // Default page size
   const sort = "createdAt:DESC"; // Default sorting
   const fields = "name,url,width,height,alternativeText,ext"; // Required fields
 
