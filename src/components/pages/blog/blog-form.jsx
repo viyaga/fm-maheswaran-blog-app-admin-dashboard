@@ -35,18 +35,18 @@ import { Switch } from '@/components/ui/switch';
 import { sub } from 'date-fns';
 
 const formSchema = z.object({
-  title: z.string().min(1, { message: 'Title is required.' }),
-  subtitle: z.string().optional(),
+  title: z.string().min(1, { message: 'Title is required.' }).max(60, { message: 'Title should be less than 60 characters.' }),
+  subtitle: z.string().min(1, { message: 'Subtitle is required.' }).max(160, { message: 'Subtitle should be less than 160 characters.' }),
   slug: z.string().min(1, { message: 'Slug is required.' }),
-  excerpt: z.string().optional(),
-  free_content: z.string().min(1, { message: 'Content is required.' }),
+  excerpt: z.string().min(1, { message: 'Excerpt is required.' }).max(280, { message: 'Excerpt should be less than 280 characters.' }),
+  free_content: z.string().min(10, { message: 'Content is required.' }),
   content: z.string().optional(),
   featured_image: z.string().url({ message: 'Please enter a valid image URL.' }).optional(),
   blog_status: z.enum(['draft', 'published'], { message: 'Please select a status.' }),
   author: z.string().min(1, { message: 'Author is required.' }),
   categories: z.array().optional(),
-  seo_meta_title: z.string().min(1, { message: 'SEO Meta title is required.' }),
-  seo_meta_description: z.string().min(1, { message: 'SEO Meta description is required.' }),
+  seo_meta_title: z.string().min(1, { message: 'SEO Meta title is required.' }).max(60, { message: 'SEO Meta title should be less than 60 characters.' }),
+  seo_meta_description: z.string().min(1, { message: 'SEO Meta description is required.' }).max(160, { message: 'SEO Meta description should be less than 160 characters.' }),
   is_featured: z.boolean().optional(),
 });
 
@@ -156,6 +156,7 @@ export default function BlogForm({ blogData, authors, categories }) {
                         }}
                       />
                     </FormControl>
+                    <FormDescription>Max 60 characters</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -164,8 +165,16 @@ export default function BlogForm({ blogData, authors, categories }) {
                 <FormItem>
                   <FormLabel>Subtitle</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Enter subtitle" />
+                    <Input
+                      {...field}
+                      placeholder="Enter subtitle"
+                      onChange={(e) => {
+                        form.setValue('subtitle', e.target.value);
+                        form.setValue('seo_meta_description', e.target.value);
+                      }}
+                    />
                   </FormControl>
+                  <FormDescription>Max 160 characters</FormDescription>
                   <FormMessage />
                 </FormItem>
               )} />
@@ -333,12 +342,9 @@ export default function BlogForm({ blogData, authors, categories }) {
                     <Textarea
                       {...field}
                       placeholder="Enter a short excerpt for the blog"
-                      onChange={(e) => {
-                        form.setValue('excerpt', e.target.value);
-                        form.setValue('seo_meta_description', e.target.value);
-                      }}
                     />
                   </FormControl>
+                  <FormDescription>Max 280 characters</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

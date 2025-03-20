@@ -29,19 +29,31 @@ import {
   Palette,
 } from "lucide-react";
 
-// Helper function to convert YouTube URL to embed format
-const convertToEmbedUrl = (url) => {
-  const videoId = url.match(/(?:youtu\.be\/|youtube\.com\/(?:[^\/]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=))([a-zA-Z0-9_-]{11})/);
-  if (videoId) {
-    return `https://www.youtube-nocookie.com/embed/${videoId[1]}`;
-  }
-  return '';
-};
+function isYouTubeURL(url) {
+  const regex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=|embed\/|live\/|playlist\?list=|)([a-zA-Z0-9_-]{11,})/;
+  return regex.test(url);
+}
 
-const isYouTubeURL = (url) => {
-  const pattern = /^(https?:\/\/)?(www\.)?(youtube|youtu|youtube-nocookie)\.(com|be)\/.+/;
-  return pattern.test(url);
-};
+// Helper function to convert YouTube URL to embed format
+function convertToEmbedUrl(url) {
+  let videoId = "";
+
+  if (url.includes("youtu.be/")) {
+    // Shortened URL format
+    videoId = url.split("youtu.be/")[1].split("?")[0];
+  } else if (url.includes("watch?v=")) {
+    // Standard YouTube video URL
+    videoId = new URL(url).searchParams.get("v");
+  } else if (url.includes("live/")) {
+    // YouTube live stream URL
+    videoId = url.split("live/")[1].split("?")[0];
+  }
+
+  if (!videoId) return null;
+
+  return `https://www.youtube.com/embed/${videoId}`;
+}
+
 
 const Toolbar = ({ editor }) => {
   if (!editor) {
@@ -148,24 +160,23 @@ const Toolbar = ({ editor }) => {
     {
       icon: VideoIcon,
       action: () => {
-        const url = prompt("Enter YouTube video URL (e.g., https://www.youtube.com/watch?v=...):");
+        const url = prompt("Enter YouTube video URL:");
         if (url && isYouTubeURL(url)) {
           const embedUrl = convertToEmbedUrl(url);
+          if (!embedUrl) {
+            alert("Invalid YouTube URL format.");
+            return;
+          }
+    
           const iframe = `
-              <iframe width="100%" height="100%" 
-              src="${embedUrl}" 
-              title="YouTube video player" 
-              frameborder="0" 
-              allow="accelerometer; 
-              autoplay; 
-              clipboard-write; 
-              encrypted-media; 
-              gyroscope; 
-              picture-in-picture; 
-              web-share" 
-              referrerpolicy="strict-origin-when-cross-origin" 
-              allowfullscreen>
-              </iframe>`;
+            <iframe width="100%" height="100%" 
+            src="${embedUrl}" 
+            title="YouTube video player" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            referrerpolicy="strict-origin-when-cross-origin" 
+            allowfullscreen></iframe>`;
+    
           editor.chain().focus().insertContent(iframe).run();
         } else {
           alert("Please enter a valid YouTube URL.");
@@ -174,7 +185,6 @@ const Toolbar = ({ editor }) => {
       isActive: false,
       label: "Insert Video",
     },
-
     {
       icon: PencilLine,
       action: () => editor.chain().focus().setHorizontalRule().run(),
