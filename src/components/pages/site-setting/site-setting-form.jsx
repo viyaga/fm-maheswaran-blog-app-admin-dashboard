@@ -4,7 +4,6 @@ import * as React from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
-import { Button } from '@/components/ui/button';
 import {
     Form,
     FormControl,
@@ -20,6 +19,7 @@ import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { updateSiteSetting } from '@/lib/strapi/actions/site-setting';
 import { capitalize, Utils } from '@/lib/utils';
+import { SubmitButton } from '@/components/shared/submitButton';
 
 const formSchema = z.object({
     title: z.string().max(255, 'Title is too long').nonempty('Title is required'),
@@ -106,9 +106,9 @@ export default function SiteSettingForm({ siteSettingData }) {
                                     />
                                 ))}
                             </div>
-                            <Button type="submit" className="flex justify-end">
+                            <SubmitButton className="flex justify-end">
                                 {siteSettingData ? 'Update Setting' : 'Add Setting'}
-                            </Button>
+                            </SubmitButton>
                         </form>
                     </Form>
                 </CardContent>

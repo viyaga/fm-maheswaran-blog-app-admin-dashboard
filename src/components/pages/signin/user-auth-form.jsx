@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
+import { SubmitButton } from '@/components/shared/submitButton';
 import {
   Form,
   FormControl,
@@ -13,7 +13,6 @@ import { Input } from '@/components/ui/input';
 import { loginUser } from '@/lib/strapi/actions/authenticate';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import * as z from 'zod';
@@ -27,28 +26,23 @@ export default function UserAuthForm() {
 
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl');
-  const [loading, startTransition] = useTransition();
   const router = useRouter()
 
   const form = useForm({ resolver: zodResolver(formSchema), defaultValues: { email: "", password: "" } });
 
-  const onLogin = ({ email, password }) => {
+  const onLogin = async ({ email, password }) => {
 
     if (!email || !password) return toast.error("Please enter the required field")
 
-    startTransition(async () => {
-      const res = await loginUser(email.toLowerCase(), password)
+    const res = await loginUser(email.toLowerCase(), password)
 
-      if (res?.error) {
-        toast.error(res.error)
-        console.log({error: res.fullError});
-        
-      } else {
-        toast.success('Signed In Successfully!');
-        form.reset()
-        router.replace('/dashboard')
-      }
-    })
+    if (res?.error) {
+      toast.error(res.error)
+    } else {
+      toast.success('Signed In Successfully!');
+      form.reset()
+      router.replace('/dashboard')
+    }
   }
 
   return (
@@ -68,7 +62,6 @@ export default function UserAuthForm() {
                   <Input
                     type="email"
                     placeholder="Enter your email..."
-                    disabled={loading}
                     {...field}
                   />
                 </FormControl>
@@ -87,7 +80,6 @@ export default function UserAuthForm() {
                   <Input
                     type="password"
                     placeholder="Enter your password..."
-                    disabled={loading}
                     {...field}
                   />
                 </FormControl>
@@ -96,9 +88,9 @@ export default function UserAuthForm() {
             )}
           />
 
-          <Button disabled={loading} className="ml-auto w-full" type="submit">
+          <SubmitButton className="ml-auto w-full">
             Submit
-          </Button>
+          </SubmitButton>
         </form>
       </Form>
       <div className="relative">

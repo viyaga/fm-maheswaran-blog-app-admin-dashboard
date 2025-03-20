@@ -4,7 +4,6 @@ import * as React from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
-import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -18,6 +17,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { changePassword } from '@/lib/strapi/actions/profile';
+import { SubmitButton } from '@/components/shared/submitButton';
 
 const formSchema = z.object({
   current_password: z.string().min(6, {
@@ -92,7 +92,7 @@ export default function ChangePassword({ adminId }) {
               </FormItem>
             )} />
 
-            <Button type="submit" className="flex justify-end">Change Password</Button>
+            <SubmitButton className="flex justify-end">Change Password</SubmitButton>
           </form>
         </Form>
       </CardContent>

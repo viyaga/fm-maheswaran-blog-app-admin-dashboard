@@ -4,7 +4,6 @@ import * as React from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
-import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -18,6 +17,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { updateProfile } from '@/lib/strapi/actions/profile';
+import { SubmitButton } from '@/components/shared/submitButton';
 
 const formSchema = z.object({
   first_name: z.string().min(2, {
@@ -150,7 +150,7 @@ export default function ProfilePage({ adminData }) {
                 </FormItem>
               )} />
             </div>
-            <Button type="submit" className="flex justify-end">{adminData ? "Update" : "Add"}</Button>
+            <SubmitButton className="flex justify-end">{adminData ? "Update" : "Add"}</SubmitButton>
           </form>
         </Form>
       </CardContent>

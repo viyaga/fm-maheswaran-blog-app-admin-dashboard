@@ -4,7 +4,6 @@ import * as React from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
-import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -33,6 +32,7 @@ import { X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { sub } from 'date-fns';
+import { SubmitButton } from '@/components/shared/submitButton';
 
 const formSchema = z.object({
   title: z.string().min(1, { message: 'Title is required.' }).max(60, { message: 'Title should be less than 60 characters.' }),
@@ -51,7 +51,7 @@ const formSchema = z.object({
 });
 
 export default function BlogForm({ blogData, authors, categories }) {
-  const defaultCategories = (blogData?.categories?.length > 0) ? blogData.categories.map((cat) => cat.id) : [];
+  const defaultCategories = (blogData?.categories?.length > 0) ? blogData.categories.map((cat) => cat.documentId) : [];
   const [selectedCategories, setSelectedCategories] = React.useState(defaultCategories);
 
   console.log({ blogData, categories, selectedCategories, defaultCategories });
@@ -242,9 +242,9 @@ export default function BlogForm({ blogData, authors, categories }) {
                       <Select
                         onValueChange={(value) => {
                           // Prevent duplicates
-                          if (!selectedCategories.includes(+value)) {             // + to convert string to number
+                          if (!selectedCategories.includes(value)) {             // + to convert string to number
                             form.setValue('categories', []);
-                            setSelectedCategories([...selectedCategories, +value]);
+                            setSelectedCategories([...selectedCategories, value]);
                           }
                         }}
                       >
@@ -255,9 +255,9 @@ export default function BlogForm({ blogData, authors, categories }) {
                         </FormControl>
                         <SelectContent>
                           {categories
-                            .filter((category) => !selectedCategories.includes(category.id))
+                            .filter((category) => !selectedCategories.includes(category.documentId))
                             .map((category) => (
-                              <SelectItem key={category.id} value={category.id}>
+                              <SelectItem key={category.documentId} value={category.documentId}>
                                 {category.name}
                               </SelectItem>
                             ))}
@@ -273,7 +273,7 @@ export default function BlogForm({ blogData, authors, categories }) {
                 <div className="mt-2 flex flex-wrap gap-2">
                   {selectedCategories.length > 0 &&
                     selectedCategories.map((categoryId) => {
-                      const category = categories.find((c) => c.id === categoryId);
+                      const category = categories.find((c) => c.documentId === categoryId);
                       return (
                         <Badge
                           key={categoryId}
@@ -419,9 +419,9 @@ export default function BlogForm({ blogData, authors, categories }) {
                 )}
               />
             </div>
-            <Button type="submit" className="flex justify-end">
+            <SubmitButton className="flex justify-end">
               {blogData ? 'Update Blog' : 'Add Blog'}
-            </Button>
+            </SubmitButton>
           </form>
         </Form>
       </CardContent>

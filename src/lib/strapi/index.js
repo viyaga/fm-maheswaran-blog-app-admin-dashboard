@@ -176,7 +176,7 @@ export async function deleteAuthor(documentId) {
 export async function getAllComments({ page, pageSize, sort, search }) {
     const query = getAllCommentsQuery({ page, pageSize, sort, search });
 
-    const res = await strapiFetch({ path: `/comments`, query, tags: ['comments'] });
+    const res = await strapiFetch({ path: `/comments`, query, revalidateTime: 60 * 60, tags: ['comments'] });
     if (res.error) return { error: res.error };
 
     return { data: res.body.data, count: res.body.meta.pagination.total };

@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/shared/modal';
+import { Loader2 } from 'lucide-react';
 
 export const AlertModal = ({
   isOpen,
@@ -19,6 +20,13 @@ export const AlertModal = ({
     return null;
   }
 
+  const Processing = () => (
+    <>
+      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+      Processing...
+    </>
+  )
+
   return (
     <Modal
       title="Are you sure?"
@@ -31,7 +39,7 @@ export const AlertModal = ({
           Cancel
         </Button>
         <Button disabled={loading} variant="destructive" onClick={onConfirm}>
-          Confirm
+          {loading ? <Processing /> : "Confirm"}
         </Button>
       </div>
     </Modal>

@@ -4,7 +4,6 @@ import * as React from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
-import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -25,6 +24,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { addUser, updateUser } from '@/lib/strapi/actions/user'; // Updated to user actions
+import { SubmitButton } from '@/components/shared/submitButton';
 
 const formSchema = z.object({
   first_name: z.string().min(2, {
@@ -231,9 +231,9 @@ export default function UserForm({ userData }) {
                 )}
               />
             </div>
-            <Button type="submit" className="flex justify-end">
+            <SubmitButton className="flex justify-end">
               {userData ? 'Update' : 'Add'}
-            </Button>
+            </SubmitButton>
           </form>
         </Form>
       </CardContent>

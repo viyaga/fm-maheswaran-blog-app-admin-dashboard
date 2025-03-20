@@ -56,7 +56,7 @@ const addMediaFile = asyncHandler(async (fileData, additionalData = {}) => {
   return {
     success: true,
     message: "File uploaded successfully",
-    upload: data,
+    data,
   };
 });
 

@@ -27,6 +27,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { addAdmin, updateAdmin } from '@/lib/strapi/actions/admin';
+import { SubmitButton } from '@/components/shared/submitButton';
 
 const formSchema = z.object({
   first_name: z.string().min(2, {
@@ -207,7 +208,7 @@ export default function AdminForm({ adminData }) {
                 )}
               />
             </div>
-            <Button type="submit" className="flex justify-end">{adminData ? "Update" : "Add"}</Button>
+            <SubmitButton className="flex justify-end">{adminData ? "Update" : "Add"}</SubmitButton>
           </form>
         </Form>
       </CardContent>

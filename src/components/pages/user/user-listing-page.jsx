@@ -28,7 +28,7 @@ export default async function UserListingPage() {
 
   const pagination = { page, pageSize: pageLimit };
 
-  const users = await getAllUsers({ fields, filters, pagination, sort, revalidate: 60 * 60 * 5, tags: ["users"] });
+  const users = await getAllUsers({ fields, filters, pagination, sort, revalidate: 60 * 60, tags: ["users"] });
 
   if (users?.error) return <ServerError message="An error occurred. Please try again later." />;
 

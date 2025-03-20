@@ -4,7 +4,6 @@ import * as React from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
-import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -26,6 +25,7 @@ import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { addAuthor, updateAuthor } from '@/lib/strapi';
 import { getUpdatedFields } from '@/lib/utils';
+import { SubmitButton } from '@/components/shared/submitButton';
 
 const formSchema = z.object({
   first_name: z.string().min(2, {
@@ -237,9 +237,9 @@ export default function AuthorForm({ authorData }) {
                 )}
               />
             </div>
-            <Button type="submit" className="flex justify-end">
+            <SubmitButton className="flex justify-end">
               {authorData ? 'Update' : 'Add'}
-            </Button>
+            </SubmitButton>
           </form>
         </Form>
       </CardContent>
