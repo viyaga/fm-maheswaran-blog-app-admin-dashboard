@@ -10,7 +10,8 @@ export const metadata = {
   title: 'Dashboard : Blog View',
 };
 
-const getBlogData = async (blogId) => {
+const getBlogData = async ({params}) => {
+  const { blogId } = await params;
   const data = await getBlogById({
     documentId: blogId,
     fields: "title,subtitle,slug,excerpt,free_content,content,featured_image,seo_meta_title,seo_meta_description,blog_status,is_featured",
