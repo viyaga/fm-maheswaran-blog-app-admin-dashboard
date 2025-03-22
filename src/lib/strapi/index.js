@@ -7,6 +7,7 @@ import { errResponse } from '../utils';
 import { revalidateTag } from 'next/cache';
 import { generateUsername } from './actions/common';
 import { getAllCommentsQuery, getCommentQuery } from './queries/commentQuery';
+import { getMediaFilesQuery, getSingleMediaFileQuery } from './queries/mediaQuery';
 
 const endpoint = process.env.STRAPI_API_ENDPOINT;
 const headers = {
@@ -236,4 +237,33 @@ export async function deleteComment(documentId) {
         success: true,
         message: "Comment deleted successfully",
     };
+}
+
+// 🔹 Fetch Media Files (Using Query Function)
+export async function getMediaFiles({ page = 1, pageSize = 12, sort, search }) {
+    const query = getMediaFilesQuery({ page, pageSize, sort, search });
+    return await strapiFetch({ path: "/upload/files", query });
+}
+
+// 🔹 Get Single Media File by ID (Using Query Function)
+export async function getMediaFileById(id) {
+    const query = getSingleMediaFileQuery();
+    return await strapiFetch({ path: `upload/files/${id}`, query });
+}
+
+// 🔹 Update Media File (Alternative Text)
+export async function updateMediaFile(id, alternativeText) {
+    return await strapiFetch({
+        path: `/upload/files/${id}`,
+        method: "PUT",
+        body: { alternativeText },
+    });
+}
+
+// 🔹 Delete Media File
+export async function deleteMediaFile(id) {
+    return await strapiFetch({
+        path: `/upload/files/${id}`,
+        method: "DELETE",
+    });
 }

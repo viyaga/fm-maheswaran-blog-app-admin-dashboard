@@ -119,14 +119,16 @@ const updateMediaFile = asyncHandler(async ({ documentId, updateData }) => {
 });
 
 // Delete Media File
-const deleteMediaFile = asyncHandler(async (documentId) => {
-  if (!documentId) {
+const deleteMediaFile = asyncHandler(async (id) => {
+  if (!id) {
     return { error: "Media File ID is required" };
   }
 
-  const { data } = await axios.delete(`${STRAPI_API_ENDPOINT}/upload/files/${documentId}`);
+  const { data } = await axios.delete(`${STRAPI_API_ENDPOINT}/upload/files/${id}`);
   revalidateTag("mediaFiles");
 
+  console.log({data});
+  
   return {
     success: true,
     message: "Media File deleted successfully",

@@ -21,7 +21,7 @@ const InfinityScrollMedia = ({ initialMediaFiles }) => {
   const [hasMore, setHasMore] = useState(true);
   const observerRef = useRef(null);
 
-  const pageSize = 10;
+  const pageSize = 12;
   const sort = "createdAt:DESC";
   const fields = "name,url,width,height,alternativeText,ext";
 
@@ -35,7 +35,7 @@ const InfinityScrollMedia = ({ initialMediaFiles }) => {
         filters: [],
         pagination: { page, pageSize },
         sort,
-        revalidate: 60 * 60 * 24 * 365,
+        revalidate: 1,
         tags: ["mediaFiles"],
       });
 
@@ -62,7 +62,7 @@ const InfinityScrollMedia = ({ initialMediaFiles }) => {
       ([entry]) => {
         if (entry.isIntersecting) debouncedLoadMoreMediaFiles();
       },
-      { rootMargin: "100px" }
+      { rootMargin: "10px" }
     );
 
     observer.observe(observerRef.current);
@@ -74,6 +74,8 @@ const InfinityScrollMedia = ({ initialMediaFiles }) => {
     setHasMore(true); setPage(2);
   }, [initialMediaFiles, setHasMore, setPage]);
 
+  console.log({ mediaFiles});
+  
   return (
     <>
       <div className="grid lg:grid-cols-4 sm:grid-cols-2 gap-4 w-full mx-auto">

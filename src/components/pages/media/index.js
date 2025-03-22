@@ -1,5 +1,4 @@
 import PageContainer from "@/components/layout/page-container";
-import MediaCard from "./media-card";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import { Heading } from "@/components/shared/heading";
 import { getAllMediaFiles } from "@/lib/strapi/actions/media";
@@ -7,7 +6,7 @@ import UploadButton from "./upload";
 import InfinityScrollMedia from "./Infinity-scroll-media";
 
 const MediaLibrary = async () => {
-  const pageLimit = 10; // Default page size
+  const pageSize = 12; // Default page size
   const sort = "createdAt:DESC"; // Default sorting
   const fields = "name,url,width,height,alternativeText,ext"; // Required fields
 
@@ -15,7 +14,7 @@ const MediaLibrary = async () => {
   const mediaFiles = await getAllMediaFiles({
     fields,
     filters: [],
-    pagination: { page: 1, pageSize: pageLimit },
+    pagination: { page: 1, pageSize },
     sort,
     revalidate: 60 * 60 * 24 * 365,
     tags: ["mediaFiles"],
