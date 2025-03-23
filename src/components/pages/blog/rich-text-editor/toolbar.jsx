@@ -27,7 +27,22 @@ import {
   VideoIcon,
   PencilLine,
   Palette,
+  Music,           // For Audio embed
+  AlertTriangle,   // For Callout block
 } from "lucide-react";
+
+// Custom icons for Superscript and Subscript
+const SuperscriptIcon = (props) => (
+  <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor">
+    <text x="4" y="16" fontSize="16" fontWeight="bold">x²</text>
+  </svg>
+);
+
+const SubscriptIcon = (props) => (
+  <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor">
+    <text x="4" y="18" fontSize="16" fontWeight="bold">x₂</text>
+  </svg>
+);
 
 function isYouTubeURL(url) {
   const regex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=|embed\/|live\/|playlist\?list=|)([a-zA-Z0-9_-]{11,})/;
@@ -37,23 +52,16 @@ function isYouTubeURL(url) {
 // Helper function to convert YouTube URL to embed format
 function convertToEmbedUrl(url) {
   let videoId = "";
-
   if (url.includes("youtu.be/")) {
-    // Shortened URL format
     videoId = url.split("youtu.be/")[1].split("?")[0];
   } else if (url.includes("watch?v=")) {
-    // Standard YouTube video URL
     videoId = new URL(url).searchParams.get("v");
   } else if (url.includes("live/")) {
-    // YouTube live stream URL
     videoId = url.split("live/")[1].split("?")[0];
   }
-
   if (!videoId) return null;
-
   return `https://www.youtube.com/embed/${videoId}`;
 }
-
 
 const Toolbar = ({ editor }) => {
   if (!editor) {
@@ -85,6 +93,18 @@ const Toolbar = ({ editor }) => {
       isActive: editor.isActive("strike"),
       label: "Strikethrough",
     },
+    // {
+    //   icon: SuperscriptIcon,
+    //   action: () => editor.chain().focus().toggleSuperscript().run(),
+    //   isActive: editor.isActive("superscript"),
+    //   label: "Superscript",
+    // },
+    // {
+    //   icon: SubscriptIcon,
+    //   action: () => editor.chain().focus().toggleSubscript().run(),
+    //   isActive: editor.isActive("subscript"),
+    //   label: "Subscript",
+    // },
     {
       icon: Heading1,
       action: () => editor.chain().focus().toggleHeading({ level: 1 }).run(),
@@ -152,12 +172,6 @@ const Toolbar = ({ editor }) => {
       label: "Highlight",
     },
     {
-      icon: TableIcon,
-      action: () => editor.chain().focus().insertTable({ rows: 3, cols: 3 }).run(),
-      isActive: false,
-      label: "Insert Table",
-    },
-    {
       icon: VideoIcon,
       action: () => {
         const url = prompt("Enter YouTube video URL:");
@@ -167,16 +181,8 @@ const Toolbar = ({ editor }) => {
             alert("Invalid YouTube URL format.");
             return;
           }
-    
-          const iframe = `
-            <iframe width="100%" height="100%" 
-            src="${embedUrl}" 
-            title="YouTube video player" 
-            frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            referrerpolicy="strict-origin-when-cross-origin" 
-            allowfullscreen></iframe>`;
-    
+          // Responsive YouTube embed container with 16:9 aspect ratio
+          const iframe = `<div class='relative w-full pb-[56.25%] my-4'><iframe class='absolute top-0 left-0 w-full h-full' src='${embedUrl}' title='YouTube video player' frameborder='0' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe></div>`;
           editor.chain().focus().insertContent(iframe).run();
         } else {
           alert("Please enter a valid YouTube URL.");
@@ -186,20 +192,42 @@ const Toolbar = ({ editor }) => {
       label: "Insert Video",
     },
     {
-      icon: PencilLine,
-      action: () => editor.chain().focus().setHorizontalRule().run(),
-      isActive: false,
-      label: "Horizontal Rule",
-    },
-    {
-      icon: Palette,
+      icon: Music,
       action: () => {
-        const color = prompt("Enter text color");
-        if (color) editor.chain().focus().setColor(color).run();
+        const url = prompt("Enter audio URL (MP3, etc.):");
+        if (url) {
+          const audioHTML = `<div class="my-4"><audio controls class="w-full"><source src="${url}" type="audio/mpeg">Your browser does not support the audio element.</audio></div>`;
+          editor.chain().focus().insertContent(audioHTML).run();
+        }
       },
       isActive: false,
-      label: "Text Color",
+      label: "Insert Audio",
     },
+    // {
+    //   icon: AlertTriangle,
+    //   action: () => {
+    //     // Inserts a callout block. Customize the HTML and classes as needed.
+    //     const calloutHTML = `<div class="my-4 p-4 bg-blue-50 border-l-4 border-blue-500 rounded-md"><strong>Note:</strong> Your callout content here...</div>`;
+    //     editor.chain().focus().insertContent(calloutHTML).run();
+    //   },
+    //   isActive: false,
+    //   label: "Callout",
+    // },
+    // {
+    //   icon: PencilLine,
+    //   action: () => editor.chain().focus().setHorizontalRule().run(),
+    //   isActive: false,
+    //   label: "Horizontal Rule",
+    // },
+    // {
+    //   icon: Palette,
+    //   action: () => {
+    //     const color = prompt("Enter text color (e.g., #ff0000 or red):");
+    //     if (color) editor.chain().focus().setColor(color).run();
+    //   },
+    //   isActive: false,
+    //   label: "Text Color",
+    // },
     {
       icon: AlignLeft,
       action: () => editor.chain().focus().setTextAlign("left").run(),
@@ -225,12 +253,6 @@ const Toolbar = ({ editor }) => {
       label: "Align Justify",
     },
     {
-      icon: Check,
-      action: () => editor.chain().focus().toggleTaskList().run(),
-      isActive: editor.isActive("taskList"),
-      label: "Task List",
-    },
-    {
       icon: Undo,
       action: () => editor.chain().focus().undo().run(),
       isActive: false,
@@ -245,26 +267,22 @@ const Toolbar = ({ editor }) => {
   ];
 
   return (
-    <div className="px-4 py-3 rounded-tl-md rounded-tr-md flex justify-between items-start gap-5 w-full flex-wrap border border-gray-700">
-      <div className="flex justify-start items-center gap-5 w-full flex-wrap">
-        {buttons.map(({ icon: Icon, action, isActive, label }, idx) => (
-          <button
-            key={idx}
-            onClick={(e) => {
-              e.preventDefault();
-              action();
-            }}
-            className={
-              isActive
-                ? "bg-sky-700 text-white p-2 rounded-lg"
-                : "text-sky-400 hover:bg-sky-700 hover:text-white p-1 hover:rounded-lg"
-            }
-            title={label}
-          >
-            <Icon className="w-5 h-5" />
-          </button>
-        ))}
-      </div>
+    <div className="px-4 py-3 rounded-md flex flex-wrap gap-3 border border-gray-700 bg-gray-900 text-white">
+      {buttons.map(({ icon: Icon, action, isActive, label }, idx) => (
+        <button
+          key={idx}
+          onClick={(e) => {
+            e.preventDefault();
+            action();
+          }}
+          className={`p-2 rounded-md transition-all duration-200 ${
+            isActive ? "bg-blue-600 text-white" : "text-gray-300 hover:bg-gray-700"
+          }`}
+          title={label}
+        >
+          <Icon className="w-5 h-5" />
+        </button>
+      ))}
     </div>
   );
 };

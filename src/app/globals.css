@@ -115,3 +115,79 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+/* ========================= */
+/* ♟️ Blog content Styling - Matches Global Theme */
+/* ========================= */
+
+/* Chess Blog Typography */
+@layer base {
+  .blog-content {
+    @apply bg-background text-foreground leading-relaxed;
+  }
+
+  .blog-content h1 {
+    @apply text-4xl font-bold text-primary border-b border-border pb-2 mb-4;
+  }
+  
+  .blog-content h2 {
+    @apply text-3xl font-semibold text-accent mt-6 mb-3;
+  }
+  
+  .blog-content h3 {
+    @apply text-2xl font-medium text-secondary mt-5 mb-2;
+  }
+  
+  .blog-content p {
+    @apply text-lg leading-7 text-muted-foreground mb-4;
+  }
+
+  .blog-content a {
+    @apply text-primary underline hover:text-accent transition;
+  }
+
+  .blog-content blockquote {
+    @apply border-l-4 border-primary pl-4 italic text-muted-foreground;
+  }
+
+  .blog-content code {
+    @apply bg-secondary/80 text-accent text-sm px-2 py-1 rounded-md font-mono;
+  }
+
+  .blog-content pre {
+    @apply bg-card p-4 rounded-lg border border-border text-card-foreground text-sm overflow-x-auto;
+  }
+
+  .blog-content ul {
+    @apply list-disc pl-6;
+  }
+
+  .blog-content ol {
+    @apply list-decimal pl-6;
+  }
+
+  .blog-content table {
+    @apply w-full border-collapse border border-border mt-4 mb-4;
+  }
+
+  .blog-content th {
+    @apply bg-secondary text-secondary-foreground px-4 py-2 text-left border border-border;
+  }
+
+  .blog-content td {
+    @apply px-4 py-2 border border-border;
+  }
+
+  .blog-content img {
+    @apply mx-auto rounded-lg shadow-lg my-4;
+  }
+
+  .blog-content button {
+    @apply bg-primary text-primary-foreground font-medium py-2 px-4 rounded-md hover:bg-accent/90 transition;
+  }
+
+  .blog-content iframe {
+    @apply mx-auto my-6 block max-w-3xl aspect-video rounded-lg;
+  }
+}

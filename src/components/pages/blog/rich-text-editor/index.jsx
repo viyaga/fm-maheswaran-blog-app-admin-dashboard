@@ -27,9 +27,9 @@ const RichTextEditor = ({ onChange, content }) => {
   });
 
   return (
-    <div className="prose max-w-full">
+    <div className="prose prose-lg prose-slate dark:prose-invert mx-auto my-8 max-w-full">
       <Toolbar editor={editor} />
-      <EditorContent style={{ whiteSpace: "pre-line" }} editor={editor} />
+      <EditorContent className="blog-content" style={{ whiteSpace: "pre-line" }} editor={editor} />
     </div>
   );
 };
