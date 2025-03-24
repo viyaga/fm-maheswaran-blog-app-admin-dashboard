@@ -172,8 +172,7 @@ const Toolbar = ({ editor }) => {
       label: "Highlight",
     },
     {
-      icon: VideoIcon,
-      action: () => {
+      icon: VideoIcon, action: () => {
         const url = prompt("Enter YouTube video URL:");
         if (url && isYouTubeURL(url)) {
           const embedUrl = convertToEmbedUrl(url);
@@ -181,15 +180,21 @@ const Toolbar = ({ editor }) => {
             alert("Invalid YouTube URL format.");
             return;
           }
-          // Responsive YouTube embed container with 16:9 aspect ratio
-          const iframe = `<div class='relative w-full pb-[56.25%] my-4'><iframe class='absolute top-0 left-0 w-full h-full' src='${embedUrl}' title='YouTube video player' frameborder='0' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe></div>`;
+          const iframe = `
+          <iframe width="100%" height="100%" 
+          src="${embedUrl}" 
+          title="YouTube video player" 
+          frameborder="0" 
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+          referrerpolicy="strict-origin-when-cross-origin" 
+          allowfullscreen></iframe>`
           editor.chain().focus().insertContent(iframe).run();
         } else {
           alert("Please enter a valid YouTube URL.");
         }
       },
       isActive: false,
-      label: "Insert Video",
+      label: "Insert Video"
     },
     {
       icon: Music,
@@ -275,9 +280,8 @@ const Toolbar = ({ editor }) => {
             e.preventDefault();
             action();
           }}
-          className={`p-2 rounded-md transition-all duration-200 ${
-            isActive ? "bg-blue-600 text-white" : "text-gray-300 hover:bg-gray-700"
-          }`}
+          className={`p-2 rounded-md transition-all duration-200 ${isActive ? "bg-blue-600 text-white" : "text-gray-300 hover:bg-gray-700"
+            }`}
           title={label}
         >
           <Icon className="w-5 h-5" />

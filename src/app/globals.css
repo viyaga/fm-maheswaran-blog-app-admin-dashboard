@@ -75,7 +75,6 @@
   }
 }
 
-
 @layer base {
   * {
     @apply border-border;
@@ -105,8 +104,6 @@
   }
 }
 
-
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -116,7 +113,6 @@
   }
 }
 
-
 /* ========================= */
 /* ♟️ Blog content Styling - Matches Global Theme */
 /* ========================= */
@@ -124,21 +120,21 @@
 /* Chess Blog Typography */
 @layer base {
   .blog-content {
-    @apply bg-background text-foreground leading-relaxed;
+    @apply bg-background text-foreground leading-relaxed max-w-fit;
   }
 
   .blog-content h1 {
     @apply text-4xl font-bold text-primary border-b border-border pb-2 mb-4;
   }
-  
+
   .blog-content h2 {
     @apply text-3xl font-semibold text-accent mt-6 mb-3;
   }
-  
+
   .blog-content h3 {
     @apply text-2xl font-medium text-secondary mt-5 mb-2;
   }
-  
+
   .blog-content p {
     @apply text-lg leading-7 text-muted-foreground mb-4;
   }

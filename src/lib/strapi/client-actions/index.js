@@ -50,11 +50,12 @@ export async function addMediaFile(fileData, additionalData = {}) {
     formData.append(`data.${key}`, additionalData[key]);
   });
 
+  console.log({env:process.env.NEXT_PUBLIC_API_TOKEN});
+  
   try {
     const response = await fetch(`${endpoint}/upload`, {
       method: "POST",
       body: formData,
-      "Content-Type": "multipart/form-data",
       Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_TOKEN}`
     });
 
@@ -118,6 +119,7 @@ export async function addMultipleFiles(files, additionalData = {}) {
       data,
     };
   } catch (error) {
-    return { error: errResponse(error) };
+    throw error;
+    // return { error: errResponse(error) };
   }
 }
