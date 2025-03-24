@@ -17,7 +17,7 @@ export default async function CategoryListingPage() {
   const pageLimit = searchParamsCache.get('limit');
   const sort = searchParamsCache.get('sort');
 
-  const fields = "name,description,createdAt"; // Fetch relevant fields
+  const fields = "name,image,description,createdAt"; // Fetch relevant fields
 
   const filters = [];
 
@@ -26,7 +26,7 @@ export default async function CategoryListingPage() {
 
   const pagination = { page, pageSize: pageLimit };
 
-  const categories = await getAllCategories({ fields, filters, pagination, sort, revalidate: 60 * 60 * 24 * 365, tags: ["categories"], populate: "parent_category"});
+  const categories = await getAllCategories({ fields, filters, pagination, sort, revalidate: 60 * 60 * 24 * 365, tags: ["categories"]});
 
   if (categories?.error) return <ServerError message="An error occurred. Please try again later." />;
 

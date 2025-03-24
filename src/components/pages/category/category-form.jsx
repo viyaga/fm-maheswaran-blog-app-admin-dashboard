@@ -35,6 +35,7 @@ const formSchema = z.object({
     message: 'Slug must be at least 2 characters.',
   }),
   description: z.string().optional(),
+  image: z.string().url({ message: 'Invalid URL format' }), // Added image field
   parent_category: z.string().optional(),
 });
 
@@ -46,16 +47,18 @@ export default function CategoryForm({ categoryData, categories }) {
     name: '',
     slug: '',
     description: '',
+    image: '',
     parent_category: 'null',
   };
 
   if (categoryData?.documentId) {
-    const { name, slug, description, parent_category } = categoryData;
+    const { name, slug, description, image, parent_category } = categoryData;
     defaultValues = {
       name,
       slug,
       description,
-      parent_category: parent_category? parent_category?.documentId : 'null',
+      image: image || '',
+      parent_category: parent_category ? parent_category?.documentId : 'null',
     };
   }
 
@@ -64,13 +67,19 @@ export default function CategoryForm({ categoryData, categories }) {
   const onSubmit = async (values) => {
     console.log({ values });
 
-    const { name, slug, description, parent_category } = values;
+    const { name, slug, description, image, parent_category } = values;
 
-    if (!name || !slug) {
+    if (!name || !slug || !image) {
       return toast.error('Please enter the required fields.');
     }
 
-    const data = { name, slug, description, parent_category: parent_category === 'null' ? null : parent_category };
+    const data = { 
+      name, 
+      slug, 
+      description, 
+      image, 
+      parent_category: parent_category === 'null' ? null : parent_category 
+    };
 
     console.log({ data });
 
@@ -146,30 +155,17 @@ export default function CategoryForm({ categoryData, categories }) {
               />
               <FormField
                 control={form.control}
-                name="description"
+                name="image"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Description</FormLabel>
+                    <FormLabel>Image URL</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter Description" {...field} />
+                      <Input placeholder="Enter Image URL" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              {/* <FormField
-                control={form.control}
-                name="parent_category"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Parent Category</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter Parent Category ID" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              /> */}
               <FormField
                 control={form.control}
                 name="parent_category"
@@ -200,6 +196,19 @@ export default function CategoryForm({ categoryData, categories }) {
                 )}
               />
             </div>
+            <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter Description" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             <SubmitButton className="flex justify-end">
               {categoryData ? 'Update' : 'Add'}
             </SubmitButton>

@@ -4,6 +4,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { CellAction } from './cell-action';
 import { format } from 'date-fns';
 import { capitalize, Utils } from '@/lib/utils';
+import Image from 'next/image';
 
 export const columns = [
   {
@@ -31,6 +32,22 @@ export const columns = [
     cell: ({ row }) => row.index + 1
   },
   {
+    accessorKey: 'image',
+    header: 'IMAGE',
+    cell: ({ row }) => {
+      return (
+        <div className="relative aspect-square">
+          <Image
+            src={row.getValue('image')}
+            alt={row.getValue('title')}
+            fill
+            className="rounded-lg"
+          />
+        </div>
+      );
+    }
+  },
+  {
     accessorKey: 'name',
     header: 'NAME',
     cell: ({ row }) => capitalize(row.original.name) || "-"
@@ -38,17 +55,7 @@ export const columns = [
   {
     accessorKey: 'description',
     header: 'DESCRIPTION',
-    cell: ({ row }) => row.original.description? Utils.textTruncate(row.original.description, 60) : "-"
-  },
-  {
-    accessorKey: 'parent_category',
-    header: 'PARENT CATEGORY',
-    cell: ({ row }) => row.original.parent_category ? capitalize(row.original.parent_category?.name) : "-"
-  },
-  {
-    accessorKey: 'status',
-    header: 'STATUS',
-    cell: ({ row }) => (row.original.status === 1 ? "Active" : "Inactive")
+    cell: ({ row }) => row.original.description ? Utils.textTruncate(row.original.description, 60) : "-"
   },
   {
     accessorKey: 'createdAt',

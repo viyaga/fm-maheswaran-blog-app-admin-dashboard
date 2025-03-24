@@ -19,7 +19,7 @@ export default async function Page({ params }) {
 
   let categoryData = null;
   if (categoryId !== "add") {
-    categoryData = await getCategoryById({ documentId: categoryId, fields: "name,slug,description", populate: "parent_category" });
+    categoryData = await getCategoryById({ documentId: categoryId, fields: "name,image,slug,description", populate: "parent_category" });
 
     if (!categoryData) {
       return <p className="text-center mt-5 font-normal">Category Not Found</p>;
