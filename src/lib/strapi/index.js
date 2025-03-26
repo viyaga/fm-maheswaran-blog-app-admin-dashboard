@@ -238,32 +238,3 @@ export async function deleteComment(documentId) {
         message: "Comment deleted successfully",
     };
 }
-
-// 🔹 Fetch Media Files (Using Query Function)
-export async function getMediaFiles({ page = 1, pageSize = 12, sort, search }) {
-    const query = getMediaFilesQuery({ page, pageSize, sort, search });
-    return await strapiFetch({ path: "/upload/files", query });
-}
-
-// 🔹 Get Single Media File by ID (Using Query Function)
-export async function getMediaFileById(id) {
-    const query = getSingleMediaFileQuery();
-    return await strapiFetch({ path: `upload/files/${id}`, query });
-}
-
-// 🔹 Update Media File (Alternative Text)
-export async function updateMediaFile(id, alternativeText) {
-    return await strapiFetch({
-        path: `/upload/files/${id}`,
-        method: "PUT",
-        body: { alternativeText },
-    });
-}
-
-// 🔹 Delete Media File
-export async function deleteMediaFile(id) {
-    return await strapiFetch({
-        path: `/upload/files/${id}`,
-        method: "DELETE",
-    });
-}

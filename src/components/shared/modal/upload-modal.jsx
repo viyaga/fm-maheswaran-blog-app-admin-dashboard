@@ -6,11 +6,10 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { FileUploader } from "@/components/file-uploader";
 import { toast } from "sonner";
-import { addMultipleFiles } from "@/lib/strapi/client-actions";
+import { revalidateByTag } from "@/lib/strapi/actions/common";
 
-const UploadModal = ({ isOpen, onClose, onSubmit }) => {
+const UploadModal = ({ isOpen, onClose }) => {
   const {
-    register,
     handleSubmit,
     formState: { errors },
     reset,
@@ -18,36 +17,54 @@ const UploadModal = ({ isOpen, onClose, onSubmit }) => {
 
   const [uploadedFiles, setUploadedFiles] = useState([]);
 
-  const handleFormSubmit = () => {
+  // Function to upload multiple files to Strapi
+  const addMultipleFiles = async (files) => {
+    if (!files.length) {
+      throw new Error("No files selected");
+    }
 
+    const formData = new FormData();
+    files.forEach((file) => formData.append("files", file));
+
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/upload`, {
+        method: "POST",
+        body: formData,
+        headers: {
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_TOKEN}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to upload files.");
+      }
+
+      revalidateByTag("mediaFiles");
+      return await response.json();
+    } catch (error) {
+      throw new Error(error.message || "Upload failed.");
+    }
+  };
+
+  // Handle form submission
+  const handleFormSubmit = () => {
     toast.promise(addMultipleFiles(uploadedFiles), {
-      loading: `Uploading...`,
+      loading: "Uploading...",
       success: () => {
         reset();
         setUploadedFiles([]);
         onClose();
-        return `uploaded`;
+        return "Files uploaded successfully!";
       },
-      error: `Failed to upload files`,
+      error: "Failed to upload files.",
     });
-    // await addMultipleFiles(uploadedFiles)
-
-    // onSubmit({ ...uploadedFiles });
-
   };
 
   return (
-    <Modal
-      title="Upload Media"
-      isOpen={isOpen}
-      onClose={onClose}
-    >
+    <Modal title="Upload Media" isOpen={isOpen} onClose={onClose}>
       <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
         <div>
-          <label
-            htmlFor="files"
-            className="block text-sm font-medium text-gray-700"
-          >
+          <label htmlFor="files" className="block text-sm font-medium text-gray-700">
             Choose Files
           </label>
           <FileUploader
@@ -57,15 +74,12 @@ const UploadModal = ({ isOpen, onClose, onSubmit }) => {
             accept={{ "image/*": [] }}
             multiple
           />
-          {errors.files && (
-            <p className="text-sm text-red-600">{errors.files.message}</p>
-          )}
+          {errors.files && <p className="text-sm text-red-600">{errors.files.message}</p>}
         </div>
 
         <div className="flex w-full items-center justify-end space-x-2 pt-6">
           <Button
             type="button"
-            disabled={false}
             variant="outline"
             onClick={() => {
               reset();
@@ -75,11 +89,7 @@ const UploadModal = ({ isOpen, onClose, onSubmit }) => {
           >
             Cancel
           </Button>
-          <Button
-            type="submit"
-            disabled={false}
-            variant="default"
-          >
+          <Button type="submit" variant="default">
             Upload
           </Button>
         </div>

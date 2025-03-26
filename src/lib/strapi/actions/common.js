@@ -2,6 +2,7 @@
 
 import axios from "axios";
 import { errResponse } from "../../utils";
+import { revalidateTag } from "next/cache";
 
 const setAuthToken = () => {
     const BEARER_API_TOKEN = "Bearer " + process.env.API_TOKEN;
@@ -11,6 +12,10 @@ const setAuthToken = () => {
 const removeAuthToken = () => {
     axios.defaults.headers.common["Authorization"] = undefined;
 };
+
+const revalidateByTag = (tag) => {
+    revalidateTag(tag);
+}
 
 const asyncHandler = (fn) => async (...args) => {
     setAuthToken()
@@ -45,7 +50,7 @@ const createStrapiApiUrl = (args) => {
     }
 
     const sortUrl = sort ? `sort=${sort}&` : "";
-    
+
     const populateUrl = (typeof populate === "string" && populate?.length > 0)
         ? `populate=${populate}&` // Handle when `populate` is a string
         : Object.entries(populate)
@@ -144,4 +149,7 @@ const getMediaData = asyncHandler(async (args) => {
     return data;
 });
 
-export { setAuthToken, removeAuthToken, asyncHandler, createStrapiApiUrl, generateUsername, getData, getMediaData };
+export {
+    setAuthToken, removeAuthToken, revalidateByTag, asyncHandler,
+    createStrapiApiUrl, generateUsername, getData, getMediaData
+};

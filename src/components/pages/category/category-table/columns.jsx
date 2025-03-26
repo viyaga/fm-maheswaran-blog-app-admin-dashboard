@@ -39,7 +39,7 @@ export const columns = [
         <div className="relative aspect-square">
           <Image
             src={row.getValue('image')}
-            alt={row.getValue('title')}
+            alt={row.getValue('name')}
             fill
             className="rounded-lg"
           />
