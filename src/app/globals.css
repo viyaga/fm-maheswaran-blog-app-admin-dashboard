@@ -73,12 +73,12 @@
     --sidebar-border: 240 5% 20%;
     --sidebar-ring: 253 91% 65%;
   }
-}
 
-@layer base {
+  /* Global Reset & Base Styles */
   * {
-    @apply border-border;
+    @apply border-border outline-ring/50;
   }
+
   body {
     @apply box-border bg-background text-foreground;
   }
@@ -95,29 +95,10 @@
   }
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}
-
 /* ========================= */
 /* ♟️ Blog content Styling - Matches Global Theme */
 /* ========================= */
 
-/* Chess Blog Typography */
 @layer base {
   .blog-content {
     @apply bg-background text-foreground leading-relaxed max-w-fit;
